@@ -1,0 +1,6 @@
+<!-- Layout aliases, which allow reuse of layouts for providing 
+sw600dp/large resources from the same file -->
+<resources>
+    <!-- Example
+    <item name="main" type="layout">@layout/main_twopanes</item>-->
+</resources>

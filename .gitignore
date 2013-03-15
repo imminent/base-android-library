@@ -11,10 +11,20 @@
 # generated files
 bin/
 gen/
+target/
+gen-external-apklibs
 
 # Local configuration file (sdk path, etc)
 local.properties
+*.iml
+.idea
 
 # Eclipse project files
 .classpath
 .project
+
+# tmp
+.DS_Store
+tmp
+*~
+*.bak

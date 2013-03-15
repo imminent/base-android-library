@@ -1,0 +1,156 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- No parent idiom -->
+    <style name="NoParent"/>
+
+    <!-- Custom View Styling -->
+
+    <!-- Holo theme customization -->
+    <style name="Theme.Holo.Light.DarkActionBar.Custom" parent="FrameworkRoot.Theme">
+    </style>
+
+    <!-- Immediate parent theme to specify base values for custom attributes -->
+    <style name="Theme.Base" parent="Theme.Holo.Light.DarkActionBar.Custom">
+    </style>
+
+    <style name="Theme.ImminentMeals.Base" parent="Theme.Base">
+        <item name="android:actionBarStyle" tools:ignore="NewApi">@style/ActionBar</item>
+        <item name="actionBarStyle">@style/ActionBar</item>
+        <item name="android:actionBarTabStyle" tools:ignore="NewApi">@style/ActionBar.TabView</item>
+        <item name="actionBarTabStyle">@style/ActionBar.TabView</item>
+        <item name="android:actionBarTabBarStyle" tools:ignore="NewApi">@style/ActionBar.TabBar</item>
+        <item name="actionBarTabBarStyle">@style/ActionBar.TabBar</item>
+        <item name="android:actionBarTabTextStyle" tools:ignore="NewApi">@style/ActionBar.TabText</item>
+        <item name="actionBarTabTextStyle">@style/ActionBar.TabText</item>
+        <item name="android:popupMenuStyle" tools:ignore="NewApi">@Style/ActionBar.PopupMenu</item>
+        <item name="popupMenuStyle">@style/ActionBar.PopupMenu</item>
+        <item name="android:popupMenuStyle" tools:ignore="NewApi">@style/ActionBar.PopupMenu</item>
+        <item name="dropDownListViewStyle">@style/ActionBar.DropDownListView</item>
+        <item name="android:dropDownListViewStyle">@style/ActionBar.DropDownListView</item>
+        <item name="actionDropDownStyle">@style/ActionBar.DropDownNav</item>
+        <item name="android:actionDropDownStyle" tools:ignore="NewApi">@style/ActionBar.DropDownNav</item>
+        <item name="spinnerDropDownItemStyle">@style/ActionBar.DropDownItem</item>
+        <item name="android:spinnerDropDownItemStyle">@style/ActionBar.DropDownItem</item>
+        <item name="spinnerItemStyle">@style/ActionBar.SpinnerItem</item>
+        <item name="android:spinnerItemStyle">@style/ActionBar.SpinnerItem</item>
+
+        <!-- This allows Dark theme in Action overflow for Light.DarkActionBar -->
+        <item name="actionBarWidgetTheme">@style/ActionBar.Widget</item>
+        <item name="android:actionBarWidgetTheme" tools:ignore="NewApi">@style/ActionBar.Widget</item>
+    </style>
+
+    <!-- Account chooser -->
+    <style name="Theme.ImminentMeals.Base.Accounts">
+        <item name="android:actionBarStyle" tools:ignore="NewApi">@style/ActionBar.Accounts</item>
+        <item name="actionBarStyle">@style/ActionBar.Accounts</item>
+    </style>
+    <style name="ActionBar.Accounts">
+        <item name="android:displayOptions" tools:ignore="NewApi">showHome|useLogo</item>
+        <item name="displayOptions">showHome|useLogo</item>
+    </style>
+
+    <!-- Root styles that vary by API level -->
+    <style name="FrameworkRoot.Theme" parent="Holo.Theme.Light.DarkActionBar">
+        <!-- API 11+ (compatibility) -->
+        <!-- provided by HoloEverywhere -->
+        <!--<item name="buttonBarStyle">@style/Compat.ButtonBar</item>-->
+        <!--<item name="buttonBarButtonStyle">@style/Compat.ButtonBarButton</item>-->
+        <!--<item name="indeterminateProgressStyle">@style/Compat.IndeterminateProgress</item>-->
+        <!-- API 14+ (compatibility) -->
+        <!-- provided by HoloEverywhere -->
+        <!--<item name="listPreferredItemPaddingLeft">@dimen/compat_list_preferred_item_padding_left</item>-->
+        <!--<item name="listPreferredItemPaddingRight">@dimen/compat_list_preferred_item_padding_right</item>-->
+        <!--<item name="listPreferredItemHeightSmall">@dimen/compat_list_preferred_item_height_small</item>-->
+    </style>
+
+    <!-- Root Action Bar styling -->
+    <!-- Note the use of inverse, since the Action Bar is a dark color, while the rest of the theme is light -->
+    <style name="FrameworkRoot.ActionBar" parent="Widget.Sherlock.Light.ActionBar.Solid.Inverse" />
+    <style name="FrameworkRoot.ActionBar.TitleText" parent="TextAppearance.Sherlock.Widget.ActionBar.Title.Inverse" />
+    <style name="FrameworkRoot.ActionBar.TabBar" parent="Widget.Sherlock.Light.ActionBar.TabBar.Inverse" />
+    <style name="FrameworkRoot.ActionBar.TabText" parent="Widget.Sherlock.Light.ActionBar.TabText.Inverse" />
+    <style name="FrameworkRoot.ActionBar.TabView" parent="Widget.Sherlock.Light.ActionBar.TabView.Inverse" />
+
+    <!-- Default Action Bar theme -->
+    <style name="ActionBar" parent="FrameworkRoot.ActionBar">
+        <item name="displayOptions">showHome|homeAsUp</item>
+        <item name="android:displayOptions" tools:ignore="NewApi">showHome|homeAsUp</item>
+        <item name="titleTextStyle">@style/ActionBar.TitleText</item>
+        <item name="android:titleTextStyle" tools:ignore="NewApi">@style/ActionBar.TitleText</item>
+
+        <!-- Customizes the Action Bar background to use a slashed background instead of the default solid color -->
+        <item name="background">@drawable/black_slashed_background</item>
+        <item name="android:background">@drawable/black_slashed_background</item>
+    </style>
+
+    <style name="ActionBar.TitleText" parent="FrameworkRoot.ActionBar.TitleText">
+    </style>
+
+    <style name="ActionBar.TabBar" parent="FrameworkRoot.ActionBar.TabBar">
+    </style>
+
+    <style name="ActionBar.TabText" parent="FrameworkRoot.ActionBar.TabText">
+    </style>
+
+    <style name="ActionBar.TabView" parent="FrameworkRoot.ActionBar.TabView">
+    </style>
+
+    <!-- Note the use of dark Sherlock theme ListPopupWindow because of the dark Action Bar -->
+    <style name="ActionBar.PopupMenu" parent="Widget.Sherlock.ListPopupWindow">
+    </style>
+
+    <!-- Note the use of dark Sherlock theme DropDownListView because of the dark Action Bar -->
+    <style name="ActionBar.DropDownListView" parent="Widget.Sherlock.ListView.DropDown">
+    </style>
+
+    <!-- Note the use of dark Sherlock theme Spinner.DropDown.ActionBar because of the dark Action Bar -->
+    <style name="ActionBar.DropDownNav" parent="Widget.Sherlock.Spinner.DropDown.ActionBar">
+    </style>
+
+    <!-- Note the use of dark Sherlock theme ProgressBar.Horizontal because of the dark Action Bar -->
+    <style name="ActionBar.ProgressBar" parent="Widget.Sherlock.ProgressBar.Horizontal">
+    </style>
+
+    <style name="ActionBar.DropDownItem" parent="Widget.Sherlock.Light.DropDownItem.Spinner">
+    </style>
+
+    <style name="ActionBar.SpinnerItem" parent="Widget.Sherlock.TextView.SpinnerItem">
+    </style>
+
+    <!-- Note that the widget uses dark theme (not Theme.Sherlock.Light), this is because of the dark Action Bar -->
+    <style name="ActionBar.Widget" parent="Theme.Sherlock">
+        <item name="popupMenuStyle">@style/ActionBar.PopupMenu</item>
+        <item name="android:popupMenuStyle" tools:ignore="NewApi">@style/ActionBar.PopupMenu</item>
+        <item name="dropDownListViewStyle">@style/ActionBar.DropDownListView</item>
+        <item name="android:dropDownListViewStyle">@style/ActionBar.DropDownListView</item>
+    </style>
+
+    <!-- List views and list items -->
+    <style name="ListItemContainerBase">
+        <item name="android:minHeight">?android:listPreferredItemHeight</item>
+    </style>
+
+    <!-- SimpleListItems are items whose containers provides the appropriate padding, and usually the container and
+         content are a single view. -->
+    <style name="SimpleListItem" parent="ListItemContainerBase">
+        <item name="android:paddingLeft">?listPreferredItemPaddingLeft</item>
+        <item name="android:paddingRight">?listPreferredItemPaddingRight</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <style name="SimpleListItemSmall" parent="SimpleListItem">
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <!-- List item text -->
+    <style name="ListItemTitle">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">@color/body_text_1</item>
+    </style>
+
+    <style name="ListItemSubtitle">
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/body_text_2</item>
+    </style>
+</resources>

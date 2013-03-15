@@ -1,0 +1,12 @@
+<resources>
+    <style name="FrameworkRoot.Theme" parent="Theme.Sherlock.Light.DarkActionBar">
+        <!-- API 11+ -->
+        <item name="buttonBarStyle">?android:buttonBarStyle</item>
+        <item name="buttonBarButtonStyle">?android:buttonBarButtonStyle</item>
+        <item name="indeterminateProgressStyle">?android:indeterminateProgressStyle</item>
+        <!-- API 14+ -->
+        <item name="listPreferredItemPaddingLeft">?android:listPreferredItemPaddingLeft</item>
+        <item name="listPreferredItemPaddingRight">?android:listPreferredItemPaddingRight</item>
+        <item name="listPreferredItemHeightSmall">?android:listPreferredItemHeightSmall</item>
+    </style>
+</resources>

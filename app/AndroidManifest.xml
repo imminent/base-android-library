@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:installLocation="auto" android:versionCode="1000" android:versionName="0.1-SNAPSHOT" package="com.imminentmeals.android.base">
+    <!-- Note: This file will be auto-formatted by the build (specifically android:manifest-update goal) -->
+
+    <!-- Allows application to access information about networks like with getActiveNetworkInfo -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="17"/>
+
+    <application android:name="com.imminentmeals.android.base.BaseAndroidLibraryApplication" android:hardwareAccelerated="true" android:icon="@drawable/ic_launcher" android:label="@string/title_app" android:supportsRtl="true" android:allowBackup="true">
+        <!-- Note: specify the target device for Activities with target device meta-data of "universal|phone|tablet"
+                   see UiUtils.java (configureDeviceSpecificActivities) for more details. -->
+        <!-- Note: you should also specify a description of account in analytics.xml for analytics tracking. -->
+
+		<!-- Activities for both phones and tablets -->
+        <activity android:launchMode="singleTop" android:name=".ui.HomeActivity" android:label="@string/title_home_screen" android:theme="@style/Holo.Theme.Light.DarkActionBar" android:description="@string/title_app">
+            <intent-filter android:label="@string/title_app">
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <meta-data android:name="target device" android:value="universal"/>
+        </activity>
+    </application>
+</manifest>

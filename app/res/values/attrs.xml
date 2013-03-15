@@ -1,0 +1,14 @@
+<resources>
+
+    <declare-styleable name="BaseTheme">
+        <!-- backward-compatibility -->
+        <!-- provided by HoloEverywhere -->
+        <!--<attr name="buttonBarStyle" format="reference" />-->
+        <!--<attr name="buttonBarButtonStyle" format="reference" />-->
+        <!-- provided by ActionBarSherlock -->
+        <!--<attr name="indeterminateProgressStyle" format="reference" />-->
+        <!--<attr name="listPreferredItemPaddingLeft" format="reference" />-->
+        <!--<attr name="listPreferredItemPaddingRight" format="reference" />-->
+        <!--<attr name="listPreferredItemHeightSmall" format="reference" />-->
+    </declare-styleable>
+</resources>
