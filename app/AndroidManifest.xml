@@ -4,20 +4,26 @@
 
     <!-- Allows application to access information about networks like with getActiveNetworkInfo -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Allows application to access AccountManager's list of accounts -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="17"/>
 
     <application android:name="com.imminentmeals.android.base.BaseAndroidLibraryApplication" android:hardwareAccelerated="true" android:icon="@drawable/ic_launcher" android:label="@string/title_app" android:supportsRtl="true" android:allowBackup="true">
         <!-- Note: specify the target device for Activities with target device meta-data of "universal|phone|tablet"
-                   see UiUtils.java (configureDeviceSpecificActivities) for more details. -->
+                   see UiUtilities.java (configureDeviceSpecificActivities) for more details. -->
         <!-- Note: you should also specify a description of account in analytics.xml for analytics tracking. -->
 
 		<!-- Activities for both phones and tablets -->
-        <activity android:launchMode="singleTop" android:name=".ui.HomeActivity" android:theme="@style/Holo.Theme.Light.DarkActionBar">
+        <activity android:launchMode="singleTop" android:name=".ui.HomeActivity" android:theme="@style/Theme.ImminentMeals.Base.Home">
             <intent-filter android:label="@string/title_app">
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <meta-data android:name="target device" android:value="universal"/>
+        </activity>
+        
+        <activity android:name=".ui.AccountActivity" android:theme="@style/Theme.ImminentMeals.Base.Accounts">
             <meta-data android:name="target device" android:value="universal"/>
         </activity>
     </application>

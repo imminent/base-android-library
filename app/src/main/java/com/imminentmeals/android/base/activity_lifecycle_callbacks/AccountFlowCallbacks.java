@@ -1,5 +1,7 @@
 package com.imminentmeals.android.base.activity_lifecycle_callbacks;
 
+import static com.imminentmeals.android.base.utilities.LogUtilities.LOGV;
+
 import javax.annotation.CheckForNull;
 
 import android.app.Activity;
@@ -20,7 +22,9 @@ public class AccountFlowCallbacks extends SimpleCompatibleActivityLifecycleCallb
     public void onActivityCreated(Activity activity, @CheckForNull Bundle icicle) {
         // Starts the account authentication user flow. Allows the user to select from added accounts or add a
         // new account.
-        if (!AccountUtilities.isAuthenticated(activity)) {
+        LOGV("Checking for authenticated account...");
+        if (!AccountUtilities.isAuthenticated(activity) && !(activity instanceof AccountActivity)) {
+            LOGV("An authenticated account is required, starting AccountActivity");
             final Intent login_flow_intent = new Intent(activity, AccountActivity.class);
             login_flow_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             login_flow_intent.putExtra(AccountActivity.EXTRA_FINISH_INTENT, activity.getIntent());

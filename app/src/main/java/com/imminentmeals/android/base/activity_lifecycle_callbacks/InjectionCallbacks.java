@@ -11,7 +11,6 @@ import com.imminentmeals.android.base.utilities.lifecycle_callback.SimpleCompati
 
 /**
  * <p>Injects the {@link Activity} with its dependencies.</p>
- *
  * @author Dandre Allison
  */
 public class InjectionCallbacks extends SimpleCompatibleActivityLifecycleCallbacks {
@@ -19,6 +18,10 @@ public class InjectionCallbacks extends SimpleCompatibleActivityLifecycleCallbac
     @Override
     public void onActivityCreated(Activity activity, @CheckForNull Bundle icicle) {
         ObjectGraph.inject(activity);
-        Views.inject(activity);
+        try {
+            Views.inject(activity);
+        } catch (Exception _) {
+            // Fall through
+        }
     }
 }

@@ -78,8 +78,8 @@ import android.os.Bundle;
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void onActivitySaveInstanceState(Activity activity, @Nullable Bundle outState) {
-        _callback.onActivitySaveInstanceState(activity, outState);
+    public void onActivitySaveInstanceState(Activity activity, @Nullable Bundle icicle) {
+        _callback.onActivitySaveInstanceState(activity, icicle);
     }
 
     @Override

@@ -30,6 +30,8 @@ import android.text.Html;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import butterknife.InjectView;
+import butterknife.Views;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -138,7 +140,7 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
      * <p>A fragment that presents the user with a list of connected accounts to choose from. When an account is
      * selected, the {@linkplain AuthProgressFragment authentication progress fragment} is displayed.</p>
      */
-    private static class ChooseAccountFragment extends ListFragment {
+    /* package */static class ChooseAccountFragment extends ListFragment {
 
         /** Constructor */
         public ChooseAccountFragment() { }
@@ -230,24 +232,27 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
         /**
          * {@link android.widget.ListAdapter} that binds the account data to the view.
          */
-        private class AccountListAdapter extends ArrayAdapter<Account> {
+        /* package */static class AccountListAdapter extends ArrayAdapter<Account> {
 
             public AccountListAdapter(Context context, List<Account> accounts) {
                 super(context, _LIST_ITEM_LAYOUT, accounts);
+                _inflater = LayoutInflater.from(context);
             }
 
             public View getView(int position, View reusable_view, ViewGroup parent) {
                 final TextView text_view;
+                final ViewHolder holder;
                 // Inflates a new list item view when a reusable one isn't provided
                 if (reusable_view == null) {
-                    reusable_view = getLayoutInflater().inflate(_LIST_ITEM_LAYOUT, null);
-                    text_view = (TextView) reusable_view.findViewById(android.R.id.text1);
+                    reusable_view = _inflater.inflate(_LIST_ITEM_LAYOUT, null);
+                    holder = new ViewHolder(reusable_view);
 
-                    // Uses a modified view holder pattern, by storing the sub views based on their IDs
-                    reusable_view.setTag(android.R.id.text1, text_view);
+                    reusable_view.setTag(holder);
                 // Otherwise, retrieves the text sub view from reusable view
                 } else
-                    text_view = (TextView) reusable_view.getTag(android.R.id.text1);
+                    holder = (ViewHolder) reusable_view.getTag();
+
+                text_view = holder.text_view;
 
                 // Binds an account to a view representation
                 final Account account = getItem(position);
@@ -256,8 +261,18 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
                 return reusable_view;
             }
 
+            /* package */static class ViewHolder {
+                @InjectView(android.R.id.text1) public TextView text_view;
+
+                public ViewHolder(View view) {
+                    Views.inject(this, view);
+                }
+            }
+
             /** The layout to use to inflate the list items */
             private static final int _LIST_ITEM_LAYOUT = android.R.layout.simple_list_item_1;
+            /** The adapter's {@link LayoutInflater} */
+            private final LayoutInflater _inflater;
         }
 
         /**
@@ -286,7 +301,7 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
      * <p>This fragment shows a login progress spinner. When it appears that the process is taking too long (in case
      * of a poor network connection), a retry button appears so the user can try again.</p>
      */
-    public static class AuthProgressFragment extends Fragment {
+    /* package */static class AuthProgressFragment extends Fragment {
 
         /** Constructor */
         public AuthProgressFragment() { }

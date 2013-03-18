@@ -9,10 +9,12 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -22,13 +24,11 @@ import com.google.android.gms.auth.GoogleAuthUtil;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import org.holoeverywhere.preference.PreferenceManagerHelper;
-import org.holoeverywhere.preference.SharedPreferences;
-
 import static android.content.Context.TELEPHONY_SERVICE;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
 import static com.imminentmeals.android.base.utilities.LogUtilities.makeLogTag;
+import static com.imminentmeals.android.base.utilities.SharedPreferencesUtilities.apply;
 
 /**
  * <p>A collection of authentication and account connection utilities. With strong inspiration from the Google IO session
@@ -290,7 +290,7 @@ public class AccountUtilities {
      * @return the stored chosen account name
      */
     public static String getChosenAccount(Context context) {
-        final SharedPreferences settings = PreferenceManagerHelper.getDefaultSharedPreferences(context);
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getString(_PREF_CHOSEN_ACCOUNT, null);
     }
 
@@ -300,7 +300,7 @@ public class AccountUtilities {
      * @return the stored auth token
      */
     public static String getAuthToken(Context context) {
-        final SharedPreferences settings = PreferenceManagerHelper.getDefaultSharedPreferences(context);
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getString(_PREF_AUTH_TOKEN, null);
     }
 
@@ -310,7 +310,7 @@ public class AccountUtilities {
      * @return the stored name
      */
     public static String getChosenAccountOwnerName(Context context) {
-        final SharedPreferences settings = PreferenceManagerHelper.getDefaultSharedPreferences(context);
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getString(_PREF_CHOSEN_ACCOUNT_NAME, null);
     }
 
@@ -320,7 +320,7 @@ public class AccountUtilities {
      * @return the stored account ID
      */
     public static String getChosenAccountId(Context context) {
-        final SharedPreferences settings = PreferenceManagerHelper.getDefaultSharedPreferences(context);
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getString(_PREF_CHOSEN_ACCOUNT_ID, null);
     }
 
@@ -330,8 +330,8 @@ public class AccountUtilities {
      */
     public static void logout(Context context) {
         invalidateAuthToken(context);
-        final SharedPreferences settings = PreferenceManagerHelper.getDefaultSharedPreferences(context);
-        settings.edit().clear().apply();
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        apply(settings.edit().clear());
     }
 
     /**
@@ -351,7 +351,7 @@ public class AccountUtilities {
      * @return the user profile
      */
     public static UserProfile getUserProfile(Context context) {
-        return GateKeeper.hasICS()
+        return GateKeeper.hasIcs()
                 ? getUserProfileOnIcsDevice(context)
                 : getUserProfileOnGingerbreadDevice(context);
     }
@@ -464,8 +464,8 @@ public class AccountUtilities {
      * @param auth_token the given auth token
      */
     private static void setAuthToken(Context context, String auth_token) {
-        final SharedPreferences settings = PreferenceManagerHelper.getDefaultSharedPreferences(context);
-        settings.edit().putString(_PREF_AUTH_TOKEN, auth_token).apply();
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        apply(settings.edit().putString(_PREF_AUTH_TOKEN, auth_token));
     }
 
     /**
@@ -474,8 +474,8 @@ public class AccountUtilities {
      * @param account_name the given auth token
      */
     private static void setChosenAccount(Context context, String account_name) {
-        final SharedPreferences settings = PreferenceManagerHelper.getDefaultSharedPreferences(context);
-        settings.edit().putString(_PREF_CHOSEN_ACCOUNT, account_name).apply();
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        apply(settings.edit().putString(_PREF_CHOSEN_ACCOUNT, account_name));
     }
 
     /**
@@ -484,8 +484,8 @@ public class AccountUtilities {
      * @param name the given name
      */
     private static void setChosenAccountOwnerName(Context context, String name) {
-        final SharedPreferences settings = PreferenceManagerHelper.getDefaultSharedPreferences(context);
-        settings.edit().putString(_PREF_CHOSEN_ACCOUNT_NAME, name).apply();
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        apply(settings.edit().putString(_PREF_CHOSEN_ACCOUNT_NAME, name));
     }
 
     /**
@@ -494,8 +494,8 @@ public class AccountUtilities {
      * @param account_id the given account ID
      */
     private static void setChosenAccountId(Context context, String account_id) {
-        final SharedPreferences settings = PreferenceManagerHelper.getDefaultSharedPreferences(context);
-        settings.edit().putString(_PREF_CHOSEN_ACCOUNT_ID, account_id).apply();
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        apply(settings.edit().putString(_PREF_CHOSEN_ACCOUNT_ID, account_id));
     }
 
     /**

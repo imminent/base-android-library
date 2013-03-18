@@ -74,8 +74,7 @@ public final class LogUtilities {
      * @param message the message to log
      */
     public static void LOGD(final String tag, String message) {
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.DEBUG))
-            Log.d(tag, message);
+        if (BuildConfig.DEBUG) Log.d(tag, message);
     }
 
     /**
@@ -87,8 +86,7 @@ public final class LogUtilities {
      * @param message the message to log
      */
     public static void LOGD(final String tag, Throwable cause, String message) {
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.DEBUG))
-            Log.d(tag, message, cause);
+        if (BuildConfig.DEBUG) Log.d(tag, message, cause);
     }
 
     /**
@@ -99,8 +97,7 @@ public final class LogUtilities {
      * @param cause the given error cause
      */
     public static void LOGD(final String tag, Throwable cause) {
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.DEBUG))
-            Log.d(tag, Log.getStackTraceString(cause));
+        if (BuildConfig.DEBUG) Log.d(tag, Log.getStackTraceString(cause));
     }
 
     /**
@@ -114,7 +111,7 @@ public final class LogUtilities {
      * @param cause the given error cause
      */
     public static void LOGD(final String tag, Throwable cause, Object format, Object... arguments) {
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.DEBUG)) {
+        if (BuildConfig.DEBUG) {
             final String format_string = StringUtilities.toString(format);
             final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
                     + '\n'
@@ -133,7 +130,7 @@ public final class LogUtilities {
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
     public static void LOGD(final String tag, Object format, Object... arguments) {
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.DEBUG)) {
+        if (BuildConfig.DEBUG) {
             final String format_string = StringUtilities.toString(format);
             final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
             Log.d(tag, message);
@@ -148,8 +145,7 @@ public final class LogUtilities {
      */
     public static void LOGD(String message) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.DEBUG))
-            Log.d(tag, message);
+        if (BuildConfig.DEBUG) Log.d(tag, message);
     }
 
     /**
@@ -161,8 +157,7 @@ public final class LogUtilities {
      */
     public static void LOGD(Throwable cause, String message) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.DEBUG))
-            Log.d(tag, message, cause);
+        if (BuildConfig.DEBUG) Log.d(tag, message, cause);
     }
 
     /**
@@ -173,8 +168,7 @@ public final class LogUtilities {
      */
     public static void LOGD(Throwable cause) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.DEBUG))
-            Log.d(tag, Log.getStackTraceString(cause));
+        if (BuildConfig.DEBUG) Log.d(tag, Log.getStackTraceString(cause));
     }
 
     /**
@@ -188,7 +182,7 @@ public final class LogUtilities {
      */
     public static void LOGD(Throwable cause, Object format, Object... arguments) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.DEBUG)) {
+        if (BuildConfig.DEBUG) {
             final String format_string = StringUtilities.toString(format);
             final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
                     + '\n'
@@ -207,7 +201,7 @@ public final class LogUtilities {
      */
     public static void LOGD(Object format, Object... arguments) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.DEBUG)) {
+        if (BuildConfig.DEBUG) {
             final String format_string = StringUtilities.toString(format);
             final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
             Log.d(tag, message);
@@ -223,8 +217,7 @@ public final class LogUtilities {
      * @param message the message to log
      */
     public static void LOGV(final String tag, String message) {
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.VERBOSE))
-            Log.v(tag, message);
+        if (BuildConfig.DEBUG) Log.v(tag, message);
     }
 
     /**
@@ -236,8 +229,7 @@ public final class LogUtilities {
      * @param message the message to log
      */
     public static void LOGV(final String tag, Throwable cause, String message) {
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.VERBOSE))
-            Log.v(tag, message, cause);
+        if (BuildConfig.DEBUG) Log.v(tag, message, cause);
     }
 
     /**
@@ -248,8 +240,7 @@ public final class LogUtilities {
      * @param cause the given error cause
      */
     public static void LOGV(final String tag, Throwable cause) {
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.VERBOSE))
-            Log.v(tag, Log.getStackTraceString(cause));
+        if (BuildConfig.DEBUG) Log.v(tag, Log.getStackTraceString(cause));
     }
 
     /**
@@ -263,7 +254,7 @@ public final class LogUtilities {
      * @param cause the given error cause
      */
     public static void LOGV(final String tag, Throwable cause, Object format, Object... arguments) {
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.VERBOSE)) {
+        if (BuildConfig.DEBUG) {
             final String format_string = StringUtilities.toString(format);
             final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
                     + '\n'
@@ -282,7 +273,7 @@ public final class LogUtilities {
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
     public static void LOGV(final String tag, Object format, Object... arguments) {
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.VERBOSE)) {
+        if (BuildConfig.DEBUG) {
             final String format_string = StringUtilities.toString(format);
             final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
             Log.v(tag, message);
@@ -297,8 +288,7 @@ public final class LogUtilities {
      */
     public static void LOGV(String message) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.VERBOSE))
-            Log.v(tag, message);
+        if (BuildConfig.DEBUG) Log.v(tag, message);
     }
 
     /**
@@ -310,8 +300,7 @@ public final class LogUtilities {
      */
     public static void LOGV(Throwable cause, String message) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.VERBOSE))
-            Log.v(tag, message, cause);
+        if (BuildConfig.DEBUG) Log.v(tag, message, cause);
     }
 
     /**
@@ -322,8 +311,7 @@ public final class LogUtilities {
      */
     public static void LOGV(Throwable cause) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.VERBOSE))
-            Log.v(tag, Log.getStackTraceString(cause));
+        if (BuildConfig.DEBUG) Log.v(tag, Log.getStackTraceString(cause));
     }
 
     /**
@@ -337,7 +325,7 @@ public final class LogUtilities {
      */
     public static void LOGV(Throwable cause, Object format, Object... arguments) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.VERBOSE)) {
+        if (BuildConfig.DEBUG) {
             final String format_string = StringUtilities.toString(format);
             final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
                     + '\n'
@@ -356,7 +344,7 @@ public final class LogUtilities {
      */
     public static void LOGV(Object format, Object... arguments) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.VERBOSE)) {
+        if (BuildConfig.DEBUG) {
             final String format_string = StringUtilities.toString(format);
             final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
             Log.v(tag, message);
@@ -371,8 +359,7 @@ public final class LogUtilities {
      * @param message the message to log
      */
     public static void LOGI(final String tag, String message) {
-        if (Log.isLoggable(tag, Log.INFO))
-            Log.i(tag, message);
+        Log.i(tag, message);
     }
 
     /**
@@ -384,8 +371,7 @@ public final class LogUtilities {
      * @param message the message to log
      */
     public static void LOGI(final String tag, Throwable cause, String message) {
-        if (Log.isLoggable(tag, Log.INFO))
-            Log.i(tag, message, cause);
+        Log.i(tag, message, cause);
     }
 
     /**
@@ -395,8 +381,7 @@ public final class LogUtilities {
      * @param cause the given error cause
      */
     public static void LOGI(final String tag, Throwable cause) {
-        if (Log.isLoggable(tag, Log.INFO))
-            Log.i(tag, Log.getStackTraceString(cause));
+        Log.i(tag, Log.getStackTraceString(cause));
     }
 
     /**
@@ -410,13 +395,11 @@ public final class LogUtilities {
      * @param cause the given error cause
      */
     public static void LOGI(final String tag, Throwable cause, Object format, Object... arguments) {
-        if (Log.isLoggable(tag, Log.INFO)) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
-                    + '\n'
-                    + Log.getStackTraceString(cause);
-            Log.i(tag, message);
-        }
+        final String format_string = StringUtilities.toString(format);
+        final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+                + '\n'
+                + Log.getStackTraceString(cause);
+        Log.i(tag, message);
     }
 
     /**
@@ -428,11 +411,9 @@ public final class LogUtilities {
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
     public static void LOGI(final String tag, Object format, Object... arguments) {
-        if (Log.isLoggable(tag, Log.INFO)) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
-            Log.i(tag, message);
-        }
+        final String format_string = StringUtilities.toString(format);
+        final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+        Log.i(tag, message);
     }
 
     /**
@@ -443,8 +424,7 @@ public final class LogUtilities {
      */
     public static void LOGI(String message) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.INFO))
-            Log.i(tag, message);
+        Log.i(tag, message);
     }
 
     /**
@@ -455,8 +435,7 @@ public final class LogUtilities {
      */
     public static void LOGI(Throwable cause, String message) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.INFO))
-            Log.i(tag, message, cause);
+        Log.i(tag, message, cause);
     }
 
     /**
@@ -466,8 +445,7 @@ public final class LogUtilities {
      */
     public static void LOGI(Throwable cause) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.INFO))
-            Log.i(tag, Log.getStackTraceString(cause));
+        Log.i(tag, Log.getStackTraceString(cause));
     }
 
     /**
@@ -480,13 +458,11 @@ public final class LogUtilities {
      */
     public static void LOGI(Throwable cause, Object format, Object... arguments) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.INFO)) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
-                    + '\n'
-                    + Log.getStackTraceString(cause);
-            Log.i(tag, message);
-        }
+        final String format_string = StringUtilities.toString(format);
+        final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+                + '\n'
+                + Log.getStackTraceString(cause);
+        Log.i(tag, message);
     }
 
     /**
@@ -498,11 +474,9 @@ public final class LogUtilities {
      */
     public static void LOGI(Object format, Object... arguments) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.INFO)) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
-            Log.i(tag, message);
-        }
+        final String format_string = StringUtilities.toString(format);
+        final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+        Log.i(tag, message);
     }
 
 /* Warning */
@@ -513,8 +487,7 @@ public final class LogUtilities {
      * @param message the message to log
      */
     public static void LOGW(final String tag, String message) {
-        if (Log.isLoggable(tag, Log.WARN))
-            Log.w(tag, message);
+        Log.w(tag, message);
     }
 
     /**
@@ -526,8 +499,7 @@ public final class LogUtilities {
      * @param message the message to log
      */
     public static void LOGW(final String tag, Throwable cause, String message) {
-        if (Log.isLoggable(tag, Log.WARN))
-            Log.w(tag, message, cause);
+        Log.w(tag, message, cause);
     }
 
     /**
@@ -537,8 +509,7 @@ public final class LogUtilities {
      * @param cause the given error cause
      */
     public static void LOGW(final String tag, Throwable cause) {
-        if (Log.isLoggable(tag, Log.WARN))
-            Log.w(tag, Log.getStackTraceString(cause));
+        Log.w(tag, Log.getStackTraceString(cause));
     }
 
     /**
@@ -552,13 +523,11 @@ public final class LogUtilities {
      * @param cause the given error cause
      */
     public static void LOGW(final String tag, Throwable cause, Object format, Object... arguments) {
-        if (Log.isLoggable(tag, Log.WARN)) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
-                    + '\n'
-                    + Log.getStackTraceString(cause);
-            Log.w(tag, message);
-        }
+        final String format_string = StringUtilities.toString(format);
+        final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+                + '\n'
+                + Log.getStackTraceString(cause);
+        Log.w(tag, message);
     }
 
     /**
@@ -570,11 +539,9 @@ public final class LogUtilities {
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
     public static void LOGW(final String tag, Object format, Object... arguments) {
-        if (Log.isLoggable(tag, Log.WARN)) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
-            Log.w(tag, message);
-        }
+        final String format_string = StringUtilities.toString(format);
+        final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+        Log.w(tag, message);
     }
 
     /**
@@ -585,8 +552,7 @@ public final class LogUtilities {
      */
     public static void LOGW(String message) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.WARN))
-            Log.w(tag, message);
+        Log.w(tag, message);
     }
 
     /**
@@ -596,8 +562,7 @@ public final class LogUtilities {
      */
     public static void LOGW(Throwable cause, String message) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.WARN))
-            Log.w(tag, message, cause);
+        Log.w(tag, message, cause);
     }
 
     /**
@@ -607,8 +572,7 @@ public final class LogUtilities {
      */
     public static void LOGW(Throwable cause) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.WARN))
-            Log.w(tag, Log.getStackTraceString(cause));
+        Log.w(tag, Log.getStackTraceString(cause));
     }
 
     /**
@@ -621,13 +585,11 @@ public final class LogUtilities {
      */
     public static void LOGW(Throwable cause, Object format, Object... arguments) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.WARN)) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
-                    + '\n'
-                    + Log.getStackTraceString(cause);
-            Log.w(tag, message);
-        }
+        final String format_string = StringUtilities.toString(format);
+        final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+                + '\n'
+                + Log.getStackTraceString(cause);
+        Log.w(tag, message);
     }
 
     /**
@@ -639,11 +601,9 @@ public final class LogUtilities {
      */
     public static void LOGW(Object format, Object... arguments) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.WARN)) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
-            Log.w(tag, message);
-        }
+        final String format_string = StringUtilities.toString(format);
+        final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+        Log.w(tag, message);
     }
 
 /* Error */
@@ -654,8 +614,7 @@ public final class LogUtilities {
      * @param message the message to log
      */
     public static void LOGE(final String tag, String message) {
-        if (Log.isLoggable(tag, Log.ERROR))
-            Log.e(tag, message);
+        Log.e(tag, message);
     }
 
     /**
@@ -667,8 +626,7 @@ public final class LogUtilities {
      * @param message the message to log
      */
     public static void LOGE(final String tag, Throwable cause, String message) {
-        if (Log.isLoggable(tag, Log.ERROR))
-            Log.e(tag, message, cause);
+        Log.e(tag, message, cause);
     }
 
     /**
@@ -678,8 +636,7 @@ public final class LogUtilities {
      * @param cause the given error cause
      */
     public static void LOGE(final String tag, Throwable cause) {
-        if (Log.isLoggable(tag, Log.ERROR))
-            Log.e(tag, Log.getStackTraceString(cause));
+        Log.e(tag, Log.getStackTraceString(cause));
     }
 
     /**
@@ -693,13 +650,11 @@ public final class LogUtilities {
      * @param cause the given error cause
      */
     public static void LOGE(final String tag, Throwable cause, Object format, Object... arguments) {
-        if (Log.isLoggable(tag, Log.ERROR)) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
-                    + '\n'
-                    + Log.getStackTraceString(cause);
-            Log.e(tag, message);
-        }
+        final String format_string = StringUtilities.toString(format);
+        final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+                + '\n'
+                + Log.getStackTraceString(cause);
+        Log.e(tag, message);
     }
 
     /**
@@ -711,11 +666,9 @@ public final class LogUtilities {
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
     public static void LOGE(final String tag, Object format, Object... arguments) {
-        if (Log.isLoggable(tag, Log.ERROR)) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
-            Log.e(tag, message);
-        }
+        final String format_string = StringUtilities.toString(format);
+        final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+        Log.e(tag, message);
     }
 
     /**
@@ -726,8 +679,7 @@ public final class LogUtilities {
      */
     public static void LOGE(String message) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.ERROR))
-            Log.e(tag, message);
+        Log.e(tag, message);
     }
 
     /**
@@ -737,8 +689,7 @@ public final class LogUtilities {
      */
     public static void LOGE(Throwable cause, String message) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.ERROR))
-            Log.e(tag, message, cause);
+        Log.e(tag, message, cause);
     }
 
     /**
@@ -748,8 +699,7 @@ public final class LogUtilities {
      */
     public static void LOGE(Throwable cause) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.ERROR))
-            Log.e(tag, Log.getStackTraceString(cause));
+        Log.e(tag, Log.getStackTraceString(cause));
     }
 
     /**
@@ -759,13 +709,11 @@ public final class LogUtilities {
      */
     public static void LOGE(Throwable cause, Object format, Object... arguments) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.ERROR)) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
-                    + '\n'
-                    + Log.getStackTraceString(cause);
-            Log.e(tag, message);
-        }
+        final String format_string = StringUtilities.toString(format);
+        final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+                + '\n'
+                + Log.getStackTraceString(cause);
+        Log.e(tag, message);
     }
 
     /**
@@ -777,11 +725,9 @@ public final class LogUtilities {
      */
     public static void LOGE(Object format, Object... arguments) {
         final String tag = getAutomaticTag();
-        if (BuildConfig.DEBUG && Log.isLoggable(tag, Log.ERROR)) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
-            Log.e(tag, message);
-        }
+        final String format_string = StringUtilities.toString(format);
+        final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+        Log.e(tag, message);
     }
 
 /* Helper code */

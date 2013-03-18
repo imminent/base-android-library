@@ -39,49 +39,49 @@ public class BaseActivity extends Activity {
     @OverridingMethodsMustInvokeSuper
     protected void onCreate(@CheckForNull Bundle icicle) {
         super.onCreate(icicle);
-        if (!GateKeeper.hasICS()) MainLifecycleDispatcher.get().onActivityCreated(this, icicle);
+        if (!GateKeeper.hasIcs()) MainLifecycleDispatcher.get().onActivityCreated(this, icicle);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
     protected void onStart() {
         super.onStart();
-        if (!GateKeeper.hasICS()) MainLifecycleDispatcher.get().onActivityStarted(this);
+        if (!GateKeeper.hasIcs()) MainLifecycleDispatcher.get().onActivityStarted(this);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
     protected void onResume() {
         super.onResume();
-        if (!GateKeeper.hasICS()) MainLifecycleDispatcher.get().onActivityResumed(this);
+        if (!GateKeeper.hasIcs()) MainLifecycleDispatcher.get().onActivityResumed(this);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
     protected void onPause() {
         super.onPause();
-        if (!GateKeeper.hasICS()) MainLifecycleDispatcher.get().onActivityPaused(this);
+        if (!GateKeeper.hasIcs()) MainLifecycleDispatcher.get().onActivityPaused(this);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
     protected void onStop() {
         super.onStop();
-        if (!GateKeeper.hasICS()) MainLifecycleDispatcher.get().onActivityStopped(this);
+        if (!GateKeeper.hasIcs()) MainLifecycleDispatcher.get().onActivityStopped(this);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
     protected void onSaveInstanceState(@CheckForNull Bundle icicle) {
         super.onSaveInstanceState(icicle);
-        if (!GateKeeper.hasICS()) MainLifecycleDispatcher.get().onActivitySaveInstanceState(this, icicle);
+        if (!GateKeeper.hasIcs()) MainLifecycleDispatcher.get().onActivitySaveInstanceState(this, icicle);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
     protected void onDestroy() {
         super.onDestroy();
-        if (!GateKeeper.hasICS()) MainLifecycleDispatcher.get().onActivityDestroyed(this);
+        if (!GateKeeper.hasIcs()) MainLifecycleDispatcher.get().onActivityDestroyed(this);
     }
 
 /* Activity Callbacks */

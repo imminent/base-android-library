@@ -40,7 +40,7 @@ public final class GateKeeper {
      * {@value Build.VERSION_CODES#HONEYCOMB_MR1}.</p>
      * @return {@code true} indicates that the current device supports Honeycomb 3.1 APIs
      */
-    public static boolean hasHoneycombMR1() {
+    public static boolean hasHoneycombMr1() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1;
     }
 
@@ -49,7 +49,7 @@ public final class GateKeeper {
      * {@value Build.VERSION_CODES#HONEYCOMB_MR2}.</p>
      * @return {@code true} indicates that the current device supports Honeycomb 3.2 APIs
      */
-    public static boolean hasHoneycombMR2() {
+    public static boolean hasHoneycombMr2() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2;
     }
 
@@ -58,7 +58,7 @@ public final class GateKeeper {
      * {@value Build.VERSION_CODES#ICE_CREAM_SANDWICH}.</p>
      * @return {@code true} indicates that the current device supports Ice Cream Sandwich 4.0 APIs
      */
-    public static boolean hasICS() {
+    public static boolean hasIcs() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
     }
 
@@ -76,7 +76,7 @@ public final class GateKeeper {
      * {@value Build.VERSION_CODES#JELLY_BEAN_MR1}.</p>
      * @return {@code true} indicates that the current device supports Jelly Bean 4.2 APIs
      */
-    public static boolean hasJellyBeanMR1() {
+    public static boolean hasJellyBeanMr1() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1;
     }
 
@@ -109,7 +109,7 @@ public final class GateKeeper {
      * @param context the context from which to determine if the device has a system feature
      * @return {@code true} indicates that the current device is a Google TV
      */
-    public static boolean isGoogleTV(@Nonnull Context context) {
+    public static boolean isGoogleTv(@Nonnull Context context) {
         return context.getPackageManager().hasSystemFeature("com.google.android.tv");
     }
 

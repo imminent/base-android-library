@@ -12,13 +12,13 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * <p>Test suite for the {@link StringUtilities#joinAnd(String, String, Collection)}.</p>
+ * <p>Test suite for the {@link StringUtilities#join(String, Collection)}.</p>
  * @author Dandre Allison
  */
 @RunWith(Parameterized.class)
-public class StringUtilitiesJoinAndTest {
+public class StringUtilitiesJoinTest {
 
-    public StringUtilitiesJoinAndTest(Collection<String> input, String expected) {
+    public StringUtilitiesJoinTest(Collection<String> input, String expected) {
         _input = input;
         _expected = expected;
     }
@@ -28,17 +28,17 @@ public class StringUtilitiesJoinAndTest {
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 { newArrayList("Alice"), "Alice" },
-                { newArrayList("Alice", "Charlie"),  "Alice and Charlie" },
+                { newArrayList("Alice", "Charlie"),  "Alice, Charlie" },
                 { newArrayList(), "" },
                 { null, "" },
-                { newArrayList("Alice", "Charlie", "John"), "Alice, Charlie and John" },
-                { newArrayList("Alice", null, "John"), "Alice and John" }
+                { newArrayList("Alice", "Charlie", "John"), "Alice, Charlie, John" },
+                { newArrayList("Alice", null, "John"), "Alice, John" }
         });
     }
 
     @Test
-    public void testJoinAnd() {
-        assertThat(StringUtilities.joinAnd(", ", " and ", _input)).isEqualTo(_expected);
+    public void testJoin() {
+        assertThat(StringUtilities.join(", ", _input)).isEqualTo(_expected);
     }
 
     private Collection<String> _input;

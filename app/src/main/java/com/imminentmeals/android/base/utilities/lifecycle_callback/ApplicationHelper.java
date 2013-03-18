@@ -47,7 +47,7 @@ public final class ApplicationHelper {
      */
     public static void registerActivityLifecycleCallbacks(@Nonnull Application application,
                                                           @Nonnull CompatibleActivityLifecycleCallbacks callback) {
-        if (!GateKeeper.hasICS())
+        if (!GateKeeper.hasIcs())
             registerCompatibleActivityLifecycleCallbacks(callback);
         else
             registerFrameworkActivityLifecycleCallbacks(application, callback);
@@ -83,7 +83,7 @@ public final class ApplicationHelper {
      */
     public void unregisterActivityLifecycleCallbacks(@Nonnull Application application,
                                                      @Nonnull CompatibleActivityLifecycleCallbacks callback) {
-        if (!GateKeeper.hasICS())
+        if (!GateKeeper.hasIcs())
             unregisterCompatibleActivityLifecycleCallbacks(callback);
         else
             unregisterFrameworkActivityLifecycleCallbacks(application, callback);

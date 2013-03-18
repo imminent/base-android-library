@@ -7,6 +7,8 @@ import java.security.MessageDigest;
 import java.util.*;
 import java.util.Map.Entry;
 
+import javax.annotation.MatchesPattern;
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
 import static com.google.common.collect.Maps.newHashMap;
@@ -54,13 +56,13 @@ public final class StringUtilities {
      * delimiter that is different than the rest. For example, to create English sentences such
      * as "Alice, Bob and Charlie" use ", " and " and " as the delimiters.</p>
      *
-     * @param delimiter delimiter between all pairs of objects that don't include the last object
-     * @param last_delimiter delimiter between the final pair of objects
-     * @param objects the collection of objects
-     * @param <T> the type of objects in the collection
-     * @return the string of the objects joined by the delimiters
+     * @param delimiter Delimiter between all pairs of objects that don't include the last object
+     * @param last_delimiter Delimiter between the final pair of objects
+     * @param objects The collection of objects
+     * @param <T> The type of objects in the collection
+     * @return The string of the objects joined by the delimiters
      */
-    @Nonnull public static <T> String joinAnd(final String delimiter, final String last_delimiter,
+    @Nonnull public static <T> String joinAnd(@MatchesPattern(".+") final String delimiter, final String last_delimiter,
                                               final Collection<T> objects) {
         // Returns an empty String if there are no objects in the collection
         if (objects == null || objects.isEmpty())
@@ -84,13 +86,14 @@ public final class StringUtilities {
      * delimiter that is different than the rest. For example, to create English sentences such
      * as "Alice, Bob and Charlie" use ", " and " and " as the delimiters.</p>
      *
-     * @param delimiter delimiter between all pairs of objects that don't include the last object
-     * @param last_delimiter delimiter between the final pair of objects
-     * @param objects the collection of objects
-     * @param <T> the type of objects in the collection
-     * @return the string of the objects joined by the delimiters
+     * @param delimiter Delimiter between all pairs of objects that don't include the last object
+     * @param last_delimiter Delimiter between the final pair of objects
+     * @param objects The collection of objects
+     * @param <T> The type of objects in the collection
+     * @return The string of the objects joined by the delimiters
      */
-    @Nonnull public static <T> String joinAnd(final String delimiter, final String last_delimiter, final T... objects) {
+    @Nonnull public static <T> String joinAnd(@MatchesPattern(".+") final String delimiter, final String last_delimiter,
+                                              final T... objects) {
         return joinAnd(delimiter, last_delimiter, Arrays.asList(objects));
     }
 
@@ -98,12 +101,12 @@ public final class StringUtilities {
      * <p>Joins a collection of objects together into a String. For example, to create English sentences such
      * as "Alice, Bob, Charlie" use ", " as the delimiter.</p>
      *
-     * @param delimiter delimiter between all pairs of objects that don't include the last object
-     * @param objects the collection of objects
-     * @param <T> the type of objects in the collection
-     * @return the string of the objects joined by the delimiters
+     * @param delimiter Delimiter between all pairs of objects that don't include the last object
+     * @param objects The collection of objects
+     * @param <T> The type of objects in the collection
+     * @return The string of the objects joined by the delimiters
      */
-    @Nonnull public static <T> String join(final String delimiter, final Collection<T> objects) {
+    @Nonnull public static <T> String join(@MatchesPattern(".+") final String delimiter, final Collection<T> objects) {
         // Returns an empty String if there are no objects in the collection
         if (objects == null || objects.isEmpty())
             return "";
@@ -122,19 +125,19 @@ public final class StringUtilities {
      * <p>Joins a collection of objects together into a String. For example, to create English sentences such
      * as "Alice, Bob, Charlie" use ", " as the delimiter.</p>
      *
-     * @param delimiter delimiter between all pairs of objects that don't include the last object
-     * @param objects the collection of objects
-     * @param <T> the type of objects in the collection
-     * @return the string of the objects joined by the delimiters
+     * @param delimiter Delimiter between all pairs of objects that don't include the last object
+     * @param objects The collection of objects
+     * @param <T> The type of objects in the collection
+     * @return The string of the objects joined by the delimiters
      */
-    @Nonnull public static <T> String join(final String delimiter, final T... objects ) {
+    @Nonnull public static <T> String join(@MatchesPattern(".+") final String delimiter, final T... objects ) {
         return join(delimiter, Arrays.asList(objects));
     }
 
     /**
      * <p>Converts an {@link InputStream} to a String.</p>
-     * @param input the given InputStream
-     * @return the converted String
+     * @param input The given InputStream
+     * @return The converted String
      */
     @Nonnull public static String toString(InputStream input) {
         final StringWriter writer = new StringWriter();
@@ -144,11 +147,11 @@ public final class StringUtilities {
 
     /**
      * <p>Converts an {@link Reader} to a String.</p>
-     * @param input the given Reader
-     * @return the converted String
+     * @param input The given Reader
+     * @return The converted String
      * @throws {@link ReadWriteException} when there is an {@link IOException} reading or writing
      */
-    public static String toString(Reader input) {
+    @Nonnull public static String toString(@Nonnull Reader input) {
         final StringWriter writer = new StringWriter();
         copy(input, writer);
         return writer.toString();
@@ -156,12 +159,12 @@ public final class StringUtilities {
 
     /**
      * <p>Copies the input to the output.</p>
-     * @param input the input
-     * @param output the output
-     * @return the number of characters copied, or {@code -1} if the size exceeds the size of {@code int}
+     * @param input The input
+     * @param output The output
+     * @return The number of characters copied, or {@code -1} if the size exceeds the size of {@code int}
      * @throws {@link ReadWriteException} when there is an {@link IOException} reading or writing
      */
-    public static int copy(Reader input, Writer output) {
+    public static int copy(@Nonnull Reader input, @Nonnull Writer output) {
         final long count = copyLarge(input, output);
         return count > Integer.MAX_VALUE ? -1 : (int) count;
     }
@@ -169,12 +172,12 @@ public final class StringUtilities {
     /**
      * <p>Copies the input to the output, much like {@link #copy(java.io.Reader, java.io.Writer)}, but with the
      * expectation that the number of characters copied will exceed the size of {@code int}. </p>
-     * @param input the input
-     * @param output the output
-     * @return the number of characters copied
+     * @param input The input
+     * @param output The output
+     * @return The number of characters copied
      * @throws {@link ReadWriteException} when there is an {@link IOException} reading or writing
      */
-    public static long copyLarge(Reader input, Writer output) {
+    @Nonnegative public static long copyLarge(@Nonnull Reader input, @Nonnull Writer output) {
         try {
             final char[] buffer = new char[_DEFAULT_BUFFER_SIZE];
             long count = 0;
@@ -190,32 +193,30 @@ public final class StringUtilities {
     }
 
     /**
-     * <p>Performs a no-op if the given String is not {@code null}, otherwise it converts it to an empty String.
-     * Useful for guaranteeing a String can't be {@code null}.</p>
-     * @param string the given String
-     * @return a non {@code null} String
+     * <p>Performs a no-op if the given String is not {@code null}, otherwise it converts it to an empty String.</p>
+     * @param string The given String
+     * @return A non {@code null} String
      */
-    public static String emptyIfNull(final String string) {
+    @Nonnull public static String emptyIfNull(final String string) {
         return string == null? "" : string;
     }
 
     /**
-     * <p>Converts the given object to a String. The output is guaranteed to be non {@code null}.</p>
-     * @param object the given object
-     * @return a non {@code null} String
+     * <p>Converts the given object to a String.</p>
+     * @param Object the given object
+     * @return A non {@code null} String
      */
-    public static String toString(final Object object) {
+    @Nonnull public static String toString(final Object object) {
         return toString(object,"");
     }
 
     /**
-     * <p>Converts the given object to a String or the given default String if the object is {@code null}.
-     * The output is guaranteed to be non {@code null}, even if the default String is {@code null}.</p>
-     * @param object the given object
-     * @param default_string the default String
-     * @return a non {@code null} String
+     * <p>Converts the given object to a String or the given default String if the object is {@code null}.</p>
+     * @param object The given object
+     * @param default_string The default String
+     * @return A non {@code null} String
      */
-    public static String toString(final Object object, final String default_string) {
+    @Nonnull public static String toString(final Object object, final String default_string) {
         return object == null ? (default_string == null ? "" : default_string) :
                 object instanceof InputStream ? toString((InputStream) object) :
                         object instanceof Reader ? toString((Reader)object) :
@@ -226,8 +227,8 @@ public final class StringUtilities {
     }
 
     /**
-     * <p>Determines if the given object produces an empty String.</p>
-     * @param object the given object
+     * <p>Determines if the given object produces an blank String.</p>
+     * @param object The given object
      * @return {@code true} indicates that the given object produces an empty String
      */
     public static boolean isEmpty(final Object object) {
@@ -235,7 +236,7 @@ public final class StringUtilities {
     }
 
     /**
-     * <p>Determines if the given object does not produce an empty String.</p>
+     * <p>Determines if the given object does not produce an blank String.</p>
      * @param object the given object
      * @return {@code true} indicates that the given object doesn't produce an empty String
      */
@@ -245,11 +246,11 @@ public final class StringUtilities {
 
     /**
      * <p>Digests the given String a produces a encrypted String.</p>
-     * @param message the given message
-     * @return the encrypted String
+     * @param message The given message
+     * @return The encrypted String
      * @throws {@link Md5DigestException} when there is an {@link Exception}
      */
-    public static String md5(String message) {
+    @Nonnull public static String md5(@Nonnull String message) {
         // http://stackoverflow.com/questions/1057041/difference-between-java-and-php5-md5-hash
         // http://code.google.com/p/roboguice/issues/detail?id=89
         try {
@@ -263,9 +264,8 @@ public final class StringUtilities {
                 if (hex.length() == 1) {
                     digest.append('0');
                     digest.append(hex.charAt(hex.length() - 1));
-                } else {
+                } else
                     digest.append(hex.substring(hex.length() - 2));
-                }
             }
 
             return digest.toString();
@@ -277,10 +277,10 @@ public final class StringUtilities {
 
     /**
      * <p>Capitalizes the given String by capitalizing the first letter of the given String.</p>
-     * @param string the given String
-     * @return a capitalized version of the given String
+     * @param string The given String
+     * @return A capitalized version of the given String
      */
-    public static String capitalize(String string) {
+    @Nonnull public static String capitalize(String string) {
         final String capitalized_string = StringUtilities.toString(string);
         return capitalized_string.length() >= 2
                 ? capitalized_string.substring(0, 1).toUpperCase() + capitalized_string.substring(1)
@@ -289,8 +289,8 @@ public final class StringUtilities {
 
     /**
      * <p>Determines if the two given objects produce the same String.</p>
-     * @param a a given object
-     * @param b another given object
+     * @param a A given object
+     * @param b Another given object
      * @return {@code true} indicates that the two objects produce identical Strings
      */
     public static boolean textuallyEquivalent(Object a, Object b) {
@@ -300,8 +300,8 @@ public final class StringUtilities {
     /**
      * <p>Determines if the two given objects produce the same String while ignoring differences in their
      * capitalization.</p>
-     * @param a a given object
-     * @param b another given object
+     * @param a A given object
+     * @param b Another given object
      * @return {@code true} indicates that the two objects produce equivalent Strings
      */
     public static boolean textuallyEquivalentIgnoringCase(Object a, Object b) {
@@ -310,11 +310,11 @@ public final class StringUtilities {
 
     /**
      * <p>Partitions the given string into chunks of the requested size.</p>
-     * @param string the given String
-     * @param chunk_size the requested chunk size
-     * @return a list of the given String partitioned by the given chunk size
+     * @param string The given String
+     * @param chunk_size The requested chunk size
+     * @return A list of the given String partitioned by the given chunk size
      */
-    public static String[] chunk(String string, int chunk_size) {
+    @Nonnull public static String[] chunk(String string, @Nonnegative int chunk_size) {
         if (isEmpty(string) || chunk_size == 0)
             return new String[0];
 
@@ -333,11 +333,11 @@ public final class StringUtilities {
      * <p>Searches the given String for the keys in the set of substitutions and replaces them with the given
      * value for the key. The keys must be marked with a {@code '$'}. This is an alternative to
      * {@link String#format(String, Object...)} that allows the format parameters to be named.</p>
-     * @param string the given String
-     * @param substitutions the set of substitutions
-     * @return the String after the substitutions have been made
+     * @param string The given String
+     * @param substitutions The set of substitutions
+     * @return The String after the substitutions have been made
      */
-    public static String namedFormat(String string, Map<String, String> substitutions) {
+    @Nonnull public static String namedFormat(@Nonnull String string, @Nonnull Map<String, String> substitutions) {
         for (Entry<String, String> entry : substitutions.entrySet())
             string = string.replace('$' + entry.getKey(), entry.getValue());
 
@@ -350,12 +350,12 @@ public final class StringUtilities {
      * {@link String#format(String, Object...)} that allows the format parameters to be named. This method
      * expects a key object parameter followed by the value for that key, such as
      * {@code namedFormat(string, "key1", "value1", "key2", "value2");}</p>
-     * @param string the given String
-     * @param key_value_pairs the set of substitutions
-     * @return the String after the substitutions have been made
+     * @param string The given String
+     * @param key_value_pairs The set of substitutions
+     * @return The String after the substitutions have been made
      * @throws InvalidParameterException when their is a mismatch between the key and value pairs
      */
-    public static String namedFormat(String string, Object... key_value_pairs) {
+    @Nonnull public static String namedFormat(@Nonnull String string, Object... key_value_pairs) {
         if (key_value_pairs.length % 2 != 0)
             throw new InvalidParameterException("You must include one value for each parameter");
 

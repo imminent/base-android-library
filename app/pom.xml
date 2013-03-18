@@ -132,6 +132,12 @@
             <version>${holo-everywhere.version}</version>
             <type>apklib</type>
         </dependency>
+        <dependency>
+            <groupId>org.holoeverywhere</groupId>
+            <artifactId>addon-preferences</artifactId>
+            <version>${holo-everywhere.version}</version>
+            <type>apklib</type>
+        </dependency>
         <!-- Nine Old Android: animation API compatibility -->
         <dependency>
             <groupId>com.nineoldandroids</groupId>
