@@ -24,6 +24,9 @@
  */
 package com.imminentmeals.android.base.utilities.lifecycle_callback;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -31,10 +34,11 @@ import android.os.Bundle;
  * <p>A convenience class to extend when only a subset of all callbacks is needed. This implements all methods
  * in the {@link CompatibleActivityLifecycleCallbacks} but does nothing.</p>
  */
+@ParametersAreNonnullByDefault
 public class SimpleCompatibleActivityLifecycleCallbacks implements CompatibleActivityLifecycleCallbacks {
 
     @Override
-    public void onActivityCreated(Activity activity, Bundle savedInstanceState) { }
+    public void onActivityCreated(Activity activity, @CheckForNull Bundle icicle) { }
 
     @Override
     public void onActivityStarted(Activity activity) { }
@@ -49,7 +53,7 @@ public class SimpleCompatibleActivityLifecycleCallbacks implements CompatibleAct
     public void onActivityStopped(Activity activity) { }
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle icicle) { }
+    public void onActivitySaveInstanceState(Activity activity, @CheckForNull Bundle icicle) { }
 
     @Override
     public void onActivityDestroyed(Activity activity) { }

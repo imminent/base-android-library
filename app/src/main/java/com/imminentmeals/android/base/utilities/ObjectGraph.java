@@ -1,5 +1,7 @@
 package com.imminentmeals.android.base.utilities;
 
+import javax.annotation.Nonnull;
+
 import android.app.Activity;
 import android.app.Service;
 import android.support.v4.app.Fragment;
@@ -19,7 +21,7 @@ public final class ObjectGraph {
          * <p>Retrieves the {@link dagger.ObjectGraph} from the {@link ObjectGraphApplication}.</p>
          * @return The object graph
          */
-        dagger.ObjectGraph objectGraph();
+        @Nonnull dagger.ObjectGraph objectGraph();
     }
 
     /**
@@ -27,7 +29,7 @@ public final class ObjectGraph {
      * @param application The given application
      * @return The object graph
      */
-    public static dagger.ObjectGraph from(ObjectGraphApplication application) {
+    @Nonnull public static dagger.ObjectGraph from(@Nonnull ObjectGraphApplication application) {
         return application.objectGraph();
     }
 
@@ -36,7 +38,7 @@ public final class ObjectGraph {
      * @param activity The given activity
      * @return The object graph
      */
-    public static dagger.ObjectGraph from(Activity activity) {
+    @Nonnull public static dagger.ObjectGraph from(@Nonnull Activity activity) {
         return from((ObjectGraphApplication) activity.getApplication());
     }
 
@@ -44,7 +46,7 @@ public final class ObjectGraph {
      * <p>Injects the dependencies for the given {@link Activity}.</p>
      * @param activity The given activity
      */
-    public static void inject(Activity activity) {
+    public static void inject(@Nonnull Activity activity) {
         from(activity).inject(activity);
     }
 
@@ -53,7 +55,7 @@ public final class ObjectGraph {
      * @param fragment The given fragment
      * @return The object graph
      */
-    public static dagger.ObjectGraph from(Fragment fragment) {
+    @Nonnull public static dagger.ObjectGraph from(@Nonnull Fragment fragment) {
         final Activity activity = fragment.getActivity();
         if (activity == null)
             throw new IllegalStateException("Attempting to get Activity before it has been attached to "
@@ -65,7 +67,7 @@ public final class ObjectGraph {
      * <p>Injects the dependencies for the given {@link Fragment}.</p>
      * @param fragment The given fragment
      */
-    public static void inject(Fragment fragment) {
+    public static void inject(@Nonnull Fragment fragment) {
         from(fragment).inject(fragment);
     }
 
@@ -74,7 +76,7 @@ public final class ObjectGraph {
      * @param service The given service
      * @return The object graph
      */
-    public static dagger.ObjectGraph from(Service service) {
+    @Nonnull public static dagger.ObjectGraph from(@Nonnull Service service) {
         return from((ObjectGraphApplication) service.getApplication());
     }
 
@@ -82,7 +84,7 @@ public final class ObjectGraph {
      * <p>Injects the dependencies for the given {@link Service}.</p>
      * @param service The given service
      */
-    public static void inject(Service service) {
+    public static void inject(@Nonnull Service service) {
         from(service).inject(service);
     }
 

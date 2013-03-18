@@ -13,7 +13,7 @@
         <!-- Note: you should also specify a description of account in analytics.xml for analytics tracking. -->
 
 		<!-- Activities for both phones and tablets -->
-        <activity android:launchMode="singleTop" android:name=".ui.HomeActivity" android:label="@string/title_home_screen" android:theme="@style/Holo.Theme.Light.DarkActionBar" android:description="@string/title_app">
+        <activity android:launchMode="singleTop" android:name=".ui.HomeActivity" android:theme="@style/Holo.Theme.Light.DarkActionBar">
             <intent-filter android:label="@string/title_app">
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

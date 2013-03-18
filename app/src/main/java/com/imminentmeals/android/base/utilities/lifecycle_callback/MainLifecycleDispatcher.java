@@ -26,6 +26,8 @@ package com.imminentmeals.android.base.utilities.lifecycle_callback;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.inject.Singleton;
 
 import com.google.common.collect.Lists;
@@ -40,6 +42,7 @@ import android.os.Bundle;
  * {@link android.app.Application#unregisterActivityLifecycleCallbacks(android.app.Application.ActivityLifecycleCallbacks)}.</p>
  */
 @Singleton
+@ParametersAreNonnullByDefault
 public final class MainLifecycleDispatcher implements CompatibleActivityLifecycleCallbacks {
 
     /**
@@ -51,7 +54,7 @@ public final class MainLifecycleDispatcher implements CompatibleActivityLifecycl
     }
 
     @Override
-    public void onActivityCreated(Activity activity, Bundle icicle) {
+    public void onActivityCreated(Activity activity, @Nullable Bundle icicle) {
         for (CompatibleActivityLifecycleCallbacks callback : _activity_lifecycle_callbacks)
             callback.onActivityCreated(activity, icicle);
     }
@@ -81,7 +84,7 @@ public final class MainLifecycleDispatcher implements CompatibleActivityLifecycl
     }
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle icicle) {
+    public void onActivitySaveInstanceState(Activity activity, @Nullable Bundle icicle) {
         for (CompatibleActivityLifecycleCallbacks callback : _activity_lifecycle_callbacks)
             callback.onActivitySaveInstanceState(activity, icicle);
     }
@@ -109,6 +112,7 @@ public final class MainLifecycleDispatcher implements CompatibleActivityLifecycl
         _activity_lifecycle_callbacks.remove(callback);
     }
 
+/* Private Constructor */
     /**
      * <p>Singleton</p>
      */

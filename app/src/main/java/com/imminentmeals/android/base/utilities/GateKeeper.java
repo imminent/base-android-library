@@ -1,5 +1,7 @@
 package com.imminentmeals.android.base.utilities;
 
+import javax.annotation.Nonnull;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -84,7 +86,7 @@ public final class GateKeeper {
      * @param context the context from which to retrieve the screen layout
      * @return {@code true} indicates that the current device is a tablet
      */
-    public static boolean isTablet(Context context) {
+    public static boolean isTablet(@Nonnull Context context) {
         return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
@@ -97,7 +99,7 @@ public final class GateKeeper {
      * @return {@code true} indicates that the current device is a tablet that supports the Honeycomb API
      * @see {@link #isTablet(android.content.Context)}
      */
-    public static boolean isHoneycombTablet(Context context) {
+    public static boolean isHoneycombTablet(@Nonnull Context context) {
         return hasHoneycomb() && isTablet(context);
     }
 
@@ -107,7 +109,7 @@ public final class GateKeeper {
      * @param context the context from which to determine if the device has a system feature
      * @return {@code true} indicates that the current device is a Google TV
      */
-    public static boolean isGoogleTV(Context context) {
+    public static boolean isGoogleTV(@Nonnull Context context) {
         return context.getPackageManager().hasSystemFeature("com.google.android.tv");
     }
 

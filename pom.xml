@@ -227,7 +227,7 @@
 					<artifactId>maven-pmd-plugin</artifactId>
 					<version>${maven-pmd-plugin.version}</version>
 					<configuration>
-						<targetJdk>1.5</targetJdk>
+						<targetJdk>${java.version}</targetJdk>
 					</configuration>
 					<executions>
 						<execution>

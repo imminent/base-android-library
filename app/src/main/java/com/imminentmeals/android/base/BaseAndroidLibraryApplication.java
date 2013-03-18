@@ -1,5 +1,6 @@
 package com.imminentmeals.android.base;
 
+import javax.annotation.Nonnull;
 import javax.inject.Singleton;
 
 import org.holoeverywhere.app.Application;
@@ -10,12 +11,15 @@ import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.imminentmeals.android.base.activity_lifecycle_callbacks.AccountFlowCallbacks;
+import com.imminentmeals.android.base.activity_lifecycle_callbacks.GoogleAnalyticsCallbacks;
+import com.imminentmeals.android.base.activity_lifecycle_callbacks.InjectionCallbacks;
 import com.imminentmeals.android.base.utilities.GateKeeper;
 import com.imminentmeals.android.base.utilities.ObjectGraph.ObjectGraphApplication;
+import com.imminentmeals.android.base.utilities.lifecycle_callback.ApplicationHelper;
 import com.squareup.otto.Bus;
 
 import dagger.Module;
@@ -40,11 +44,13 @@ public class BaseAndroidLibraryApplication extends Application implements Object
         _object_graph = ObjectGraph.create(new BaseAndroidLibraryModule(this));
 
         // TODO: setDefaultPreferences here
-        // TODO: registerActivityLifecycleCallbacks
+        ApplicationHelper.registerActivityLifecycleCallbacks(this, new AccountFlowCallbacks());
+        ApplicationHelper.registerActivityLifecycleCallbacks(this, new GoogleAnalyticsCallbacks());
+        ApplicationHelper.registerActivityLifecycleCallbacks(this, new InjectionCallbacks());
     }
 
     @Override
-    public ObjectGraph objectGraph() {
+    @Nonnull public ObjectGraph objectGraph() {
         return _object_graph;
     }
 

@@ -20,7 +20,7 @@
                        ContentResolver.setIsSyncable(android.accounts.Account, String authority, int syncable) (needs
                        confirmation). -->
 <sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
-              android:contentAuthority="com.imminentmeals.android"
+              android:contentAuthority="com.imminentmeals.android.base"
               android:accountType="com.google"
               android:supportsUploading="false"
               android:userVisible="true"

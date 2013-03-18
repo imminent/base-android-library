@@ -24,6 +24,10 @@
 
 package com.imminentmeals.android.base.utilities.lifecycle_callback;
 
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import android.app.Activity;
 import android.app.Application.ActivityLifecycleCallbacks;
 import android.os.Bundle;
@@ -31,6 +35,7 @@ import android.os.Bundle;
 /**
  * <p>Wraps a {@link CompatibleActivityLifecycleCallbacks} into an {@link ActivityLifecycleCallbacks}.</p>
  */
+@ParametersAreNonnullByDefault
 /* package */class FrameworkActivityLifecycleCallbacks implements ActivityLifecycleCallbacks {
 
     /**
@@ -42,36 +47,43 @@ import android.os.Bundle;
     }
 
     @Override
-    public void onActivityCreated(Activity activity, Bundle icicle) {
+    @OverridingMethodsMustInvokeSuper
+    public void onActivityCreated(Activity activity, @Nullable Bundle icicle) {
         _callback.onActivityCreated(activity, icicle);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void onActivityStarted(Activity activity) {
         _callback.onActivityStarted(activity);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void onActivityResumed(Activity activity) {
         _callback.onActivityResumed(activity);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void onActivityPaused(Activity activity) {
         _callback.onActivityPaused(activity);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void onActivityStopped(Activity activity) {
         _callback.onActivityStopped(activity);
     }
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+    @OverridingMethodsMustInvokeSuper
+    public void onActivitySaveInstanceState(Activity activity, @Nullable Bundle outState) {
         _callback.onActivitySaveInstanceState(activity, outState);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void onActivityDestroyed(Activity activity) {
         _callback.onActivityDestroyed(activity);
     }

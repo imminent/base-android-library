@@ -47,6 +47,16 @@
         <item name="android:displayOptions" tools:ignore="NewApi">showHome|useLogo</item>
         <item name="displayOptions">showHome|useLogo</item>
     </style>
+    
+    <!-- Home Screen -->
+    <style name="Theme.ImminentMeals.Base.Home">
+        <item name="android:actionBarStyle" tools:ignore="NewApi">@style/ActionBar.Home</item>
+        <item name="actionBarStyle">@style/ActionBar.Home</item>
+    </style>
+    <style name="ActionBar.Home">
+        <item name="android:displayOptions" tools:ignore="NewApi">showHome|useLogo|showTitle</item>
+        <item name="displayOptions">showHome|useLogo|showTitle</item>
+    </style>
 
     <!-- Root styles that vary by API level -->
     <style name="FrameworkRoot.Theme" parent="Holo.Theme.Light.DarkActionBar">

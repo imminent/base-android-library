@@ -23,8 +23,9 @@
  */
 package com.imminentmeals.android.base.utilities.lifecycle_callback;
 
-import com.imminentmeals.android.base.utilities.GateKeeper;
+import javax.annotation.Nonnull;
 
+import com.imminentmeals.android.base.utilities.GateKeeper;
 import android.annotation.TargetApi;
 import android.app.Application;
 import android.os.Build;
@@ -35,7 +36,7 @@ import android.os.Build;
  * {@link Application#unregisterActivityLifecycleCallbacks(android.app.Application.ActivityLifecycleCallbacks)}
  * introduced in API level 14 in a backward-compatible manner.</p>
  */
-public class ApplicationHelper {
+public final class ApplicationHelper {
 
 /* Callback registration */
     /**
@@ -44,8 +45,8 @@ public class ApplicationHelper {
      * @param application The application with which to register the callback.
      * @param callback The callback to register.
      */
-    public static void registerActivityLifecycleCallbacks(Application application,
-                                                          CompatibleActivityLifecycleCallbacks callback) {
+    public static void registerActivityLifecycleCallbacks(@Nonnull Application application,
+                                                          @Nonnull CompatibleActivityLifecycleCallbacks callback) {
         if (!GateKeeper.hasICS())
             registerCompatibleActivityLifecycleCallbacks(callback);
         else
@@ -56,7 +57,8 @@ public class ApplicationHelper {
      * <p>Backward-compatible registration of callback.</p>
      * @param callback The callback to register
      */
-    private static void registerCompatibleActivityLifecycleCallbacks(CompatibleActivityLifecycleCallbacks callback) {
+    private static void registerCompatibleActivityLifecycleCallbacks(
+            @Nonnull CompatibleActivityLifecycleCallbacks callback) {
         MainLifecycleDispatcher.get().registerActivityLifecycleCallbacks(callback);
     }
 
@@ -66,8 +68,8 @@ public class ApplicationHelper {
      * @param callback The callback to register
      */
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private static void registerFrameworkActivityLifecycleCallbacks(Application application,
-                                                                    CompatibleActivityLifecycleCallbacks callback) {
+    private static void registerFrameworkActivityLifecycleCallbacks(@Nonnull Application application,
+                                                                    @Nonnull CompatibleActivityLifecycleCallbacks callback) {
         application.registerActivityLifecycleCallbacks(new FrameworkActivityLifecycleCallbacks(callback));
     }
 
@@ -79,7 +81,8 @@ public class ApplicationHelper {
      * @param application The application from which to unregister the callback
      * @param callback The callback to unregister
      */
-    public void unregisterActivityLifecycleCallbacks(Application application, CompatibleActivityLifecycleCallbacks callback) {
+    public void unregisterActivityLifecycleCallbacks(@Nonnull Application application,
+                                                     @Nonnull CompatibleActivityLifecycleCallbacks callback) {
         if (!GateKeeper.hasICS())
             unregisterCompatibleActivityLifecycleCallbacks(callback);
         else
@@ -90,7 +93,8 @@ public class ApplicationHelper {
      * <p>Backward-compatible unregistration of callback.</p>
      * @param callback The callback to unregister
      */
-    private static void unregisterCompatibleActivityLifecycleCallbacks(CompatibleActivityLifecycleCallbacks callback) {
+    private static void unregisterCompatibleActivityLifecycleCallbacks(
+            @Nonnull CompatibleActivityLifecycleCallbacks callback) {
         MainLifecycleDispatcher.get().unregisterActivityLifecycleCallbacks(callback);
     }
 
@@ -100,9 +104,12 @@ public class ApplicationHelper {
      * @param callback The callback to unregister
      */
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private static void unregisterFrameworkActivityLifecycleCallbacks(Application application,
-                                                                      CompatibleActivityLifecycleCallbacks callback) {
+    private static void unregisterFrameworkActivityLifecycleCallbacks(@Nonnull Application application,
+                                                                      @Nonnull CompatibleActivityLifecycleCallbacks callback) {
         application.unregisterActivityLifecycleCallbacks(new FrameworkActivityLifecycleCallbacks(callback));
     }
 
+/* Private Constructor */
+    /** Blocks instantiation of the {@link ApplicationHelper} class. */
+    private ApplicationHelper() { }
 }

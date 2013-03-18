@@ -24,6 +24,9 @@
  */
 package com.imminentmeals.android.base.utilities.lifecycle_callback;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -32,13 +35,14 @@ import android.os.Bundle;
  * {@link ApplicationHelper#registerActivityLifecycleCallbacks(android.app.Application, CompatibleActivityLifecycleCallbacks)} and
  * {@link ApplicationHelper#unregisterActivityLifecycleCallbacks(android.app.Application, CompatibleActivityLifecycleCallbacks)}.</p>
  */
+@ParametersAreNonnullByDefault
 public interface CompatibleActivityLifecycleCallbacks {
     /**
      * <p>Triggered when an {@linkplain Activity#onCreate(Bundle) Activity is created}.</p>
      * @param activity The activity that was create
      * @param icicle The state that was frozen in time
      */
-    void onActivityCreated(Activity activity, Bundle savedInstanceState);
+    void onActivityCreated(Activity activity, @CheckForNull Bundle icicle);
 
     /**
      * <p>Triggered when an {@linkplain Activity#onStart() Activity is started}.</p>
@@ -69,7 +73,7 @@ public interface CompatibleActivityLifecycleCallbacks {
      * @param activity The activity that was saved
      * @param icicle Where the activity's state gets frozen
      */
-    void onActivitySaveInstanceState(Activity activity, Bundle icicle);
+    void onActivitySaveInstanceState(Activity activity, @CheckForNull Bundle icicle);
 
     /**
      * <p>Triggered when an {@linkplain Activity#onDestroy() Activity is destroyed}.</p>
