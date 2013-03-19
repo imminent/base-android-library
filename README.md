@@ -1,5 +1,6 @@
 base-android-library
 ====================
+[![Build Status](https://travis-ci.org/imminent/base-android-library.png)](https://travis-ci.org/imminent/base-android-library)
 
 Core code to be reused in other Android apps. [at GitHub](https://github.com/imminent/base-android-library)
 
