@@ -26,5 +26,14 @@
         <activity android:name=".ui.AccountActivity"  android:configChanges="orientation|keyboardHidden" android:permission="android.permission.GET_ACCOUNTS" android:theme="@style/Theme.ImminentMeals.Base.Accounts">
             <meta-data android:name="target device" android:value="universal"/>
         </activity>
+        
+        <!-- Data sync service that provides the SyncAdapter to the SyncManager framework. The SyncAdapter is used to
+             maintain that the set of data on the device is a subset of the data on the server -->
+        <service android:exported="true" android:name=".data.sync.SyncService" tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+            <meta-data android:name="android.content.SyncAdapter" android:resource="@xml/sync_adapter"/>
+        </service>
     </application>
 </manifest>
