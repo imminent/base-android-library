@@ -23,7 +23,7 @@
             <meta-data android:name="target device" android:value="universal"/>
         </activity>
         
-        <activity android:name=".ui.AccountActivity" android:theme="@style/Theme.ImminentMeals.Base.Accounts">
+        <activity android:name=".ui.AccountActivity"  android:configChanges="orientation|keyboardHidden" android:permission="android.permission.GET_ACCOUNTS" android:theme="@style/Theme.ImminentMeals.Base.Accounts">
             <meta-data android:name="target device" android:value="universal"/>
         </activity>
     </application>
