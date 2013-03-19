@@ -3,8 +3,6 @@ package com.imminentmeals.android.base;
 import javax.annotation.Nonnull;
 import javax.inject.Singleton;
 
-import org.holoeverywhere.HoloEverywhere;
-import org.holoeverywhere.HoloEverywhere.PreferenceImpl;
 import org.holoeverywhere.app.Application;
 import org.holoeverywhere.preference.PreferenceManagerHelper;
 
@@ -13,7 +11,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.StrictMode;
-import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,6 +20,7 @@ import com.imminentmeals.android.base.activity_lifecycle_callbacks.InjectionCall
 import com.imminentmeals.android.base.utilities.GateKeeper;
 import com.imminentmeals.android.base.utilities.ObjectGraph.ObjectGraphApplication;
 import com.imminentmeals.android.base.utilities.lifecycle_callback.ApplicationHelper;
+import com.imminentmeals.android.base.ManifestModule;
 import com.squareup.otto.Bus;
 
 import dagger.Module;
@@ -93,7 +91,7 @@ public class BaseAndroidLibraryApplication extends Application implements Object
         }
 
         @Provides @Singleton SharedPreferences provideSharedPreferences() {
-            return PreferenceManager.getDefaultSharedPreferences(_context);
+            return PreferenceManagerHelper.getDefaultSharedPreferences(_context);
         }
 
         @Provides @Singleton AccountManager provideAccountManager() {

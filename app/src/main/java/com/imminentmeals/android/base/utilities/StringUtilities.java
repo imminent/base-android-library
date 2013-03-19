@@ -1,17 +1,25 @@
 package com.imminentmeals.android.base.utilities;
 
-import java.io.*;
+import static com.google.common.collect.Maps.newHashMap;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.security.InvalidParameterException;
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.annotation.MatchesPattern;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-
-import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * <p>A collection of String utilities.</p>
@@ -62,7 +70,7 @@ public final class StringUtilities {
      * @param <T> The type of objects in the collection
      * @return The string of the objects joined by the delimiters
      */
-    @Nonnull public static <T> String joinAnd(@MatchesPattern(".+") final String delimiter, final String last_delimiter,
+    @Nonnull public static <T> String joinAnd(@Nonnull final String delimiter, final String last_delimiter,
                                               final Collection<T> objects) {
         // Returns an empty String if there are no objects in the collection
         if (objects == null || objects.isEmpty())
@@ -92,7 +100,7 @@ public final class StringUtilities {
      * @param <T> The type of objects in the collection
      * @return The string of the objects joined by the delimiters
      */
-    @Nonnull public static <T> String joinAnd(@MatchesPattern(".+") final String delimiter, final String last_delimiter,
+    @Nonnull public static <T> String joinAnd(@Nonnull final String delimiter, final String last_delimiter,
                                               final T... objects) {
         return joinAnd(delimiter, last_delimiter, Arrays.asList(objects));
     }
@@ -106,7 +114,7 @@ public final class StringUtilities {
      * @param <T> The type of objects in the collection
      * @return The string of the objects joined by the delimiters
      */
-    @Nonnull public static <T> String join(@MatchesPattern(".+") final String delimiter, final Collection<T> objects) {
+    @Nonnull public static <T> String join(@Nonnull final String delimiter, final Collection<T> objects) {
         // Returns an empty String if there are no objects in the collection
         if (objects == null || objects.isEmpty())
             return "";
@@ -130,7 +138,7 @@ public final class StringUtilities {
      * @param <T> The type of objects in the collection
      * @return The string of the objects joined by the delimiters
      */
-    @Nonnull public static <T> String join(@MatchesPattern(".+") final String delimiter, final T... objects ) {
+    @Nonnull public static <T> String join(@Nonnull final String delimiter, final T... objects ) {
         return join(delimiter, Arrays.asList(objects));
     }
 
@@ -207,7 +215,7 @@ public final class StringUtilities {
      * @return A non {@code null} String
      */
     @Nonnull public static String toString(final Object object) {
-        return toString(object,"");
+        return toString(object, "");
     }
 
     /**
@@ -217,9 +225,9 @@ public final class StringUtilities {
      * @return A non {@code null} String
      */
     @Nonnull public static String toString(final Object object, final String default_string) {
-        return object == null ? (default_string == null ? "" : default_string) :
+        return object == null ? emptyIfNull(default_string) :
                 object instanceof InputStream ? toString((InputStream) object) :
-                        object instanceof Reader ? toString((Reader)object) :
+                        object instanceof Reader ? toString((Reader) object) :
                                 object instanceof Object[] ? StringUtilities.join(", ", (Object[]) object) :
                                         object instanceof Collection
                                                 ? StringUtilities.join(", ", (Collection<?>) object)

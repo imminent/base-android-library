@@ -14,7 +14,7 @@ the `ANDROID_HOME` environment variable to the location of your SDK:
 
 After satisfying those requirements, the build is pretty simple:
 
-* Run `mvn clean cobertura:cobertura -P cobertura; mvn sonar:sonar -P cobertura` to run the tests and create the code analysis for viewing in Sonar
+* Run `mvn clean cobertura:cobertura -P default -P cobertura; mvn sonar:sonar -P cobertura` to run the tests and create the code analysis for viewing in Sonar
 * Run `mvn clean install` to run the instrumented tests on the connected devices
 
 ## Acknowledgements

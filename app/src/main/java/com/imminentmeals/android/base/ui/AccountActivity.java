@@ -234,11 +234,18 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
          */
         /* package */static class AccountListAdapter extends ArrayAdapter<Account> {
 
+            /**
+             * <p>Constructs the {@link android.widget.ListAdapter} that binds the account data to
+             * the view.</p>
+             * @param context The context from which to retrieve the {@link LayoutInflater}
+             * @param accounts The list of accounts to bind
+             */
             public AccountListAdapter(Context context, List<Account> accounts) {
                 super(context, _LIST_ITEM_LAYOUT, accounts);
                 _inflater = LayoutInflater.from(context);
             }
 
+            @Override
             public View getView(int position, View reusable_view, ViewGroup parent) {
                 final TextView text_view;
                 final ViewHolder holder;
@@ -261,9 +268,18 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
                 return reusable_view;
             }
 
+            /**
+             * <p>Utility to remember found {@link View}s.</p>
+             * @author Dandre Allison
+             */
             /* package */static class ViewHolder {
-                @InjectView(android.R.id.text1) public TextView text_view;
+                /** The {@link TextView} into which to bind the account name */
+                @InjectView(android.R.id.text1) /* package */TextView text_view;
 
+                /**
+                 * <p>Finds the {@link View}s, and remembers where they are.</p>
+                 * @param view
+                 */
                 public ViewHolder(View view) {
                     Views.inject(this, view);
                 }
