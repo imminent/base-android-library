@@ -192,8 +192,6 @@
 					<configuration>
 						<configLocation>checkstyle.xml</configLocation>
 						<enableRulesSummary>false</enableRulesSummary>
-						<failOnViolation>false</failOnViolation>
-						<failsOnError>false</failsOnError>
 					</configuration>
 					<executions>
 						<execution>

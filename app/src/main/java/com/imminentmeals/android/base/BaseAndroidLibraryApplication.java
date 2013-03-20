@@ -1,6 +1,15 @@
 package com.imminentmeals.android.base;
 
+import static android.util.Base64.DEFAULT;
+import static android.util.Base64.decode;
+import static android.util.Base64.encodeToString;
+import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
+
+import java.security.NoSuchAlgorithmException;
+
 import javax.annotation.Nonnull;
+import javax.crypto.SecretKey;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.holoeverywhere.app.Application;
@@ -21,10 +30,10 @@ import com.imminentmeals.android.base.activity_lifecycle_callbacks.GoogleAnalyti
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.InjectionCallbacks;
 import com.imminentmeals.android.base.ui.AccountActivity;
 import com.imminentmeals.android.base.utilities.AccountUtilities;
+import com.imminentmeals.android.base.utilities.CryptographyUtilities;
 import com.imminentmeals.android.base.utilities.GateKeeper;
 import com.imminentmeals.android.base.utilities.ObjectGraph.ObjectGraphApplication;
 import com.imminentmeals.android.base.utilities.lifecycle_callback.ApplicationHelper;
-import com.imminentmeals.android.base.ManifestModule;
 import com.squareup.otto.Bus;
 
 import dagger.Module;
@@ -37,6 +46,7 @@ import dagger.Provides;
  * @author Dandré Allison
  */
 public class BaseAndroidLibraryApplication extends Application implements ObjectGraphApplication {
+    @Inject /* package */SharedPreferences settings;
 
     @SuppressLint("NewApi")
     @Override
@@ -47,11 +57,25 @@ public class BaseAndroidLibraryApplication extends Application implements Object
 
         // Creates the dependency injection object graph
         _object_graph = ObjectGraph.create(new BaseAndroidLibraryModule(this));
+        _object_graph.inject(this);
 
         // TODO: setDefaultPreferences here
+
+        // Registers the Activity lifecycle callbacks
         ApplicationHelper.registerActivityLifecycleCallbacks(this, new AccountFlowCallbacks());
         ApplicationHelper.registerActivityLifecycleCallbacks(this, new GoogleAnalyticsCallbacks());
         ApplicationHelper.registerActivityLifecycleCallbacks(this, new InjectionCallbacks());
+
+        // Establishes a secret key on initial launch
+        if (!settings.contains(CryptographyUtilities.KEY_SECRET_KEY))
+            try {
+                settings.edit()
+                    .putString(CryptographyUtilities.KEY_SECRET_KEY,
+                                   encodeToString(CryptographyUtilities.generateKey().getEncoded(), DEFAULT))
+                    .apply();
+            } catch (NoSuchAlgorithmException error) {
+                LOGE(error);
+            }
     }
 
     @Override
@@ -96,6 +120,10 @@ public class BaseAndroidLibraryApplication extends Application implements Object
             return new GsonBuilder().create();
         }
 
+        @Provides @Singleton AbstractAccountAuthenticator provideAccountAuthenticator(Context context) {
+            return new AccountAuthenticatorService.FakeAccountAuthenticator(context);
+        }
+
         @Provides SharedPreferences provideSharedPreferences() {
             return PreferenceManagerHelper.getDefaultSharedPreferences(_context);
         }
@@ -112,8 +140,26 @@ public class BaseAndroidLibraryApplication extends Application implements Object
             return new Account("test47", "fake:" + AccountUtilities.ACCOUNT_TYPE);
         }
 
-        @Provides @Singleton AbstractAccountAuthenticator provideAccountAuthenticator(Context context) {
-            return new AccountAuthenticatorService.FakeAccountAuthenticator(context);
+        @Provides SecretKey provideSecretKey(final SharedPreferences settings) {
+            return new SecretKey() {
+
+                @Override
+                public String getAlgorithm() {
+                    return CryptographyUtilities.AES;
+                }
+
+                @Override
+                public String getFormat() {
+                    return null;
+                }
+
+                @Override
+                public byte[] getEncoded() {
+                    return decode(settings.getString(CryptographyUtilities.KEY_SECRET_KEY, ""), DEFAULT);
+                }
+
+                private static final long serialVersionUID = 4664651834175207772L;
+            };
         }
 
         /** The context in which the app is running */

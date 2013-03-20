@@ -41,9 +41,9 @@ public class AccountUtilities {
     /** Auth token type for an account */
     public static final String AUTH_TOKEN_TYPE = authTokenType();
     /** Name of the owner name stored in a {@link android.os.Bundle} */
-    public static final String KEY_OWNER_NAME = "com.imminentmeals.android.base.utilities.key.owner_name";
+    public static final String KEY_OWNER_NAME = "com.imminentmeals.android.base.utilities.key.AccountUtlities.OWNER_NAME";
     /** Name of the account ID stored in a {@link android.os.Bundle} */
-    public static final String KEY_ACCOUNT_ID = "com.imminentmeals.android.base.utilities.key.account_id";
+    public static final String KEY_ACCOUNT_ID = "com.imminentmeals.android.base.utilities.key.AccountUtilities.ACCOUNT_ID";
 
     /**
      * <p>Callback interface for account authentication process.</p>
@@ -559,7 +559,8 @@ public class AccountUtilities {
                 user_profile.addPossibleEmail(cursor.getString(ProfileQuery.EMAIL),
                         cursor.getInt(ProfileQuery.IS_PRIMARY_EMAIL) > 0);
             else if (mime_type.equals(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE))
-                user_profile.addPossibleName(cursor.getString(ProfileQuery.GIVEN_NAME), cursor.getString(ProfileQuery.FAMILY_NAME));
+                user_profile.addPossibleName(cursor.getString(ProfileQuery.GIVEN_NAME),
+                                             cursor.getString(ProfileQuery.FAMILY_NAME));
             else if (mime_type.equals(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE))
                 user_profile.addPossiblePhoneNumber(cursor.getString(ProfileQuery.PHONE_NUMBER),
                         cursor.getInt(ProfileQuery.IS_PRIMARY_PHONE_NUMBER) > 0);
@@ -576,14 +577,15 @@ public class AccountUtilities {
     /** Blocks instantiation of the {@link AccountUtilities} class. */
     private AccountUtilities() { }
 
+    private static final String _PREF = "com.imminentmeals.android.base.utilities.pref";
     /** Name for the chosen account stored in the {@linkplain android.content.SharedPreferences user settings} */
-    private static final String _PREF_CHOSEN_ACCOUNT = "chosen_account";
+    private static final String _PREF_CHOSEN_ACCOUNT = _PREF + ".AccountUtilities.CHOSEN_ACCOUNT";
     /** Name for the auth token stored in the {@linkplain android.content.SharedPreferences user settings} */
-    private static final String _PREF_AUTH_TOKEN = "auth_token";
+    private static final String _PREF_AUTH_TOKEN = _PREF + "AccountUtilities.AUTH_TOKEN";
     /** Name for the chosen account's ID stored in the {@linkplain android.content.SharedPreferences user settings} */
-    private static final String _PREF_CHOSEN_ACCOUNT_ID = "chosen_account.id";
+    private static final String _PREF_CHOSEN_ACCOUNT_ID = _PREF + "AccountUtilities.CHOSEN_ACCOUNT.ID";
     /** Name for the chosen account owner's name stored in the {@linkplain android.content.SharedPreferences user settings} */
-    private static final String _PREF_CHOSEN_ACCOUNT_NAME = "chosen_account.name";
+    private static final String _PREF_CHOSEN_ACCOUNT_NAME = _PREF + "AccountUtilities.CHOSEN_ACCOUNT.NAME";
     /** Matches valid email address */
     private static final Matcher VALID_EMAIL_ADDRESS = Patterns.EMAIL_ADDRESS.matcher("");
     /** Tag to label {@link AccountUtilities} log messages */

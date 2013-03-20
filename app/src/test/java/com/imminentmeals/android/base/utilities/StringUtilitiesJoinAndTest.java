@@ -23,7 +23,6 @@ public class StringUtilitiesJoinAndTest {
         _expected = expected;
     }
 
-    @SuppressWarnings("unchecked")
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
