@@ -2,12 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:installLocation="auto" android:versionCode="1000" android:versionName="0.1-SNAPSHOT" package="com.imminentmeals.android.base">
     <!-- Note: This file will be auto-formatted by the build (specifically android:manifest-update goal) -->
 
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="17"/>
     <!-- Allows application to access information about networks like with getActiveNetworkInfo -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <!-- Allows application to access AccountManager's list of accounts -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="17"/>
+    <!-- Allows application to use credentials stored in AccountManager like from getAuthToken -->
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
 
     <application android:name="com.imminentmeals.android.base.BaseAndroidLibraryApplication" android:hardwareAccelerated="true" android:icon="@drawable/ic_launcher" android:label="@string/title_app" android:supportsRtl="true" android:allowBackup="true">
         <!-- Note: specify the target device for Activities with target device meta-data of "universal|phone|tablet"
@@ -26,6 +27,15 @@
         <activity android:name=".ui.AccountActivity"  android:configChanges="orientation|keyboardHidden" android:permission="android.permission.GET_ACCOUNTS" android:theme="@style/Theme.ImminentMeals.Base.Accounts">
             <meta-data android:name="target device" android:value="universal"/>
         </activity>
+        
+        <!-- Account authentication service that provides the methods for authenticating KeepandShare accounts to the
+             AccountManager framework -->
+        <service android:exported="true" android:name="AccountAuthenticatorService" android:process=":auth" tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data android:name="android.accounts.AccountAuthenticator" android:resource="@xml/authenticator"/>
+        </service>
         
         <!-- Data sync service that provides the SyncAdapter to the SyncManager framework. The SyncAdapter is used to
              maintain that the set of data on the device is a subset of the data on the server -->

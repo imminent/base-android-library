@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The attributes in this XML file provide configuration information for the Account Authenticator.
+     accountType: names the account type that the Account Authenticator will authenticate, since ImminentMeals is
+                  bootstrapping from Google accounts, it should be the value of AccountUtilities.ACCOUNT_TYPE (XML doesn't 
+                  have direct access to Java unfortunately).
+     icon: defines the image to use in the Account & Sync screen.
+     smallIcon: defines the image to use in the Contact Application's tab panels
+     label: label used to display to the user.
+     accountPreferences: a PreferenceScreen heirarchy with a list of PreferenceScreens for managing the authenticator -->
+<account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
+                       android:accountType="fake:com.google"
+                       android:icon="@drawable/ic_launcher"
+                       android:smallIcon="@drawable/ic_launcher"
+                       android:label="@string/title_app" />

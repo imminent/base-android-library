@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import org.holoeverywhere.ArrayAdapter;
 import org.holoeverywhere.LayoutInflater;
 import org.holoeverywhere.app.Activity;
@@ -37,13 +39,15 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.analytics.tracking.android.EasyTracker;
-import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
 import com.imminentmeals.android.base.R;
 import com.imminentmeals.android.base.data.provider.BaseContract;
 import com.imminentmeals.android.base.ui.base.BaseActivity;
 import com.imminentmeals.android.base.utilities.AccountUtilities;
+import com.imminentmeals.android.base.utilities.ObjectGraph;
 
+import dagger.Lazy;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
@@ -140,7 +144,8 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
      * <p>A fragment that presents the user with a list of connected accounts to choose from. When an account is
      * selected, the {@linkplain AuthProgressFragment authentication progress fragment} is displayed.</p>
      */
-    /* package */static class ChooseAccountFragment extends ListFragment {
+    public static class ChooseAccountFragment extends ListFragment {
+        @Inject /* package */Lazy<Account> test_account;
 
         /** Constructor */
         public ChooseAccountFragment() { }
@@ -156,6 +161,7 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
             super.onCreate(icicle);
             // Informs the action bar, that this fragment has actions to add
             setHasOptionsMenu(true);
+            ObjectGraph.inject(this);
         }
 
         @Override
@@ -302,8 +308,10 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
             // Notice that AccountManager doesn't provide tools to determine what has changed from previous
             // account lists, so it is simpler to forget the previous list each time
             final AccountManager account_manager = AccountManager.get(getActivity());
-            final Account[] accounts = account_manager.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
-            _account_list_adapter = new AccountListAdapter(getActivity(), Arrays.asList(accounts));
+            final Account[] accounts = account_manager.getAccountsByType(AccountUtilities.ACCOUNT_TYPE);
+            _account_list_adapter = new AccountListAdapter(getActivity(), test_account.get() == null
+                    ? Arrays.asList(accounts)
+                    : Lists.asList(test_account.get(), accounts));
             setListAdapter(_account_list_adapter);
         }
 

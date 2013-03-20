@@ -29,7 +29,6 @@ import static android.content.Context.TELEPHONY_SERVICE;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
 import static com.imminentmeals.android.base.utilities.LogUtilities.makeLogTag;
-import static com.imminentmeals.android.base.utilities.SharedPreferencesUtilities.apply;
 
 /**
  * <p>A collection of authentication and account connection utilities. With strong inspiration from the Google IO session
@@ -362,7 +361,7 @@ public class AccountUtilities {
      * @return The account type
      */
     protected static String accountType() {
-        return "com.imminentmeals";
+        return GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE;
     }
 
     /**
@@ -370,7 +369,7 @@ public class AccountUtilities {
      * @return The auth token type
      */
     protected static String authTokenType() {
-        return "https://api.imminentmeals.com";
+        return "https://api.example.com";
     }
 
     /**
