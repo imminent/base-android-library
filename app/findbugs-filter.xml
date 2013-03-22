@@ -1,0 +1,30 @@
+<FindBugsFilter>
+	<Match>
+	    <Package name="~org\.holoeverywhere\..*" />
+	</Match>
+	<Match>
+	    <Class name="org.holoeverywhere.HoloEverywhere" />
+	</Match>
+	<Match>
+	    <Class name="org.holoeverywhere.LayoutInflater" />
+	</Match>
+	<Match>
+	    <Class name="org.holoeverywhere.FontLoader" />
+	</Match>
+	<Match>
+	    <Class name="~org\.holoeverywhere.*" />
+	</Match>
+	<Match>
+	    <Package name="~com\.viewpagerindicator\..*" />
+	</Match>
+	<Match>
+	    <Class name="~com\.viewpagerindicator.*" />
+	</Match>
+	<Match>
+	    <Class name="~.*\.R\$.*" />
+	</Match>
+	<Match>
+	    <Class name="~com\.imminentmeals\.android\.base\.ui\.[^.]*Activity.*" />
+	    <Bug pattern="NM_WRONG_PACKAGE_INTENTIONAL" />
+	</Match>
+</FindBugsFilter>

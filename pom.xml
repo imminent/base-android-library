@@ -193,7 +193,7 @@
 						<configLocation>checkstyle.xml</configLocation>
 						<enableRulesSummary>false</enableRulesSummary>
 					</configuration>
-					<executions>
+					<!-- <executions>
 						<execution>
 							<id>checkstyle-check</id>
 							<phase>process-sources</phase>
@@ -201,7 +201,7 @@
 								<goal>check</goal>
 							</goals>
 						</execution>
-					</executions>
+					</executions> -->
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -209,6 +209,8 @@
 					<version>${findbugs-maven-plugin.version}</version>
 					<configuration>
 						<excludeFilterFile>findbugs-filter.xml</excludeFilterFile>
+						<includeFilterFile>findbugs-include.xml</includeFilterFile>
+						<failOnError>false</failOnError>
 					</configuration>
 					<executions>
 						<execution>
@@ -226,6 +228,7 @@
 					<version>${maven-pmd-plugin.version}</version>
 					<configuration>
 						<targetJdk>${java.version}</targetJdk>
+						<ruleset>pmd.xml</ruleset>
 					</configuration>
 					<executions>
 						<execution>

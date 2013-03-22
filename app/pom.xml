@@ -10,12 +10,12 @@
     </parent>
 
     <artifactId>base-android-library</artifactId>
-    <packaging>apk</packaging>
+    <packaging>apklib</packaging>
     <name>Base Android Library app</name>
 
     <properties>
         <!-- Android -->
-        <android-support.version>r11</android-support.version>
+        <android-support.version>r12</android-support.version>
         <android-analytics.version>2</android-analytics.version>
         <gridlayout-compatibility.version>11</gridlayout-compatibility.version>
         <gcm.version>3</gcm.version>
@@ -126,12 +126,12 @@
             <type>apklib</type>
         </dependency>
         <!-- HoloEverywhere: back-ports Holo graphics to Android 1.6 -->
-        <dependency>
+        <!-- <dependency>
             <groupId>org.holoeverywhere</groupId>
             <artifactId>library</artifactId>
             <version>${holo-everywhere.version}</version>
             <type>apklib</type>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.holoeverywhere</groupId>
             <artifactId>addon-preferences</artifactId>
