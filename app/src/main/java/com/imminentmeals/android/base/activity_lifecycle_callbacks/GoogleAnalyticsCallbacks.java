@@ -2,17 +2,23 @@ package com.imminentmeals.android.base.activity_lifecycle_callbacks;
 
 import static com.imminentmeals.android.base.utilities.LogUtilities.LOGV;
 import static com.imminentmeals.android.base.utilities.LogUtilities.makeLogTag;
+
+import javax.inject.Inject;
+
 import android.app.Activity;
 
 import com.google.analytics.tracking.android.EasyTracker;
-import com.imminentmeals.android.base.utilities.lifecycle_callback.SimpleCompatibleActivityLifecycleCallbacks;
+import com.imminentmeals.android.base.utilities.SimpleActivityLifecycleCallbacks;
 
 /**
  * <p>{@linkplain com.imminentmeals.android.base.utilities.lifecycle_callback.CompatibleActivityLifecycleCallbacks Activity lifecycle callbacks}
  * for tracking the starting and stopping of an {@link Activity}.</p>
  * @author Dandre Allison
  */
-public class GoogleAnalyticsCallbacks extends SimpleCompatibleActivityLifecycleCallbacks {
+public class GoogleAnalyticsCallbacks extends SimpleActivityLifecycleCallbacks {
+
+    @Inject
+    public GoogleAnalyticsCallbacks() { }
 
     @Override
     public void onActivityStarted(Activity activity) {

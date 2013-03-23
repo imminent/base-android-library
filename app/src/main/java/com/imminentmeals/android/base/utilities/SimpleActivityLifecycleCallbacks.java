@@ -22,20 +22,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.imminentmeals.android.base.utilities.lifecycle_callback;
+package com.imminentmeals.android.base.utilities;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import android.app.Activity;
+import android.app.Application.ActivityLifecycleCallbacks;
 import android.os.Bundle;
 
 /**
  * <p>A convenience class to extend when only a subset of all callbacks is needed. This implements all methods
- * in the {@link CompatibleActivityLifecycleCallbacks} but does nothing.</p>
+ * in the {@link ActivityLifecycleCallbacks} but does nothing.</p>
  */
 @ParametersAreNonnullByDefault
-public class SimpleCompatibleActivityLifecycleCallbacks implements CompatibleActivityLifecycleCallbacks {
+public class SimpleActivityLifecycleCallbacks implements ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityCreated(Activity activity, @CheckForNull Bundle icicle) { }

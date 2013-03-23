@@ -1,6 +1,6 @@
 package com.imminentmeals.android.base.utilities;
 
-import static com.imminentmeals.android.base.utilities.GateKeeper.isHoneycombTablet;
+import static com.imminentmeals.android.base.utilities.GateKeeper.isIcsTablet;
 import static com.imminentmeals.android.base.utilities.LogUtilities.LOGW;
 import static com.imminentmeals.android.base.utilities.LogUtilities.makeLogTag;
 
@@ -16,8 +16,11 @@ import de.keyboardsurfer.android.widget.crouton.Style;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Bundle;
 
 /**
  * <p>Assortment of UI helper methods.</p>
@@ -30,11 +33,11 @@ public final class UiUtilities {
      * and the current device. Add {@literal <meta-data name="target device" value="tablet|phone|universal" />} to
      * an activity to specify its target device.</p>
      * @param context the current context of the device
-     * @see #isHoneycombTablet(android.content.Context)
+     * @see #isIcsTablet(android.content.Context)
      */
     public static void configureDeviceSpecificActivities(@Nonnull Context context) {
         final PackageManager package_manager = context.getPackageManager();
-        final boolean is_honeycomb_tablet = isHoneycombTablet(context);
+        final boolean is_honeycomb_tablet = isIcsTablet(context);
         try {
             final ActivityInfo[] activity_info = package_manager.getPackageInfo(context.getPackageName(),
                     PackageManager.GET_ACTIVITIES | PackageManager.GET_META_DATA).activities;
@@ -84,6 +87,50 @@ public final class UiUtilities {
                     }
                 }
         );
+    }
+
+    /**
+     * <p>Converts a {@link android.app.Fragment}'s arguments {@link Bundle} into an
+     * {@link Intent}.</p>
+     * @see #intentToFragmentArguments(android.content.Intent) for inverse of this function
+     * @param arguments The fragment's arguments
+     * @return The intent converted from the given bundle
+     */
+    @Nonnull public static Intent fragmentArgumentsToIntent(@Nullable Bundle arguments) {
+        final Intent intent = new Intent();
+        if (arguments == null) return intent;
+
+        // Set the data URI to be the URI in the arguments, if one exists
+        final Uri data = arguments.getParcelable("_uri");
+        if (data != null)
+            intent.setData(data);
+
+        // Convert the Bundle into an Intent and remove the URI extra, as it was added as the data URI already
+        intent.putExtras(arguments);
+        intent.removeExtra("_uri");
+        return intent;
+    }
+
+    /**
+     * <p>Converts an {@link Intent} into a {@link Bundle} suitable for use as a
+     * {@link android.app.Fragment}'s arguments.</p>
+     * @see #fragmentArgumentsToIntent(android.os.Bundle) for inverse of this function
+     * @param intent The intent
+     * @return The bundle converted from the given intent
+     */
+    @Nonnull public static Bundle intentToFragmentArguments(@Nullable Intent intent) {
+        final Bundle arguments = new Bundle();
+        if (intent == null) return arguments;
+
+        // Get the data URI to be the URI in the arguments, if one exists
+        final Uri data = intent.getData();
+        if (data != null)
+            arguments.putParcelable("_uri", data);
+
+        final Bundle extras = intent.getExtras();
+        if (extras != null)
+            arguments.putAll(extras);
+        return arguments;
     }
 
 /* Private Constructor */

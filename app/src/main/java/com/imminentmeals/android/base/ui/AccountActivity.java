@@ -10,16 +10,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import org.holoeverywhere.ArrayAdapter;
-import org.holoeverywhere.LayoutInflater;
-import org.holoeverywhere.app.Activity;
-import org.holoeverywhere.app.Fragment;
-import org.holoeverywhere.app.ListFragment;
-import org.holoeverywhere.widget.ListView;
-import org.holoeverywhere.widget.TextView;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -27,23 +22,25 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.v4.content.IntentCompat;
 import android.text.Html;
 import android.text.format.DateUtils;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import butterknife.InjectView;
 import butterknife.Views;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.imminentmeals.android.base.R;
 import com.imminentmeals.android.base.data.provider.BaseContract;
-import com.imminentmeals.android.base.ui.base.BaseActivity;
 import com.imminentmeals.android.base.utilities.AccountUtilities;
 import com.imminentmeals.android.base.utilities.ObjectGraph;
 
@@ -57,7 +54,7 @@ import de.keyboardsurfer.android.widget.crouton.Style;
  *
  * @author Dandré Allison
  */
-public class AccountActivity extends BaseActivity implements AccountUtilities.AuthenticationCallbacks {
+public class AccountActivity extends Activity implements AccountUtilities.AuthenticationCallbacks {
     /** Name for the {@link Intent} to launch when the authentication finishes stored in the calling {@link Intent} */
     public static final String EXTRA_FINISH_INTENT = "com.imminentmeals.android.base.ui.extra.FINISH_INTENT";
 
@@ -74,7 +71,7 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
 
         // Adds the Choose Account fragment to the screen, if this is a new creation of the activity
         if (icicle == null)
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, new ChooseAccountFragment(), _TAG_CHOOSE_ACCOUNT)
                     .commit();
     }
@@ -92,7 +89,7 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
                 _handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        getSupportFragmentManager().popBackStack();
+                        getFragmentManager().popBackStack();
                     }
                 });
         } else
@@ -124,7 +121,7 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
             _continuation_intent.addCategory(Intent.CATEGORY_LAUNCHER);
             _continuation_intent.setAction(Intent.ACTION_MAIN);
             _continuation_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(_continuation_intent);
         }
 
@@ -226,7 +223,7 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
             // Starts the authentication progress fragment
             activity._authentication_was_cancelled = false;
             activity._chosen_account = _account_list_adapter.getItem(position);
-            activity.getSupportFragmentManager().beginTransaction()
+            activity.getFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new AuthProgressFragment(), _TAG_LOADING)
                     .addToBackStack(_TAG_CHOOSE_ACCOUNT)
                     .commit();
@@ -325,7 +322,7 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
      * <p>This fragment shows a login progress spinner. When it appears that the process is taking too long (in case
      * of a poor network connection), a retry button appears so the user can try again.</p>
      */
-    /* package */static class AuthProgressFragment extends Fragment {
+    public static class AuthProgressFragment extends Fragment {
 
         /** Constructor */
         public AuthProgressFragment() { }
@@ -401,9 +398,9 @@ public class AccountActivity extends BaseActivity implements AccountUtilities.Au
     private boolean _authentication_was_cancelled = false;
     /** The {@link Handler} that performs the actions on the main thread */
     private final Handler _handler = new Handler();
-    /** Identifies the {@link ChooseAccountFragment} within the {@link #getSupportFragmentManager() FragmentManager} */
+    /** Identifies the {@link ChooseAccountFragment} within the {@link #getFragmentManager() FragmentManager} */
     static final String _TAG_CHOOSE_ACCOUNT = "choose_account";
-    /** Identifies the {@link AuthProgressFragment} within the {@link #getSupportFragmentManager() FragmentManager} */
+    /** Identifies the {@link AuthProgressFragment} within the {@link #getFragmentManager() FragmentManager} */
     static final String _TAG_LOADING = "loading";
     /** Tag to label {@link AccountActivity} log messages */
     @SuppressWarnings("unused")

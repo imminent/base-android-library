@@ -7,33 +7,27 @@ import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
 
 import java.security.NoSuchAlgorithmException;
 
-import javax.annotation.Nonnull;
 import javax.crypto.SecretKey;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
-
-import org.holoeverywhere.app.Application;
-import org.holoeverywhere.preference.PreferenceManagerHelper;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.AccountFlowCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.GoogleAnalyticsCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.InjectionCallbacks;
 import com.imminentmeals.android.base.ui.AccountActivity;
 import com.imminentmeals.android.base.utilities.AccountUtilities;
 import com.imminentmeals.android.base.utilities.CryptographyUtilities;
-import com.imminentmeals.android.base.utilities.GateKeeper;
 import com.imminentmeals.android.base.utilities.ObjectGraph.ObjectGraphApplication;
-import com.imminentmeals.android.base.utilities.lifecycle_callback.ApplicationHelper;
 import com.squareup.otto.Bus;
 
 import dagger.Module;
@@ -47,11 +41,15 @@ import dagger.Provides;
  */
 public class BaseAndroidLibraryApplication extends Application implements ObjectGraphApplication {
     @Inject /* package */SharedPreferences settings;
+    @Inject /* package */AccountFlowCallbacks account_flow_callbacks;
+    @Inject /* package */GoogleAnalyticsCallbacks google_analytics_callbakcs;
+    @Inject /* package */InjectionCallbacks injection_callbacks;
+    /** Name to associate with the account {@link android.app.Activity} */
+    public static final String ACCOUNT_ACTIVITY = "account";
 
-    @SuppressLint("NewApi")
     @Override
     public void onCreate() {
-        if (BuildConfig.DEBUG && GateKeeper.hasGingerbread())
+        if (BuildConfig.DEBUG)
             StrictMode.enableDefaults();
         super.onCreate();
 
@@ -62,9 +60,9 @@ public class BaseAndroidLibraryApplication extends Application implements Object
         // TODO: setDefaultPreferences here
 
         // Registers the Activity lifecycle callbacks
-        ApplicationHelper.registerActivityLifecycleCallbacks(this, new AccountFlowCallbacks());
-        ApplicationHelper.registerActivityLifecycleCallbacks(this, new GoogleAnalyticsCallbacks());
-        ApplicationHelper.registerActivityLifecycleCallbacks(this, new InjectionCallbacks());
+        registerActivityLifecycleCallbacks(account_flow_callbacks);
+        registerActivityLifecycleCallbacks(google_analytics_callbakcs);
+        registerActivityLifecycleCallbacks(injection_callbacks);
 
         // Establishes a secret key on initial launch
         if (!settings.contains(CryptographyUtilities.KEY_SECRET_KEY))
@@ -78,9 +76,10 @@ public class BaseAndroidLibraryApplication extends Application implements Object
             }
     }
 
+/* ObjectGraph Contract */
     @Override
-    @Nonnull public ObjectGraph objectGraph() {
-        return _object_graph;
+    public void inject(Object dependent) {
+        _object_graph.inject(dependent);
     }
 
     /**
@@ -93,6 +92,9 @@ public class BaseAndroidLibraryApplication extends Application implements Object
      */
     @Module(
             entryPoints = {
+                    // Application
+                    BaseAndroidLibraryApplication.class,
+
                     // Fragments
                     AccountActivity.ChooseAccountFragment.class
             },
@@ -101,7 +103,7 @@ public class BaseAndroidLibraryApplication extends Application implements Object
                     ManifestModule.class
             }
     )
-    /* package */static class BaseAndroidLibraryModule {
+    protected static class BaseAndroidLibraryModule {
 
         /**
          * <p>Constructs the module using the {@link Context} to retrieve the application context
@@ -116,16 +118,12 @@ public class BaseAndroidLibraryApplication extends Application implements Object
             return new Bus();
         }
 
-        @Provides @Singleton Gson provideGson() {
-            return new GsonBuilder().create();
-        }
-
         @Provides @Singleton AbstractAccountAuthenticator provideAccountAuthenticator(Context context) {
             return new AccountAuthenticatorService.FakeAccountAuthenticator(context);
         }
 
         @Provides SharedPreferences provideSharedPreferences() {
-            return PreferenceManagerHelper.getDefaultSharedPreferences(_context);
+            return PreferenceManager.getDefaultSharedPreferences(_context);
         }
 
         @Provides AccountManager provideAccountManager() {
@@ -160,6 +158,11 @@ public class BaseAndroidLibraryApplication extends Application implements Object
 
                 private static final long serialVersionUID = 4664651834175207772L;
             };
+        }
+
+        @SuppressWarnings("rawtypes")
+        @Provides @Named(ACCOUNT_ACTIVITY) Class provideAccountActivity() {
+            return AccountActivity.class;
         }
 
         /** The context in which the app is running */

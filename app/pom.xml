@@ -10,25 +10,18 @@
     </parent>
 
     <artifactId>base-android-library</artifactId>
-    <packaging>apklib</packaging>
+    <packaging>apk</packaging>
     <name>Base Android Library app</name>
 
     <properties>
         <!-- Android -->
-        <android-support.version>r12</android-support.version>
         <android-analytics.version>2</android-analytics.version>
-        <gridlayout-compatibility.version>11</gridlayout-compatibility.version>
         <gcm.version>3</gcm.version>
         <google-play-services.version>5</google-play-services.version>
         
         <!-- Google -->
         <gson.version>2.2.2</gson.version>
         <guava.version>14.0</guava.version>
-        
-        <!-- Back-ports -->
-        <actionbarsherlock.version>4.2.0</actionbarsherlock.version>
-        <nine-old-android-animation.version>2.4.0</nine-old-android-animation.version>
-        <holo-everywhere.version>1.4.3-SNAPSHOT</holo-everywhere.version>
         
         <!-- Enhancements -->
         <viewpager-indicator.version>2.4.1</viewpager-indicator.version>
@@ -50,36 +43,11 @@
             <artifactId>android</artifactId>
             <scope>provided</scope>
         </dependency>
-        <!-- Android Support Library for API level 4+ -->
-        <dependency>
-            <groupId>com.google.android</groupId>
-            <artifactId>support-v4</artifactId>
-            <version>${android-support.version}</version>
-        </dependency>
         <!-- Android Analytics -->
         <dependency>
             <groupId>com.google.android.analytics</groupId>
             <artifactId>analytics</artifactId>
             <version>${android-analytics.version}</version>
-        </dependency>
-        <!-- GridLayout compatibility -->
-        <dependency>
-            <groupId>android.support</groupId>
-            <artifactId>compatibility-v7-gridlayout</artifactId>
-            <version>${gridlayout-compatibility.version}</version>
-            <type>apklib</type>
-        </dependency>
-        <dependency>
-            <groupId>android.support</groupId>
-            <artifactId>compatibility-v7-gridlayout</artifactId>
-            <version>${gridlayout-compatibility.version}</version>
-            <type>jar</type>
-        </dependency>
-        <!-- GSON: JSON stream parser -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>${gson.version}</version>
         </dependency>
         <!-- Guava: Common library -->
         <dependency>
@@ -99,50 +67,11 @@
             <version>${dagger.version}</version>
             <optional>true</optional>
         </dependency>
-        <!-- ActionBarSherlock(ABS): compatibility action bar -->
-        <dependency>
-            <groupId>com.actionbarsherlock</groupId>
-            <artifactId>actionbarsherlock</artifactId>
-            <version>${actionbarsherlock.version}</version>
-            <type>apklib</type>
-        </dependency>
-        <!-- ViewHolder: reduce boilerplate for custom ListAdapters -->
-        <dependency>
-            <groupId>com.madgag</groupId>
-            <artifactId>android-viewholder-listviews</artifactId>
-            <version>${viewholder.version}</version>
-        </dependency>
         <!-- HTTP-request: simple HTTP request -->
         <dependency>
             <groupId>com.github.kevinsawicki</groupId>
             <artifactId>http-request</artifactId>
             <version>${httprequest.version}</version>
-        </dependency>
-        <!-- ViewPagerIndicator: page indicator for ViewPager -->
-        <dependency>
-            <groupId>com.viewpagerindicator</groupId>
-            <artifactId>library</artifactId>
-            <version>${viewpager-indicator.version}</version>
-            <type>apklib</type>
-        </dependency>
-        <!-- HoloEverywhere: back-ports Holo graphics to Android 1.6 -->
-        <!-- <dependency>
-            <groupId>org.holoeverywhere</groupId>
-            <artifactId>library</artifactId>
-            <version>${holo-everywhere.version}</version>
-            <type>apklib</type>
-        </dependency> -->
-        <dependency>
-            <groupId>org.holoeverywhere</groupId>
-            <artifactId>addon-preferences</artifactId>
-            <version>${holo-everywhere.version}</version>
-            <type>apklib</type>
-        </dependency>
-        <!-- Nine Old Android: animation API compatibility -->
-        <dependency>
-            <groupId>com.nineoldandroids</groupId>
-            <artifactId>library</artifactId>
-            <version>${nine-old-android-animation.version}</version>
         </dependency>
         <!-- Crouton: Context sensitive notifications for Android (an alternative to Toasts) -->
         <dependency>
