@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_refresh"
+          android:icon="@drawable/ic_action_refresh"
+          android:title="@string/description_refresh"
+          android:orderInCategory="4"
+          android:showAsAction="ifRoom" />
+
+    <group
+        android:menuCategory="secondary"
+        android:orderInCategory="100">
+        <item android:id="@+id/menu_logout"
+              android:title="@string/description_logout"
+              android:showAsAction="never" />
+
+        <item android:id="@+id/menu_settings"
+              android:title="@string/description_settings"
+              android:showAsAction="never" />
+
+        <item android:id="@+id/menu_help"
+              android:title="@string/description_help"
+              android:showAsAction="never" />
+    </group>
+</menu>

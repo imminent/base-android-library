@@ -36,7 +36,7 @@ public class CheckableLinearLayout extends LinearLayout implements Checkable {
     /**
      * <p>Interface definition for a callback to be invoked when the checked state is changed.</p>
      */
-    public static interface OnCheckStateChangeListener {
+    public interface OnCheckStateChangeListener {
 
         /**
          * <p>Callback triggered when the checked state changes.</p>

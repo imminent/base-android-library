@@ -14,6 +14,7 @@
         <b><font color="#cc0000">ImminentMeals</font><br>
         Version %s<br><br>
     ]]></string>
+    <string name="button_ok">OK</string>
     <string name="title_accounts_list">Select a Google account</string>
     <string name="empty_accounts">No Google accounts are available. Add one to continue.</string>
     <string name="no_connection_cant_login">Can\'t connect to account. Check your network connection.</string>

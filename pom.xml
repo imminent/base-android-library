@@ -5,7 +5,7 @@
 
     <groupId>com.imminentmeals.android</groupId>
     <artifactId>base-android-library-parent</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Base Android Library Parent</name>    
 
@@ -26,7 +26,6 @@
 
     <modules>
         <module>app</module>
-        <module>instrumented-tests</module>
     </modules>
 
     <properties>
@@ -149,7 +148,7 @@
 	                        <platform>${android.version_code}</platform>
 	                    </sdk>
 	                    <proguard>
-	                        <skip>true</skip>
+	                        <skip>false</skip>
 	                        <config>../proguard.cfg</config>
 	                    </proguard>
 	                    <manifest>
@@ -193,7 +192,7 @@
 						<configLocation>checkstyle.xml</configLocation>
 						<enableRulesSummary>false</enableRulesSummary>
 					</configuration>
-					<!-- <executions>
+					<executions>
 						<execution>
 							<id>checkstyle-check</id>
 							<phase>process-sources</phase>
@@ -201,7 +200,7 @@
 								<goal>check</goal>
 							</goals>
 						</execution>
-					</executions> -->
+					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -331,15 +330,6 @@
     </build>  
 
     <profiles>
-		<profile>
-			<id>default</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<modules>
-				<module>instrumented-tests</module>
-			</modules>
-		</profile>
 		<profile>
 			<id>cobertura</id>
 			<properties>

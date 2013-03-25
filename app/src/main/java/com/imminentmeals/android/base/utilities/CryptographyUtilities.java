@@ -150,7 +150,6 @@ public class CryptographyUtilities {
     }
 
     @Nonnull private static String toHex(@Nonnull byte[] buffer) {
-        if (buffer == null) return "";
         final StringBuilder result = new StringBuilder(2 * buffer.length);
         for (byte b : buffer)
             appendHex(result, b);
