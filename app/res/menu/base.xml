@@ -3,6 +3,7 @@
     <item android:id="@+id/menu_refresh"
           android:icon="@drawable/ic_action_refresh"
           android:title="@string/description_refresh"
+          android:visible="false"
           android:orderInCategory="4"
           android:showAsAction="ifRoom" />
 

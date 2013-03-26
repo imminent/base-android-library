@@ -5,6 +5,8 @@ import static android.util.Base64.decode;
 import static android.util.Base64.encodeToString;
 import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.crypto.SecretKey;
@@ -18,12 +20,14 @@ import android.accounts.AccountManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.http.HttpResponseCache;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.AccountFlowCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.GoogleAnalyticsCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.InjectionCallbacks;
+import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks;
 import com.imminentmeals.android.base.ui.AccountActivity;
 import com.imminentmeals.android.base.utilities.AccountUtilities;
 import com.imminentmeals.android.base.utilities.CryptographyUtilities;
@@ -44,9 +48,11 @@ public class BaseAndroidLibraryApplication extends Application implements Object
     @Inject /* package */AccountFlowCallbacks account_flow_callbacks;
     @Inject /* package */GoogleAnalyticsCallbacks google_analytics_callbakcs;
     @Inject /* package */InjectionCallbacks injection_callbacks;
+    @Inject /* package */SyncCallbacks sync_callbacks;
     /** Name to associate with the account {@link android.app.Activity} */
     public static final String ACCOUNT_ACTIVITY = "account";
 
+/* Lifecycle */
     @Override
     public void onCreate() {
         if (BuildConfig.DEBUG)
@@ -63,6 +69,7 @@ public class BaseAndroidLibraryApplication extends Application implements Object
         registerActivityLifecycleCallbacks(account_flow_callbacks);
         registerActivityLifecycleCallbacks(google_analytics_callbakcs);
         registerActivityLifecycleCallbacks(injection_callbacks);
+        registerActivityLifecycleCallbacks(sync_callbacks);
 
         // Establishes a secret key on initial launch
         if (!settings.contains(CryptographyUtilities.KEY_SECRET_KEY))
@@ -74,14 +81,38 @@ public class BaseAndroidLibraryApplication extends Application implements Object
             } catch (NoSuchAlgorithmException error) {
                 LOGE(error);
             }
+
+        // Enables HTTP response caching
+        enableHttpResponseCache();
     }
 
-/* ObjectGraph Contract */
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+
+        flushHttpCache();
+    }
+
+/* Application Callbacks */
+    @Override
+    public void onTrimMemory(int level) {
+        // TODO: look into onTrimMemory and onLowMemory
+        super.onTrimMemory(level);
+        switch (level) {
+            case Application.TRIM_MEMORY_COMPLETE:
+                flushHttpCache();
+                break;
+            default: break;
+        }
+    }
+
+/* ObjectGraphApplication Contract */
     @Override
     public void inject(Object dependent) {
         _object_graph.inject(dependent);
     }
 
+/* Dependency Injection Module */
     /**
      * <p>Module class that defines injection entry points that aren't defined in the
      * AndroidManifest (like Fragment and non-Android classes). This allows Dagger to inject
@@ -169,6 +200,35 @@ public class BaseAndroidLibraryApplication extends Application implements Object
         private final Context _context;
     }
 
+    protected void enableHttpResponseCache() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final File cache_directory = new File(getCacheDir(), "http");
+                    HttpResponseCache.install(cache_directory, _CACHE_SIZE);
+                } catch (IOException error) {
+                    LOGE(error.getCause(), "HTTP cache installation failed.");
+                }
+            }
+        }).start();
+    }
+
+    protected void flushHttpCache() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final HttpResponseCache cache = HttpResponseCache.getInstalled();
+                if (cache != null)
+                    cache.flush();
+            }
+        }).start();
+    }
+
     /** Application's object graph for handling dependency injection */
     private ObjectGraph _object_graph;
+    /** One Mebibyte, is 2^20 = 1024 * 1024 = 1,048,576 bytes (MiB) */
+    private static final long _MEBIBYTE = 1024 * 1024;
+    /** Sets cache size to 10 MiB */
+    private static final long _CACHE_SIZE = 10 * _MEBIBYTE;
 }

@@ -1,6 +1,8 @@
 package com.imminentmeals.android.base.ui;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,14 +10,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.imminentmeals.android.base.R;
+import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks;
+import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks.Syncable;
 import com.imminentmeals.android.base.utilities.ActionUtilities;
 import com.imminentmeals.android.base.utilities.HelpUtilities;
+import com.squareup.otto.Bus;
 
 /**
  * <p>Controller that provides the Home screen.</p>
  * @author Dandré Allison
  */
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity implements Syncable {
+    @Inject /* package */Bus bus;
 
 /* Lifecycle */
     @Override
@@ -28,7 +34,9 @@ public class HomeActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu actions) {
         super.onCreateOptionsMenu(actions);
-        ActionUtilities.generateActions(getMenuInflater(), actions, 0);
+        ActionUtilities.generateActionsWithSyncStatus(getMenuInflater(), actions, 0);
+        _action_menu = actions;
+        bus.post(new SyncCallbacks.ActionMenuCreatedEvent());
         return true;
     }
 
@@ -41,4 +49,15 @@ public class HomeActivity extends Activity {
         }
         return super.onOptionsItemSelected(action);
     }
+
+/* Syncable Contract */
+    @Override
+    @Nonnull public Menu actionMenu() {
+        if (_action_menu == null)
+            throw new IllegalStateException("Action menu accessed before being assigned in onCreateOptionsMenu(...)");
+        return _action_menu;
+    }
+
+    /** The action menu */
+    private Menu _action_menu;
 }

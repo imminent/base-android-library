@@ -24,6 +24,18 @@ public final class ActionUtilities {
        if (resource > 0) inflater.inflate(resource, actions);
    }
 
+   /**
+    * <p>Generates the base actions and amends the given actions, if more are provided.</p>
+    * @param inflater Used to inflate the actions
+    * @param actions Holds the inflated actions
+    * @param resource Menu resource ID of the given actions if greater than {@code 0}
+    */
+   public static void generateActionsWithSyncStatus(@Nonnull MenuInflater inflater, @Nonnull Menu actions, int resource) {
+       inflater.inflate(_BASE_ACTIONS, actions);
+       actions.findItem(R.id.menu_refresh).setVisible(true);
+       if (resource > 0) inflater.inflate(resource, actions);
+   }
+
 /* Private Constructor */
     /** Blocks instantiation of the {@link HelpUtilities} class. */
     private ActionUtilities() { }
