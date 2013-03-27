@@ -25,6 +25,7 @@ import android.os.StrictMode;
 import android.preference.PreferenceManager;
 
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.AccountFlowCallbacks;
+import com.imminentmeals.android.base.activity_lifecycle_callbacks.DoneDiscardCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.GoogleAnalyticsCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.InjectionCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks;
@@ -49,6 +50,7 @@ public class BaseAndroidLibraryApplication extends Application implements Object
     @Inject /* package */GoogleAnalyticsCallbacks google_analytics_callbakcs;
     @Inject /* package */InjectionCallbacks injection_callbacks;
     @Inject /* package */SyncCallbacks sync_callbacks;
+    @Inject /* package */DoneDiscardCallbacks done_discard_callbacks;
     /** Name to associate with the account {@link android.app.Activity} */
     public static final String ACCOUNT_ACTIVITY = "account";
 
@@ -70,6 +72,7 @@ public class BaseAndroidLibraryApplication extends Application implements Object
         registerActivityLifecycleCallbacks(google_analytics_callbakcs);
         registerActivityLifecycleCallbacks(injection_callbacks);
         registerActivityLifecycleCallbacks(sync_callbacks);
+        registerActivityLifecycleCallbacks(done_discard_callbacks);
 
         // Establishes a secret key on initial launch
         if (!settings.contains(CryptographyUtilities.KEY_SECRET_KEY))

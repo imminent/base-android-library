@@ -24,8 +24,6 @@ import com.squareup.otto.Subscribe;
  * @author Dandre Allison
  */
 public class SyncCallbacks extends SimpleActivityLifecycleCallbacks {
-    /** The event bus */
-    @Inject /* package */Bus bus;
 
     /**
      * <p>Interface to implement when sync status should be displayed. Though this can't be required through
@@ -48,7 +46,9 @@ public class SyncCallbacks extends SimpleActivityLifecycleCallbacks {
     public static class ActionMenuCreatedEvent { }
 
     @Inject
-    public SyncCallbacks() { }
+    public SyncCallbacks(Bus bus) {
+        bus.register(this);
+    }
 
 /* Activity Lifecycle */
     @Override
@@ -92,6 +92,8 @@ public class SyncCallbacks extends SimpleActivityLifecycleCallbacks {
 /* ActionMenuCreatedEvent */
     @Subscribe
     public void onActionMenuCreated(@Nonnull ActionMenuCreatedEvent _) {
+        if (_sync_status_observer == null) return;
+
         // Defers observing sync status until after the action menu is created
         // Checks the current sync status
         _sync_status_observer.onStatusChanged(0);
@@ -119,5 +121,5 @@ public class SyncCallbacks extends SimpleActivityLifecycleCallbacks {
     /** Used to remove {@link #_sync_status_observer} from the {@link ContentResolver} */
     @CheckForNull private Object _sync_observer_handle;
     /** Receives callback when {@link ContentResolver} sync status changes */
-    private SyncStatusObserver _sync_status_observer;
+    @CheckForNull private SyncStatusObserver _sync_status_observer;
 }

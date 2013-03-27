@@ -1,5 +1,7 @@
 package com.imminentmeals.android.base.ui;
 
+import static com.imminentmeals.android.base.utilities.LogUtilities.LOGD;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -10,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.imminentmeals.android.base.R;
+import com.imminentmeals.android.base.activity_lifecycle_callbacks.DoneDiscardCallbacks.UsesDoneDiscardBar;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks.Syncable;
 import com.imminentmeals.android.base.utilities.ActionUtilities;
@@ -20,7 +23,7 @@ import com.squareup.otto.Bus;
  * <p>Controller that provides the Home screen.</p>
  * @author Dandré Allison
  */
-public class HomeActivity extends Activity implements Syncable {
+public class HomeActivity extends Activity implements Syncable, UsesDoneDiscardBar {
     @Inject /* package */Bus bus;
 
 /* Lifecycle */
@@ -57,6 +60,17 @@ public class HomeActivity extends Activity implements Syncable {
             throw new IllegalStateException("Action menu accessed before being assigned in onCreateOptionsMenu(...)");
         return _action_menu;
     }
+
+/* Done/Discard Bar Callbacks */
+   @Override
+   public void onDoneClicked() {
+       LOGD("Done!");
+   }
+
+   @Override
+   public void onDiscardClicked() {
+       LOGD("Discard!");
+   }
 
     /** The action menu */
     private Menu _action_menu;
