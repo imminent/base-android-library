@@ -29,10 +29,10 @@ public class QuickReturnListFragment extends ListFragment implements OnScrollLis
         final ViewGroup root_view = (ViewGroup) inflater.inflate(R.layout.fragment_quick_return, container, false);
 
         // Gathers views
-        final View _quick_return_bar = root_view.findViewById(R.id.quick_return_bar);
+        final View quick_return_bar = root_view.findViewById(R.id.quick_return_bar);
 
         // Sets up animation
-        _quick_return_bar_return_animator = ObjectAnimator.ofFloat(_quick_return_bar,
+        _quick_return_bar_return_animator = ObjectAnimator.ofFloat(quick_return_bar,
                 "translationY",
                 0);
         _quick_return_bar_return_animator.addListener(
@@ -57,7 +57,7 @@ public class QuickReturnListFragment extends ListFragment implements OnScrollLis
                     }
                 }
         );
-        _quick_return_bar_hide_animator = ObjectAnimator.ofFloat(_quick_return_bar,
+        _quick_return_bar_hide_animator = ObjectAnimator.ofFloat(quick_return_bar,
                 "translationY",
                 getResources().getDimension(R.dimen.quick_return_bar_height));
         _quick_return_bar_hide_animator.addListener(

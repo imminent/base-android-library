@@ -1,22 +1,15 @@
 package com.imminentmeals.android.base.ui;
 
-import static com.imminentmeals.android.base.utilities.LogUtilities.LOGD;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import android.app.Activity;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.imminentmeals.android.base.R;
-import com.imminentmeals.android.base.activity_lifecycle_callbacks.DoneDiscardCallbacks.ProvidesCustomDoneButton;
-import com.imminentmeals.android.base.activity_lifecycle_callbacks.DoneDiscardCallbacks.UsesDoneDiscardBar;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks.Syncable;
 import com.imminentmeals.android.base.utilities.ActionUtilities;
