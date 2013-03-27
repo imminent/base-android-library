@@ -4,14 +4,18 @@ import static com.imminentmeals.android.base.utilities.LogUtilities.LOGD;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.imminentmeals.android.base.R;
+import com.imminentmeals.android.base.activity_lifecycle_callbacks.DoneDiscardCallbacks.ProvidesCustomDoneButton;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.DoneDiscardCallbacks.UsesDoneDiscardBar;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks.Syncable;
@@ -23,7 +27,7 @@ import com.squareup.otto.Bus;
  * <p>Controller that provides the Home screen.</p>
  * @author Dandré Allison
  */
-public class HomeActivity extends Activity implements Syncable, UsesDoneDiscardBar {
+public class HomeActivity extends Activity implements Syncable {
     @Inject /* package */Bus bus;
 
 /* Lifecycle */
@@ -60,17 +64,6 @@ public class HomeActivity extends Activity implements Syncable, UsesDoneDiscardB
             throw new IllegalStateException("Action menu accessed before being assigned in onCreateOptionsMenu(...)");
         return _action_menu;
     }
-
-/* Done/Discard Bar Callbacks */
-   @Override
-   public void onDoneClicked() {
-       LOGD("Done!");
-   }
-
-   @Override
-   public void onDiscardClicked() {
-       LOGD("Discard!");
-   }
 
     /** The action menu */
     private Menu _action_menu;

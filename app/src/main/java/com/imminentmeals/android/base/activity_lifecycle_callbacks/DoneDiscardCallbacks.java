@@ -19,14 +19,18 @@ package com.imminentmeals.android.base.activity_lifecycle_callbacks;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import butterknife.Views;
 
 import com.imminentmeals.android.base.R;
 import com.imminentmeals.android.base.utilities.SimpleActivityLifecycleCallbacks;
@@ -75,6 +79,23 @@ public class DoneDiscardCallbacks extends SimpleActivityLifecycleCallbacks {
         void onDoneClicked();
     }
 
+    /**
+     * <p>Marks the {@link Activity} to provide custom icon and/or text for its Done/Discard Bar.</p>
+     * @author Dandre Allison
+     */
+    public interface ProvidesCustomDoneButton {
+        /**
+         * <p>Provides a custom icon for the done button. If none is provided, the default icon will be used.</p>
+         * @return The custom icon for the done button
+         */
+        @Nullable Drawable doneButtonIcon();
+        /**
+         * <p>Provides custom text for the done button. If none is provided, the default text will be used.</p>
+         * @return The custom text for the done button
+         */
+        @Nullable CharSequence doneButtonText();
+    }
+
     @Inject
     public DoneDiscardCallbacks() { }
 
@@ -82,6 +103,7 @@ public class DoneDiscardCallbacks extends SimpleActivityLifecycleCallbacks {
     @Override
     public void onActivityCreated(final Activity activity, @CheckForNull Bundle icicle) {
         // Defines types that are Activity and the Done/Discard Bar pattern
+        /** Type-cast for Done/Discard Done Only mode Activity */
         class DoneDiscardBarDoneOnlyModeActivity extends ActivityWrapper implements UsesDoneDiscardBarDoneOnlyMode {
 
             DoneDiscardBarDoneOnlyModeActivity() {
@@ -94,6 +116,7 @@ public class DoneDiscardCallbacks extends SimpleActivityLifecycleCallbacks {
                 ((UsesDoneDiscardBarDoneOnlyMode) activity).onDoneClicked();
             }
         }
+        /** Type-cast for Done/Discard Activity */
         class DoneDiscardBarActivity extends DoneDiscardBarDoneOnlyModeActivity implements UsesDoneDiscardBar {
 
             @Override
@@ -116,7 +139,7 @@ public class DoneDiscardCallbacks extends SimpleActivityLifecycleCallbacks {
      * cast an activity also implement a Done/Discard Bar marker interface.</p>
      * @author Dandre Allison
      */
-    private static class ActivityWrapper {
+    private static class ActivityWrapper implements ProvidesCustomDoneButton {
 
         /**
          * <p>Constructs the {@link ActivityWrapper}.</p>
@@ -138,6 +161,24 @@ public class DoneDiscardCallbacks extends SimpleActivityLifecycleCallbacks {
          */
         void finish() {
             _activity.finish();
+        }
+
+        /**
+         * <p>Indicates when the wrapped {@link Activity} provides a custom done button.</p>
+         * @return {@code true} indicates the wrapped activity provides a custom done button
+         */
+        boolean providesCustomDoneButton() {
+            return _activity instanceof ProvidesCustomDoneButton;
+        }
+
+        @Override
+        public CharSequence doneButtonText() {
+            return providesCustomDoneButton()? ((ProvidesCustomDoneButton) _activity).doneButtonText() : null;
+        }
+
+        @Override
+        public Drawable doneButtonIcon() {
+            return providesCustomDoneButton()? ((ProvidesCustomDoneButton) _activity).doneButtonIcon() : null;
         }
 
         /** The {@link Activity}*/
@@ -163,6 +204,9 @@ public class DoneDiscardCallbacks extends SimpleActivityLifecycleCallbacks {
                             activity.finish();
                         }
                     });
+        activity.getActionBar().setCustomView(done_discard_bar, new ActionBar.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
         return done_discard_bar;
     }
 
@@ -179,7 +223,16 @@ public class DoneDiscardCallbacks extends SimpleActivityLifecycleCallbacks {
         final LayoutInflater inflater = (LayoutInflater) activity.getActionBar().getThemedContext()
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         final View done_discard_bar = inflater.inflate(layout, null);
-        done_discard_bar.findViewById(R.id.actionbar_done).setOnClickListener(
+        final ViewGroup done_button = Views.findById(done_discard_bar, R.id.actionbar_done);
+        // Allows for customization of the done button
+        if (activity.providesCustomDoneButton()) {
+            final TextView done_button_display = (TextView) done_button.getChildAt(0);
+            final CharSequence done_text = ((ProvidesCustomDoneButton) activity).doneButtonText();
+            if (done_text != null) done_button_display.setText(done_text);
+            final Drawable done_icon = ((ProvidesCustomDoneButton) activity).doneButtonIcon();
+            if (done_icon != null) done_button_display.setCompoundDrawablesWithIntrinsicBounds(done_icon, null, null, null);
+        }
+        done_button.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View _) {
@@ -188,11 +241,10 @@ public class DoneDiscardCallbacks extends SimpleActivityLifecycleCallbacks {
                         activity.finish();
                     }
                 });
-        activity.getActionBar().setCustomView(done_discard_bar, new ActionBar.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
+        activity.getActionBar().setCustomView(done_discard_bar);
         activity.getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM,
-                                                  ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
+                                                  ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME
+                                                  | ActionBar.DISPLAY_SHOW_TITLE);
         return done_discard_bar;
     }
 }
