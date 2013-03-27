@@ -29,4 +29,6 @@
     <dimen name="text_size_extra_extra_large">56sp</dimen>
     <!-- Minimum width for an action button in the menu area of an action bar -->
     <dimen name="action_button_min_width">64dp</dimen>
+    <!-- Quick Return Bar -->
+    <dimen name="quick_return_bar_height">64dp</dimen>
 </resources>
