@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
     <!-- Allows application to use credentials stored in AccountManager like from getAuthToken -->
     <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
-    <!-- Allows application to see the sync stats like from isSyncActive and isSyncPending -->
+    <!-- Allows application to see the sync status like from isSyncActive and isSyncPending -->
     <uses-permission android:name="android.permission.READ_SYNC_STATS"/>
 
     <application android:name="BaseAndroidLibraryApplication" android:hardwareAccelerated="true" android:icon="@drawable/ic_launcher" android:label="@string/title_app" android:supportsRtl="true" android:allowBackup="true">

@@ -30,7 +30,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.Views;
 
 import com.imminentmeals.android.base.R;
 import com.imminentmeals.android.base.utilities.SimpleActivityLifecycleCallbacks;
@@ -173,12 +172,16 @@ public class DoneDiscardCallbacks extends SimpleActivityLifecycleCallbacks {
 
         @Override
         public CharSequence doneButtonText() {
-            return providesCustomDoneButton()? ((ProvidesCustomDoneButton) _activity).doneButtonText() : null;
+            return _activity instanceof ProvidesCustomDoneButton
+                    ? ((ProvidesCustomDoneButton) _activity).doneButtonText()
+                    : null;
         }
 
         @Override
         public Drawable doneButtonIcon() {
-            return providesCustomDoneButton()? ((ProvidesCustomDoneButton) _activity).doneButtonIcon() : null;
+            return _activity instanceof ProvidesCustomDoneButton
+                    ? ((ProvidesCustomDoneButton) _activity).doneButtonIcon()
+                    : null;
         }
 
         /** The {@link Activity}*/
@@ -223,7 +226,7 @@ public class DoneDiscardCallbacks extends SimpleActivityLifecycleCallbacks {
         final LayoutInflater inflater = (LayoutInflater) activity.getActionBar().getThemedContext()
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         final View done_discard_bar = inflater.inflate(layout, null);
-        final ViewGroup done_button = Views.findById(done_discard_bar, R.id.actionbar_done);
+        final ViewGroup done_button = (ViewGroup) done_discard_bar.findViewById(R.id.actionbar_done);
         // Allows for customization of the done button
         if (activity.providesCustomDoneButton()) {
             final TextView done_button_display = (TextView) done_button.getChildAt(0);

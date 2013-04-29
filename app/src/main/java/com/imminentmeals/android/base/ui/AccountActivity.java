@@ -33,8 +33,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import butterknife.InjectView;
-import butterknife.Views;
 
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.common.base.Stopwatch;
@@ -277,14 +275,15 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
              */
             /* package */static class ViewHolder {
                 /** The {@link TextView} into which to bind the account name */
-                @InjectView(android.R.id.text1) /* package */TextView text_view;
+                /*@InjectView(android.R.id.text1)*/ /* package */TextView text_view;
 
                 /**
                  * <p>Finds the {@link View}s, and remembers where they are.</p>
                  * @param view
                  */
                 public ViewHolder(View view) {
-                    Views.inject(this, view);
+                    text_view = (TextView) view.findViewById(android.R.id.text1);
+//                    Views.inject(this, view);
                 }
             }
 

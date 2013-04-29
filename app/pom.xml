@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>base-android-library</artifactId>
-    <packaging>apk</packaging>
+    <packaging>apklib</packaging>
     <name>Base Android Library app</name>
 
     <properties>
@@ -26,7 +26,7 @@
         <!-- Enhancements -->
         <viewpager-indicator.version>2.4.1</viewpager-indicator.version>
         <otto.version>1.3.3</otto.version>
-        <dagger.version>0.9.1</dagger.version>
+        <dagger.version>1.0-SNAPSHOT</dagger.version>
         <retrofit.version>1.0.0-SNAPSHOT</retrofit.version>
         <viewholder.version>0.7</viewholder.version>
         <httprequest.version>4.0</httprequest.version>
@@ -57,12 +57,12 @@
         </dependency>
         <!-- Dagger: Compile-time Java dependency injection -->
         <dependency>
-            <groupId>com.squareup</groupId>
+            <groupId>com.squareup.dagger</groupId>
             <artifactId>dagger</artifactId>
             <version>${dagger.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.squareup</groupId>
+            <groupId>com.squareup.dagger</groupId>
             <artifactId>dagger-compiler</artifactId>
             <version>${dagger.version}</version>
             <optional>true</optional>
@@ -105,11 +105,11 @@
             <type>jar</type>
         </dependency>
         <!-- Butterknife: View injection -->
-        <dependency>
+        <!--<dependency>
 		    <groupId>com.jakewharton</groupId>
 		    <artifactId>butterknife</artifactId>
 		    <version>${butterknife.version}</version>
-		</dependency>
+		</dependency>-->
 		<!-- FindBugs: Static analysis tool annotations -->
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
@@ -142,51 +142,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
 			</plugin>
-			
-			<!-- Generates Dagger module based off of AndroidManifest.xml -->
-            <plugin>
-                <groupId>com.squareup</groupId>
-                <artifactId>dagger-androidmanifest-plugin</artifactId>
-                <version>${dagger.version}</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
-        <pluginManagement>
-		    <plugins>
-		        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>com.squareup</groupId>
-										<artifactId>dagger-androidmanifest-plugin</artifactId>
-										<versionRange>[0.9.1,)</versionRange>
-										<goals>
-											<goal>generate</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-		    </plugins>
-		</pluginManagement>
     </build>
 
     <profiles>

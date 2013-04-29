@@ -1,5 +1,13 @@
 package com.imminentmeals.android.base.utilities;
 
+import static android.content.Context.TELEPHONY_SERVICE;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
+import static com.imminentmeals.android.base.utilities.LogUtilities.makeLogTag;
+
+import java.util.List;
+import java.util.regex.Matcher;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
@@ -19,15 +27,8 @@ import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Patterns;
+
 import com.google.android.gms.auth.GoogleAuthUtil;
-
-import java.util.List;
-import java.util.regex.Matcher;
-
-import static android.content.Context.TELEPHONY_SERVICE;
-import static com.google.common.collect.Lists.newArrayList;
-import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
-import static com.imminentmeals.android.base.utilities.LogUtilities.makeLogTag;
 
 /**
  * <p>A collection of authentication and account connection utilities. With strong inspiration from the Google IO session
@@ -372,6 +373,13 @@ public class AccountUtilities {
     }
 
     /**
+     * <p>Allows subclass to retrieve user data.</p>
+     * @param context the current context
+     * @param user_data the user data
+     */
+    protected static void didRetrieveUserData(Context context, Bundle user_data) { }
+
+    /**
      * <p>Contacts user profile query interface.</p>
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -445,6 +453,7 @@ public class AccountUtilities {
                         if (user_data != null) {
                             setChosenAccountId(context, user_data.getString(KEY_ACCOUNT_ID));
                             setChosenAccountOwnerName(context, user_data.getString(KEY_OWNER_NAME));
+                            didRetrieveUserData(context, user_data);
                         }
                         // Notify the callback that the token is ready
                         if (callback != null)

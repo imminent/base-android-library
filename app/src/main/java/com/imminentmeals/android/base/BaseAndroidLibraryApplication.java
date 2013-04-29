@@ -3,12 +3,22 @@ package com.imminentmeals.android.base;
 import static android.util.Base64.DEFAULT;
 import static android.util.Base64.decode;
 import static android.util.Base64.encodeToString;
+import static com.google.common.collect.Lists.newArrayList;
 import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
+import static com.imminentmeals.android.base.utilities.LogUtilities.LOGV;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.net.CookieStore;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.crypto.SecretKey;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -24,17 +34,24 @@ import android.net.http.HttpResponseCache;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.AccountFlowCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.DoneDiscardCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.GoogleAnalyticsCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.InjectionCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks;
+import com.imminentmeals.android.base.data.sync.SyncService;
 import com.imminentmeals.android.base.ui.AccountActivity;
+import com.imminentmeals.android.base.ui.HomeActivity;
 import com.imminentmeals.android.base.utilities.AccountUtilities;
+import com.imminentmeals.android.base.utilities.AndroidCookieStore;
 import com.imminentmeals.android.base.utilities.CryptographyUtilities;
 import com.imminentmeals.android.base.utilities.ObjectGraph.ObjectGraphApplication;
+import com.imminentmeals.android.base.utilities.StringUtilities;
 import com.squareup.otto.Bus;
 
+import dagger.Lazy;
 import dagger.Module;
 import dagger.ObjectGraph;
 import dagger.Provides;
@@ -51,8 +68,12 @@ public class BaseAndroidLibraryApplication extends Application implements Object
     @Inject /* package */InjectionCallbacks injection_callbacks;
     @Inject /* package */SyncCallbacks sync_callbacks;
     @Inject /* package */DoneDiscardCallbacks done_discard_callbacks;
+    @Inject /* package */Lazy<CookieStore> cookie_jar;
     /** Name to associate with the account {@link android.app.Activity} */
     public static final String ACCOUNT_ACTIVITY = "account";
+    /** Name to associate with the name of the auth token stored in a cookie */
+    public static final String COOKIE_AUTH_TOKEN = "cookie auth token";
+    @Inject @Named(COOKIE_AUTH_TOKEN)/* package */String cookie_auth_token;
 
 /* Lifecycle */
     @Override
@@ -62,8 +83,19 @@ public class BaseAndroidLibraryApplication extends Application implements Object
         super.onCreate();
 
         // Creates the dependency injection object graph
-        _object_graph = ObjectGraph.create(new BaseAndroidLibraryModule(this));
+        _object_graph = ObjectGraph.create(modules().toArray());
         _object_graph.inject(this);
+        if (BuildConfig.DEBUG)
+            LOGV(getClass().getSimpleName(), StringUtilities.joinAnd(", ", " and ",
+                Lists.transform(modules(), new Function<Object, String>() {
+
+                    @Override
+                    @Nullable public String apply(@Nullable Object module) {
+                        return module.getClass().getSimpleName() + ": "
+                                + StringUtilities.joinAnd(",  ", " and ",
+                                        module.getClass().getAnnotation(Module.class).entryPoints()) + "\n";
+                    }
+                })));
 
         // TODO: setDefaultPreferences here
 
@@ -87,6 +119,12 @@ public class BaseAndroidLibraryApplication extends Application implements Object
 
         // Enables HTTP response caching
         enableHttpResponseCache();
+
+        // Enables auth token cookie persistence when an auth token key is provided
+        if (!StringUtilities.isEmpty(cookie_auth_token)) {
+            final CookieManager cookie_manager = new CookieManager(cookie_jar.get(), CookiePolicy.ACCEPT_ORIGINAL_SERVER);
+            CookieHandler.setDefault(cookie_manager);
+        }
     }
 
     @Override
@@ -129,12 +167,16 @@ public class BaseAndroidLibraryApplication extends Application implements Object
                     // Application
                     BaseAndroidLibraryApplication.class,
 
+                    // Activities
+                    AccountActivity.class,
+                    HomeActivity.class,
+
                     // Fragments
-                    AccountActivity.ChooseAccountFragment.class
-            },
-            includes = {
-                    // Module generated by dagger-androidmanifest-plugin
-                    ManifestModule.class
+                    AccountActivity.ChooseAccountFragment.class,
+
+                    // Services
+                    AccountAuthenticatorService.class,
+                    SyncService.class
             }
     )
     protected static class BaseAndroidLibraryModule {
@@ -199,10 +241,30 @@ public class BaseAndroidLibraryApplication extends Application implements Object
             return AccountActivity.class;
         }
 
+        @Provides @Named(COOKIE_AUTH_TOKEN) String providesCookieAuthToken() {
+            return "";
+        }
+
+        @Provides @Singleton CookieStore provideCookieStore(AndroidCookieStore cookie_jar) {
+            return cookie_jar;
+        }
+
         /** The context in which the app is running */
         private final Context _context;
     }
 
+    /**
+     * <p>Callback to include an extra Module in the {@link ObjectGraph}.</p>
+     * @return
+     */
+    @OverridingMethodsMustInvokeSuper
+    @Nonnull protected List<Object> modules() {
+        return newArrayList((Object) new BaseAndroidLibraryModule(this));
+    }
+
+    /**
+     * <p>Enables the HTTP response cache.</p>
+     */
     protected void enableHttpResponseCache() {
         new Thread(new Runnable() {
             @Override
@@ -217,6 +279,9 @@ public class BaseAndroidLibraryApplication extends Application implements Object
         }).start();
     }
 
+    /**
+     * <p>Stores all buffered HTTP response caches.</p>
+     */
     protected void flushHttpCache() {
         new Thread(new Runnable() {
             @Override

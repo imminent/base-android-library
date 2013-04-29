@@ -1,5 +1,6 @@
 package com.imminentmeals.android.base.activity_lifecycle_callbacks;
 
+import static com.imminentmeals.android.base.BaseAndroidLibraryApplication.ACCOUNT_ACTIVITY;
 import static com.imminentmeals.android.base.utilities.LogUtilities.LOGV;
 
 import javax.annotation.CheckForNull;
@@ -13,7 +14,6 @@ import android.os.Bundle;
 import com.imminentmeals.android.base.ui.AccountActivity;
 import com.imminentmeals.android.base.utilities.AccountUtilities;
 import com.imminentmeals.android.base.utilities.SimpleActivityLifecycleCallbacks;
-import static com.imminentmeals.android.base.BaseAndroidLibraryApplication.ACCOUNT_ACTIVITY;
 
 /**
  * <p>Finishes the {@link Activity} and starts the authentication flow if not authenticated.</p>

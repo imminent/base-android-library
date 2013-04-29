@@ -158,12 +158,12 @@
 	                    </manifest>
 	                    <lint>
 	                        <failOnError>true</failOnError>
-	                        <skip>false</skip>
+	                        <skip>true</skip>
 	                    </lint>
 	                    <!-- Installs app as fresh each time -->
 	                    <undeployBeforeDeploy>true</undeployBeforeDeploy>
 	                </configuration>
-	                <executions>
+	                <!-- <executions>
 						<execution>
 							<id>lint</id>
 							<goals>
@@ -171,7 +171,7 @@
 							</goals>
 							<phase>install</phase>
 	                   	</execution>
-	                </executions>
+	                </executions> -->
                 </plugin>
 				<!-- This plugin is the compiler used by Maven -->
 				<plugin>
@@ -192,7 +192,7 @@
 						<configLocation>checkstyle.xml</configLocation>
 						<enableRulesSummary>false</enableRulesSummary>
 					</configuration>
-					<executions>
+					<!-- <executions>
 						<execution>
 							<id>checkstyle-check</id>
 							<phase>process-sources</phase>
@@ -200,7 +200,7 @@
 								<goal>check</goal>
 							</goals>
 						</execution>
-					</executions>
+					</executions> -->
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -211,7 +211,7 @@
 						<includeFilterFile>findbugs-include.xml</includeFilterFile>
 						<failOnError>false</failOnError>
 					</configuration>
-					<executions>
+					<!-- <executions>
 						<execution>
 							<id>findbugs-check</id>
 							<phase>verify</phase>
@@ -219,7 +219,7 @@
 								<goal>check</goal>
 							</goals>
 						</execution>
-					</executions>
+					</executions> -->
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -229,7 +229,7 @@
 						<targetJdk>${java.version}</targetJdk>
 						<ruleset>pmd.xml</ruleset>
 					</configuration>
-					<executions>
+					<!-- <executions>
 						<execution>
 							<id>pmd-check</id>
 							<goals>
@@ -237,20 +237,20 @@
 								<goal>cpd-check</goal>
 							</goals>
 						</execution>
-					</executions>
+					</executions> -->
 				</plugin>
 				<plugin>
 					<groupId>com.lewisd</groupId>
 					<artifactId>lint-maven-plugin</artifactId>
 					<version>${lint-maven-plugin.version}</version>
-					<executions>
+					<!-- <executions>
 						<execution>
 							<phase>validate</phase>
 							<goals>
 								<goal>check</goal>
 							</goals>
 						</execution>
-					</executions>
+					</executions> -->
 				</plugin>
 				<!-- Eclipse config -->
 				<!-- WORKAROUND: http://stackoverflow.com/questions/13040788/how-to-elimate-the-maven-enforcer-plugin-goal-enforce-is-ignored-by-m2e-wa -->

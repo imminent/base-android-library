@@ -45,6 +45,10 @@ public class SyncCallbacks extends SimpleActivityLifecycleCallbacks {
      */
     public static class ActionMenuCreatedEvent { }
 
+    /**
+     * <p>Constructs a {@link SyncCallbacks}.</p>
+     * @param bus The EventBus
+     */
     @Inject
     public SyncCallbacks(Bus bus) {
         bus.register(this);
@@ -90,6 +94,10 @@ public class SyncCallbacks extends SimpleActivityLifecycleCallbacks {
     }
 
 /* ActionMenuCreatedEvent */
+    /**
+     * <p>Registers a sync status observer to monitor changes to the sync state once the action menu is created.</p>
+     * @param _ The unused event
+     */
     @Subscribe
     public void onActionMenuCreated(@Nonnull ActionMenuCreatedEvent _) {
         if (_sync_status_observer == null) return;

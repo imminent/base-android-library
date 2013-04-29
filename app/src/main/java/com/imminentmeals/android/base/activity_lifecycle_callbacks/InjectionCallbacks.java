@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import android.app.Activity;
 import android.os.Bundle;
-import butterknife.Views;
 
 import com.imminentmeals.android.base.utilities.ObjectGraph;
 import com.imminentmeals.android.base.utilities.SimpleActivityLifecycleCallbacks;
@@ -22,6 +21,6 @@ public class InjectionCallbacks extends SimpleActivityLifecycleCallbacks {
     @Override
     public void onActivityCreated(Activity activity, @CheckForNull Bundle icicle) {
         ObjectGraph.inject(activity);
-        Views.inject(activity);
+//        Views.inject(activity);
     }
 }

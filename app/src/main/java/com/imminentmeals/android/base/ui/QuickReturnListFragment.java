@@ -14,8 +14,8 @@ import android.widget.ListView;
 import com.imminentmeals.android.base.R;
 
 /**
- * {@link android.app.ListFragment} that hosts a quick return bar. The bar can be found at
- * {@link com.keepandshare.android.R.id#quick_return_bar} and Views can be added to it.
+ * <p>{@link android.app.ListFragment} that hosts a quick return bar. The bar can be found at
+ * {@link com.keepandshare.android.R.id#quick_return_bar} and Views can be added to it.</p>
  * @author Dandré Allison
  * @see <a href="https://plus.google.com/u/0/113735310430199015092/posts/1Sb549FvpJt">Quick Return post</a>
  */
@@ -33,7 +33,7 @@ public class QuickReturnListFragment extends ListFragment implements OnScrollLis
 
         // Sets up animation
         _quick_return_bar_return_animator = ObjectAnimator.ofFloat(quick_return_bar,
-                "translationY",
+                View.TRANSLATION_Y,
                 0);
         _quick_return_bar_return_animator.addListener(
                 new Animator.AnimatorListener() {
@@ -58,7 +58,7 @@ public class QuickReturnListFragment extends ListFragment implements OnScrollLis
                 }
         );
         _quick_return_bar_hide_animator = ObjectAnimator.ofFloat(quick_return_bar,
-                "translationY",
+                View.TRANSLATION_Y,
                 getResources().getDimension(R.dimen.quick_return_bar_height));
         _quick_return_bar_hide_animator.addListener(
                 new Animator.AnimatorListener() {
@@ -108,9 +108,7 @@ public class QuickReturnListFragment extends ListFragment implements OnScrollLis
                 // * Return quick return bar if first visible child is the same AND it's Y position increases
                 // * Return quick return bar if first visible child changes to a previous sibling
                 // * AND only if the quick return bar isn't already returning
-                if (!quickReturnBarIsReturning()
-                    && (first_visible_child == _last_first_child && y_position > _last_y)
-                    || first_visible_child < _last_first_child)
+                if (wasPreviousFirstVisibleChildScrolledDownAndQuickReturnBarIsNotReturning(first_visible_child, y_position))
                         _quick_return_bar_return_animator.start();
                 break;
 
@@ -118,17 +116,14 @@ public class QuickReturnListFragment extends ListFragment implements OnScrollLis
                 // * Hide quick return bar if first visible child is the same AND it's Y position decreases
                 // * Hide quick return bar if first visible child changes to a later sibling
                 // * AND only if the quick return bar isn't already going away
-                if (!quickReturnBarIsGoingAway()
-                    && (first_visible_child == _last_first_child && y_position < _last_y)
-                    || first_visible_child > _last_first_child)
+                if (wasPreviousFirstVisibleChildScrolledUpAndQuickReturnBarIsNotGoingAway(first_visible_child, y_position))
                     _quick_return_bar_hide_animator.start();
                 break;
 
             case RETURNING:
                 // * Cancel return of quick return bar if first visible child is the same AND it's Y position decreases
                 // * Cancel return of quick return bar if first visible child changes to a later sibling
-                if ((first_visible_child == _last_first_child && y_position < _last_y)
-                        || first_visible_child > _last_first_child) {
+                if (wasPreviousFirstVisibleChildScrolledUp(first_visible_child, y_position)) {
                     _quick_return_bar_return_animator.cancel();
                     _quick_return_bar_hide_animator.start();
                 }
@@ -137,8 +132,7 @@ public class QuickReturnListFragment extends ListFragment implements OnScrollLis
             case HIDING:
                 // * Cancel hide of quick return bar if first visible child is the same AND it's Y position increases
                 // * Cancel hide of quick return bar if first visible child changes to a previous sibling
-                if ((first_visible_child == _last_first_child && y_position > _last_y)
-                        || first_visible_child < _last_first_child) {
+                if (wasPreviousFirstVisibleChildScrolledDown(first_visible_child, y_position)) {
                     _quick_return_bar_hide_animator.cancel();
                     _quick_return_bar_return_animator.start();
                 }
@@ -153,7 +147,7 @@ public class QuickReturnListFragment extends ListFragment implements OnScrollLis
 
 /* Transition status checks */
     /**
-     * Checks if the quick return bar is transitioning back onto the screen.
+     * <p>Checks if the quick return bar is transitioning back onto the screen.</p>
      * @return {@code true} indicates that the quick return bar is returning
      */
     private boolean quickReturnBarIsReturning() {
@@ -162,15 +156,35 @@ public class QuickReturnListFragment extends ListFragment implements OnScrollLis
     }
 
     /**
-     * Checks if the quick return bar is transitioning off of the screen.
+     * <p>Checks if the quick return bar is transitioning off of the screen.</p>
      * @return {@code true} indicates that the quick return bar is going away
      */
     private boolean quickReturnBarIsGoingAway() {
         return _quick_return_bar_hide_animator.isRunning() || _quick_return_bar_hide_animator.isStarted();
     }
 
+    private boolean wasPreviousFirstVisibleChildScrolledUp(int first_visible_child, int y_position) {
+        return first_visible_child == _last_first_child && y_position < _last_y
+                || first_visible_child > _last_first_child;
+    }
+
+    private boolean wasPreviousFirstVisibleChildScrolledDown(int first_visible_child, int y_position) {
+        return first_visible_child == _last_first_child && y_position > _last_y
+                || first_visible_child < _last_first_child;
+    }
+
+    private boolean wasPreviousFirstVisibleChildScrolledDownAndQuickReturnBarIsNotReturning(int first_visible_child,
+            int y_position) {
+        return !quickReturnBarIsReturning() && wasPreviousFirstVisibleChildScrolledDown(first_visible_child, y_position);
+    }
+
+    private boolean wasPreviousFirstVisibleChildScrolledUpAndQuickReturnBarIsNotGoingAway(int first_visible_child,
+            int y_position) {
+        return !quickReturnBarIsGoingAway() && wasPreviousFirstVisibleChildScrolledUp(first_visible_child, y_position);
+    }
+
     /**
-     * Represents the state of the quick return bar.
+     * <p>Represents the state of the quick return bar.</p>
      */
     private static enum QuickReturnState {
         /** Stable state indicating that the quick return bar is visible on screen */
@@ -182,6 +196,7 @@ public class QuickReturnListFragment extends ListFragment implements OnScrollLis
         /** Transitive state indicating that the quick return bar is going off of the screen */
         HIDING
     }
+
     /** The current state of the quick return bar */
     private QuickReturnState _state = QuickReturnState.ON_SCREEN;
     /** Tracks the last seen y-position of the first visible child */
