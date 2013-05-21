@@ -1,11 +1,22 @@
 package com.imminentmeals.android.base;
+import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
 import static com.imminentmeals.android.base.utilities.LogUtilities.LOGV;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import com.imminentmeals.android.base.utilities.AccountUtilities;
+import com.imminentmeals.android.base.utilities.CryptographyUtilities;
 import com.imminentmeals.android.base.utilities.ObjectGraph;
+import com.imminentmeals.android.base.utilities.StringUtilities;
 
 import dagger.Lazy;
 
@@ -29,23 +40,31 @@ import android.os.PatternMatcher;
  */
 public class AccountAuthenticatorService extends Service {
     /** Account authenticator */
-    @Inject /* package */Lazy<AbstractAccountAuthenticator> account_authenticator;
+    @Inject /* package */Lazy<AccountAuthenticator> account_authenticator;
 
     /**
      * <p>Authenticates fake accounts constructed by the Base Android Library app.</p>
      * @author Dandre Allison
      */
     @Singleton
-    protected static class FakeAccountAuthenticator extends AbstractAccountAuthenticator {
+    protected static class AccountAuthenticator extends AbstractAccountAuthenticator {
 
         /**
          * <p>Constructs the account authenticator</p>
-         * @param context
+         * @param context The context in which the account authenticator operates
+         * @param account_utilities The account utilities
+         * @param crypto The cryptography utilities
+         * @param accounts The accounts manager provider
          */
         @Inject
-        public FakeAccountAuthenticator(Context context) {
+        public AccountAuthenticator(Context context, AccountUtilities account_utilities, CryptographyUtilities crypto,
+                                    Provider<AccountManager> accounts) {
             super(context);
-            _context = context;
+            _account_utilities = account_utilities;
+            _crypto = crypto;
+            _accounts = accounts;
+            _token_matcher = new PatternMatcher(_account_utilities.authTokenType(),
+                    PatternMatcher.PATTERN_LITERAL);
         }
 
         /*
@@ -56,12 +75,25 @@ public class AccountAuthenticatorService extends Service {
         @Override
         public Bundle addAccount(AccountAuthenticatorResponse response, String account_type, String auth_token_type,
                                  String[] required_features, Bundle options) throws NetworkErrorException {
-            return Bundle.EMPTY;
+            // If no connect account action is defined, then there is no connect account activity to start
+            if (_account_utilities.addAccountActionName() == null) return Bundle.EMPTY;
+
+            LOGV("Creating add account activity bundle");
+            // Creates the intent to start the connect account activity
+            return addAccountBundle(response, account_type, auth_token_type, true);
         }
 
         @Override
         public Bundle confirmCredentials(AccountAuthenticatorResponse response, Account account, Bundle options) {
-            return null;
+            final String auth_token = authenticate(account, _accounts.get());
+            final boolean confirmed = StringUtilities.isEmpty(auth_token);
+            final Bundle result = new Bundle();
+            result.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, confirmed);
+            if (!confirmed) {
+                result.putInt(AccountManager.KEY_ERROR_CODE, AccountManager.ERROR_CODE_BAD_ARGUMENTS);
+                result.putString(AccountManager.KEY_ERROR_MESSAGE, "Unable to confirm given credentials");
+            }
+            return result;
         }
 
         @Override
@@ -82,17 +114,29 @@ public class AccountAuthenticatorService extends Service {
                 return result;
             }
 
-            // Returns the stored auth token
-            final Bundle result = new Bundle(3);
-            result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
-            result.putString(AccountManager.KEY_ACCOUNT_TYPE, "fake:" + AccountUtilities.AUTH_TOKEN_TYPE);
-            result.putString(AccountManager.KEY_AUTHTOKEN, AccountUtilities.getAuthToken(_context));
-            return result;
+            final AccountManager accounts = _accounts.get();
+            String auth_token = accounts.peekAuthToken(account, auth_token_type);
+
+            // Attempts to use stored account credentials to authenticate account with the server
+            if (StringUtilities.isEmpty(auth_token))
+                auth_token = authenticate(account, accounts);
+
+            // Returns the auth_token, since the account already has access to the server
+            if (!StringUtilities.isEmpty(auth_token)) {
+                final Bundle result = new Bundle(3);
+                result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
+                result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
+                result.putString(AccountManager.KEY_AUTHTOKEN, auth_token);
+                return result;
+            }
+
+            // Starts the connect account activity, since authentication token couldn't be automatically retrieved
+            return addAccountBundle(response, account.type, auth_token_type, false);
         }
 
         @Override
         public String getAuthTokenLabel(String auth_token_type) {
-            return _token_matcher.match(AccountUtilities.AUTH_TOKEN_TYPE) ? auth_token_type : null;
+            return _token_matcher.match(_account_utilities.authTokenType()) ? auth_token_type : null;
         }
 
         @Override
@@ -109,11 +153,61 @@ public class AccountAuthenticatorService extends Service {
             return null;
         }
 
-        /** The {@link Context} in which the {@link FakeAccountAuthenticator} operates */
-        private Context _context;
+        /**
+         * <p>Creates the {@link Bundle} used when creating the connect account {@link Activity} when the user must be prompted
+         * for account credentials.</p>
+         * @param response The response returned to the account authenticator
+         * @param account_type The account type
+         * @param auth_token_type The authentication token type
+         * @return The created bundle
+         */
+        private Bundle addAccountBundle(AccountAuthenticatorResponse response, String account_type, String auth_token_type,
+                                            boolean is_adding_new_account) {
+            final Intent intent = new Intent(_account_utilities.addAccountActionName());
+            intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, account_type);
+            intent.putExtra(AccountUtilities.KEY_AUTH_TOKEN_TYPE, auth_token_type);
+            intent.putExtra(AccountUtilities.KEY_IS_ADDING_NEW_ACCOUNT, is_adding_new_account);
+            intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+            final Bundle bundle = new Bundle(1);
+            bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+            return bundle;
+        }
+
+        /**
+         * <p>Authenticates the given account with the server.</p>
+         * @param account The given account
+         * @param accounts The accounts manager
+         * @return The authentication token retrieved from the server
+         */
+        private String authenticate(Account account, final AccountManager accounts) {
+            final String password = accounts.getPassword(account);
+            if (password != null)
+                try {
+                    return _account_utilities.login(account.name, _crypto.decipher(password));
+                } catch (InvalidKeyException exception) {
+                    LOGE(exception);
+                } catch (IllegalBlockSizeException exception) {
+                    LOGE(exception);
+                } catch (BadPaddingException exception) {
+                    LOGE(exception);
+                } catch (NoSuchAlgorithmException exception) {
+                    LOGE(exception);
+                } catch (NoSuchPaddingException exception) {
+                    LOGE(exception);
+                } catch (UnsupportedEncodingException exception) {
+                    LOGE(exception);
+                }
+            return null;
+        }
+
+        /** Account utilities */
+        private final AccountUtilities _account_utilities;
+        /** Cryptography utilities */
+        private final CryptographyUtilities _crypto;
+        /** The {@link AccountManager} provider */
+        private final Provider<AccountManager> _accounts;
         /** Matches against {@link AccountUtilities#AUTH_TOKEN_TYPE} */
-        private static final PatternMatcher _token_matcher = new PatternMatcher(AccountUtilities.AUTH_TOKEN_TYPE,
-                                                                                PatternMatcher.PATTERN_LITERAL);
+        private final PatternMatcher _token_matcher;
     }
 
     @Override

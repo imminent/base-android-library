@@ -21,6 +21,5 @@ public class InjectionCallbacks extends SimpleActivityLifecycleCallbacks {
     @Override
     public void onActivityCreated(Activity activity, @CheckForNull Bundle icicle) {
         ObjectGraph.inject(activity);
-//        Views.inject(activity);
     }
 }

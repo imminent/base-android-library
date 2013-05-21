@@ -59,7 +59,7 @@ public class ValidatedEditText extends EditText {
         EMAIL(Patterns.EMAIL_ADDRESS.pattern());
 
         private Validation(String criteria) {
-            _criteria = criteria;
+            this.criteria = criteria;
         }
 
         /**
@@ -70,12 +70,12 @@ public class ValidatedEditText extends EditText {
         public static String getCriteria(int from_value) {
             for(Validation validation : validations)
                 if (validation.ordinal() == from_value)
-                    return validation._criteria;
+                    return validation.criteria;
 
             throw new IllegalArgumentException(from_value + " is not a valid Validation.");
         }
 
-        final String _criteria;
+        /* package */final String criteria;
         private static EnumSet<Validation> validations = EnumSet.allOf(Validation.class);
     }
 
@@ -92,15 +92,15 @@ public class ValidatedEditText extends EditText {
     }
 
     /** Constructor */
-    public ValidatedEditText(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+    public ValidatedEditText(Context context, AttributeSet attrs, int default_style) {
+        super(context, attrs, default_style);
 
         init(context, attrs);
     }
 
     @Override
-    protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        super.onTextChanged(text, start, lengthBefore, lengthAfter);
+    protected void onTextChanged(CharSequence text, int start, int length_before, int length_after) {
+        super.onTextChanged(text, start, length_before, length_after);
         // If the input has changed since the last validation, then it will need to be validated again
         _should_revalidate = true;
     }
@@ -120,6 +120,8 @@ public class ValidatedEditText extends EditText {
                 if (KeyEventCompat.hasNoModifiers(event) && !validate() && _on_fix_text_listener != null)
                     setText(_on_fix_text_listener.onFixText(getText()));
                 break;
+            default:
+                break;
         }
 
         return super.onKeyDown(key_code, event);
@@ -133,9 +135,9 @@ public class ValidatedEditText extends EditText {
     public void setValidation(Validation validation) {
         // This maintains that the input field is never in a state where it can't validate its input
         if (validation != null)
-            setMatcherCriteria(validation._criteria);
+            setMatcherCriteria(validation.criteria);
         else
-            setMatcherCriteria(Validation.NON_EMPTY._criteria);
+            setMatcherCriteria(Validation.NON_EMPTY.criteria);
         _should_revalidate = true;
     }
 
@@ -212,7 +214,7 @@ public class ValidatedEditText extends EditText {
             _invalid_input_indicator = AnimationUtils.loadAnimation(context, invalid_input_indicator);
             a.recycle();
         } else {
-            setMatcherCriteria(Validation.NON_EMPTY._criteria);
+            setMatcherCriteria(Validation.NON_EMPTY.criteria);
             _invalid_input_indicator = AnimationUtils.loadAnimation(context, R.anim.shake);
         }
     }

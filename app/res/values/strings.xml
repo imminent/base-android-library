@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="title_app">Base Android Library App</string>
+	<string name="title_app">Base Android App</string>
 
     <string name="description_add_account">add account</string>
     <string name="description_choose_account"><![CDATA[
         Welcome to the
-        <b><font color="#cc0000">Base Android Library</font> Android app.
+        <b><font color="#cc0000">Base Android</font> app.
     ]]></string>
     <string name="description_refresh">refresh</string>
     <string name="description_about">about</string>

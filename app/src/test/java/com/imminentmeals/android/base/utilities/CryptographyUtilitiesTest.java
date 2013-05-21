@@ -1,16 +1,11 @@
 package com.imminentmeals.android.base.utilities;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
 import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Random;
-
-import javax.crypto.SecretKey;
-import javax.inject.Inject;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,17 +13,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import dagger.Module;
-import dagger.ObjectGraph;
-import dagger.Provides;
-
 /**
  * <p>Test suite for {@link CryptographyUtilities}.</p>
  * @author Dandre Allison
  */
 @RunWith(Parameterized.class)
 public class CryptographyUtilitiesTest {
-    @Inject CryptographyUtilities crypto;
 
     public CryptographyUtilitiesTest(String input) {
         _input = input;
@@ -48,31 +38,23 @@ public class CryptographyUtilitiesTest {
 
     @Before
     public void initialize() {
-        ObjectGraph.create(new TestModule()).inject(this);
+        try {
+            _crypto = new CryptographyUtilities(CryptographyUtilities.generateKey());
+        } catch (NoSuchAlgorithmException error) {
+            throw new RuntimeException(error);
+        }
     }
 
     @Test
     public void testEncryptAndDecipher() {
         try {
-            assertThat(crypto.decipher(crypto.encrypt(_input))).isEqualTo(_input);
+            assertThat(_crypto.decipher(_crypto.encrypt(_input))).isEqualTo(_input);
             if (_input == null) failBecauseExceptionWasNotThrown(NullPointerException.class);
         } catch (Exception exception) {
             assertThat(exception).isInstanceOf(NullPointerException.class);
         }
     }
 
-    @Module(
-            entryPoints = CryptographyUtilitiesTest.class
-    )
-    /* package */static class TestModule {
-        @Provides SecretKey provideSecretKey() {
-            try {
-                return CryptographyUtilities.generateKey();
-            } catch (NoSuchAlgorithmException error) {
-                throw new RuntimeException(error);
-            }
-        }
-    }
-
     private String _input;
+    private CryptographyUtilities _crypto;
 }

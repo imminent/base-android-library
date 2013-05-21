@@ -23,6 +23,8 @@ import android.os.PatternMatcher;
  */
 @Singleton
 public class AndroidCookieStore implements CookieStore {
+    /** Name of the authentication token stored in a {@link SharedPreferences} */
+    public static final String KEY_AUTH_TOKEN = "com.keepandshare.android.key.AndroidCookieStore.AUTH_TOKEN";
 
 /* Constructor */
     @Inject
@@ -41,7 +43,7 @@ public class AndroidCookieStore implements CookieStore {
         if (_auth_token_pattern.match(cookie.getName())) {
             final SharedPreferences.Editor editor = _settings.edit();
             try {
-                editor.putString(_KEY_AUTH_TOKEN, _crypto.encrypt(cookie.getValue()));
+                editor.putString(KEY_AUTH_TOKEN, _crypto.encrypt(cookie.getValue()));
             } catch (Exception error) {
                 LOGE(error.getCause());
             }
@@ -57,7 +59,7 @@ public class AndroidCookieStore implements CookieStore {
     @Override
     public List<HttpCookie> get(URI _) {
         // Loads in cookies from shared preferences
-        final String auth_token = _settings.getString(_KEY_AUTH_TOKEN, null);
+        final String auth_token = _settings.getString(KEY_AUTH_TOKEN, null);
         if (auth_token != null)
             try {
                 final HttpCookie cookie = new HttpCookie(_COOKIE_AUTH_TOKEN, _crypto.decipher(auth_token));
@@ -77,9 +79,9 @@ public class AndroidCookieStore implements CookieStore {
 
     @Override
     public boolean remove(URI _, HttpCookie __) {
-        final boolean had_auth_token = _settings.getString(_KEY_AUTH_TOKEN, null) != null;
+        final boolean had_auth_token = _settings.getString(KEY_AUTH_TOKEN, null) != null;
         final SharedPreferences.Editor editor = _settings.edit();
-        editor.remove(_KEY_AUTH_TOKEN).apply();
+        editor.remove(KEY_AUTH_TOKEN).apply();
         return had_auth_token;
     }
 
@@ -88,7 +90,6 @@ public class AndroidCookieStore implements CookieStore {
         return remove(null,null);
     }
 
-    private static final String _KEY_AUTH_TOKEN = "com.keepandshare.android.key.AndroidCookieStore.AUTH_TOKEN";
     private final String _COOKIE_AUTH_TOKEN;
     private final PatternMatcher _auth_token_pattern;
     private final SharedPreferences _settings;

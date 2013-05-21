@@ -44,15 +44,15 @@ public class ValidatedAutoCompleteEditText extends AutoCompleteTextView {
     }
 
     /** Constructor */
-    public ValidatedAutoCompleteEditText(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+    public ValidatedAutoCompleteEditText(Context context, AttributeSet attrs, int default_style) {
+        super(context, attrs, default_style);
 
         init(context, attrs);
     }
 
     @Override
-    protected void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        super.onTextChanged(text, start, lengthBefore, lengthAfter);
+    protected void onTextChanged(CharSequence text, int start, int length_before, int length_after) {
+        super.onTextChanged(text, start, length_before, length_after);
         // If the input has changed since the last validation, then it will need to be validated again
         _should_revalidate = true;
     }
@@ -71,6 +71,8 @@ public class ValidatedAutoCompleteEditText extends AutoCompleteTextView {
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 if (KeyEventCompat.hasNoModifiers(event) && !validate() && _on_fix_text_listener != null)
                     setText(_on_fix_text_listener.onFixText(getText()));
+                break;
+            default:
                 break;
         }
 
@@ -103,9 +105,9 @@ public class ValidatedAutoCompleteEditText extends AutoCompleteTextView {
     public void setValidation(ValidatedEditText.Validation validation) {
         // This maintains that the input field is never in a state where it can't validate its input
         if (validation != null)
-            setMatcherCriteria(validation._criteria);
+            setMatcherCriteria(validation.criteria);
         else
-            setMatcherCriteria(ValidatedEditText.Validation.NON_EMPTY._criteria);
+            setMatcherCriteria(ValidatedEditText.Validation.NON_EMPTY.criteria);
         _should_revalidate = true;
     }
 
@@ -182,7 +184,7 @@ public class ValidatedAutoCompleteEditText extends AutoCompleteTextView {
             _invalid_input_indicator = AnimationUtils.loadAnimation(context, invalid_input_indicator);
             a.recycle();
         } else {
-            setMatcherCriteria(ValidatedEditText.Validation.NON_EMPTY._criteria);
+            setMatcherCriteria(ValidatedEditText.Validation.NON_EMPTY.criteria);
             _invalid_input_indicator = AnimationUtils.loadAnimation(context, R.anim.shake);
         }
     }

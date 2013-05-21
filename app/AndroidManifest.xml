@@ -38,14 +38,5 @@
             </intent-filter>
             <meta-data android:name="android.accounts.AccountAuthenticator" android:resource="@xml/authenticator"/>
         </service>
-        
-        <!-- Data sync service that provides the SyncAdapter to the SyncManager framework. The SyncAdapter is used to
-             maintain that the set of data on the device is a subset of the data on the server -->
-        <service android:exported="true" android:name=".data.sync.SyncService" tools:ignore="ExportedService">
-            <intent-filter>
-                <action android:name="android.content.SyncAdapter"/>
-            </intent-filter>
-            <meta-data android:name="android.content.SyncAdapter" android:resource="@xml/sync_adapter"/>
-        </service>
     </application>
 </manifest>

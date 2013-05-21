@@ -50,8 +50,9 @@ public class SyncCallbacks extends SimpleActivityLifecycleCallbacks {
      * @param bus The EventBus
      */
     @Inject
-    public SyncCallbacks(Bus bus) {
+    public SyncCallbacks(Bus bus, AccountUtilities account_utilities) {
         bus.register(this);
+        _ACCOUNT_TYPE = account_utilities.accountType();
     }
 
 /* Activity Lifecycle */
@@ -71,7 +72,7 @@ public class SyncCallbacks extends SimpleActivityLifecycleCallbacks {
                                             return;
                                         }
 
-                                        final Account account = new Account(account_name, AccountUtilities.ACCOUNT_TYPE);
+                                        final Account account = new Account(account_name, _ACCOUNT_TYPE);
                                         final boolean sync_active = ContentResolver.isSyncActive(account,
                                                 BaseContract.CONTENT_AUTHORITY);
                                         final boolean sync_pending = ContentResolver.isSyncPending(account,
@@ -130,4 +131,6 @@ public class SyncCallbacks extends SimpleActivityLifecycleCallbacks {
     @CheckForNull private Object _sync_observer_handle;
     /** Receives callback when {@link ContentResolver} sync status changes */
     @CheckForNull private SyncStatusObserver _sync_status_observer;
+    /** The account type being synced */
+    @Nonnull private final String _ACCOUNT_TYPE;
 }

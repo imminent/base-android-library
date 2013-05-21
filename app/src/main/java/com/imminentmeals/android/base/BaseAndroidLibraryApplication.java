@@ -5,7 +5,6 @@ import static android.util.Base64.decode;
 import static android.util.Base64.encodeToString;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
-import static com.imminentmeals.android.base.utilities.LogUtilities.LOGV;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,14 +16,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.crypto.SecretKey;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Application;
@@ -34,8 +31,6 @@ import android.net.http.HttpResponseCache;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.AccountFlowCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.DoneDiscardCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.GoogleAnalyticsCallbacks;
@@ -85,17 +80,6 @@ public class BaseAndroidLibraryApplication extends Application implements Object
         // Creates the dependency injection object graph
         _object_graph = ObjectGraph.create(modules().toArray());
         _object_graph.inject(this);
-        if (BuildConfig.DEBUG)
-            LOGV(getClass().getSimpleName(), StringUtilities.joinAnd(", ", " and ",
-                Lists.transform(modules(), new Function<Object, String>() {
-
-                    @Override
-                    @Nullable public String apply(@Nullable Object module) {
-                        return module.getClass().getSimpleName() + ": "
-                                + StringUtilities.joinAnd(",  ", " and ",
-                                        module.getClass().getAnnotation(Module.class).entryPoints()) + "\n";
-                    }
-                })));
 
         // TODO: setDefaultPreferences here
 
@@ -163,8 +147,8 @@ public class BaseAndroidLibraryApplication extends Application implements Object
      * @author Dandré Allison
      */
     @Module(
-            entryPoints = {
-                    // Application
+    		injects = {
+    				// Application
                     BaseAndroidLibraryApplication.class,
 
                     // Activities
@@ -177,7 +161,8 @@ public class BaseAndroidLibraryApplication extends Application implements Object
                     // Services
                     AccountAuthenticatorService.class,
                     SyncService.class
-            }
+    		},
+    		library = true
     )
     protected static class BaseAndroidLibraryModule {
 
@@ -194,10 +179,6 @@ public class BaseAndroidLibraryApplication extends Application implements Object
             return new Bus();
         }
 
-        @Provides @Singleton AbstractAccountAuthenticator provideAccountAuthenticator(Context context) {
-            return new AccountAuthenticatorService.FakeAccountAuthenticator(context);
-        }
-
         @Provides SharedPreferences provideSharedPreferences() {
             return PreferenceManager.getDefaultSharedPreferences(_context);
         }
@@ -210,8 +191,8 @@ public class BaseAndroidLibraryApplication extends Application implements Object
             return _context;
         }
 
-        @Provides Account provideTestAccount() {
-            return new Account("test47", "fake:" + AccountUtilities.ACCOUNT_TYPE);
+        @Provides Account provideTestAccount(AccountUtilities account_utilities) {
+            return null;
         }
 
         @Provides SecretKey provideSecretKey(final SharedPreferences settings) {

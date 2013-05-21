@@ -3,10 +3,15 @@ package com.imminentmeals.android.base.utilities;
 import static android.content.Context.TELEPHONY_SERVICE;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
+import static com.imminentmeals.android.base.utilities.LogUtilities.LOGV;
 import static com.imminentmeals.android.base.utilities.LogUtilities.makeLogTag;
 
 import java.util.List;
 import java.util.regex.Matcher;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -15,6 +20,7 @@ import android.accounts.AccountManagerFuture;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,11 +30,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Patterns;
 
 import com.google.android.gms.auth.GoogleAuthUtil;
+import com.imminentmeals.android.base.data.provider.BaseContract;
 
 /**
  * <p>A collection of authentication and account connection utilities. With strong inspiration from the Google IO session
@@ -36,14 +44,20 @@ import com.google.android.gms.auth.GoogleAuthUtil;
  * @author Dandré Allison
  */
 public class AccountUtilities {
-    /** Account type for an account */
-    public static final String ACCOUNT_TYPE = accountType();
-    /** Auth token type for an account */
-    public static final String AUTH_TOKEN_TYPE = authTokenType();
-    /** Name of the owner name stored in a {@link android.os.Bundle} */
+    /** Name of the owner name stored in a {@link Bundle} */
     public static final String KEY_OWNER_NAME = "com.imminentmeals.android.base.utilities.key.AccountUtlities.OWNER_NAME";
-    /** Name of the account ID stored in a {@link android.os.Bundle} */
+    /** Name of the account ID stored in a {@link Bundle} */
     public static final String KEY_ACCOUNT_ID = "com.imminentmeals.android.base.utilities.key.AccountUtilities.ACCOUNT_ID";
+    /** Name of the authentication token type stored in a {@link Bundle} */
+    public static final String KEY_AUTH_TOKEN_TYPE = "com.imminentmeals.android.base.utilities.key.AccountUtilities." +
+    		"AUTH_TOKEN_TYPE";
+    /** Name of the flag indicating when connecting a new account occurs, stored in a {@link Bundle} */
+    public static final String KEY_IS_ADDING_NEW_ACCOUNT = "com.imminentmeals.android.base.utilities.key.AccountUtilities." +
+    		"IS_ADDING_NEW_ACCOUNT";
+
+    /** Injectable constructor */
+    @Inject
+    public AccountUtilities() { }
 
     /**
      * <p>Callback interface for account authentication process.</p>
@@ -244,11 +258,11 @@ public class AccountUtilities {
      * @param activity_request_code used to set the request code of a subsequently started {@link android.app.Activity}
      * @param account the account that is trying to authenticate
      */
-    public static void tryAuthenticate(Activity activity, AuthenticationCallbacks callback, int activity_request_code,
+    public final void tryAuthenticate(Activity activity, AuthenticationCallbacks callback, int activity_request_code,
                                        Account account) {
         AccountManager.get(activity).getAuthToken(
                 account,
-                AUTH_TOKEN_TYPE,
+                authTokenType(),
                 Bundle.EMPTY,
                 false,
                 getAccountManagerCallback(callback, account, activity, activity, activity_request_code),
@@ -264,11 +278,11 @@ public class AccountUtilities {
      * @param callback the authentication callback
      * @param account the account that is trying to authenticate
      */
-    public static void tryAuthenticateWithErrorNotification(Context context, AuthenticationCallbacks callback,
+    public final void tryAuthenticateWithErrorNotification(Context context, AuthenticationCallbacks callback,
                                                             Account account) {
         AccountManager.get(context).getAuthToken(
                 account,
-                AUTH_TOKEN_TYPE,
+                authTokenType(),
                 Bundle.EMPTY,
                 true,
                 getAccountManagerCallback(callback, account, context, null, 0),
@@ -325,13 +339,37 @@ public class AccountUtilities {
     }
 
     /**
-     * <p>Invalidates the chosen account and removes it from the stored user settings.</p>
-     * @param context the context to disconnect the account from
+     * <p>Starts the add account connection activity when the add account action is selected.</p>
+     * <p>Note: this is the activity in {@link com.imminentmeals.android.base.AccountAuthenticatorService}'s
+     * {@link android.accounts.AbstractAccountAuthenticator#addAccount(android.accounts.AccountAuthenticatorResponse, String, String, String[], Bundle)}
+     * method, as it will be registered for this intent</p>
+     * @param context The context from which to start the account connection activity
      */
-    public static void logout(Context context) {
-        invalidateAuthToken(context);
-        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        settings.edit().clear().apply();
+    public final void startAddAccountActivity(Activity context) {
+        // Starts the add account connection activity when the add account action is selected
+        // Note: this is the activity in AccountAuthenticatorService addAccount method, as it gets registered
+        //       for this intent
+        LOGV("Starting add account activity for authority: " + authority());
+        final Intent add_account_intent = new Intent(Settings.ACTION_ADD_ACCOUNT);
+        add_account_intent.putExtra(Settings.EXTRA_AUTHORITIES, new String[]{ authority() });
+        context.startActivity(add_account_intent);
+    }
+
+    /**
+     * <p>Starts the add account connection activity when the add account action is selected.</p>
+     * <p>Note: this is the activity in {@link com.imminentmeals.android.base.AccountAuthenticatorService}'s
+     * {@link android.accounts.AbstractAccountAuthenticator#addAccount(android.accounts.AccountAuthenticatorResponse, String, String, String[], Bundle)}
+     * method, as it will be registered for this intent</p>
+     * @param fragment The fragment from which to start the account connection activity
+     */
+    public final void startAddAccountActivity(Fragment fragment) {
+        // Starts the add account connection activity when the add account action is selected
+        // Note: this is the activity in AccountAuthenticatorService addAccount method, as it gets registered
+        //       for this intent
+        LOGV("Starting add account activity for authority: " + authority());
+        final Intent add_account_intent = new Intent(Settings.ACTION_ADD_ACCOUNT);
+        add_account_intent.putExtra(Settings.EXTRA_AUTHORITIES, new String[]{ authority() });
+        fragment.startActivity(add_account_intent);
     }
 
     /**
@@ -339,9 +377,9 @@ public class AccountUtilities {
      * stored auth token from the user settings.</p>
      * @param context the context from which to retrieve the account manger
      */
-    public static void invalidateAuthToken(Context context) {
+    public final void invalidateAuthToken(Context context) {
         final AccountManager account_manager = AccountManager.get(context);
-        account_manager.invalidateAuthToken(ACCOUNT_TYPE, getAuthToken(context));
+        account_manager.invalidateAuthToken(accountType(), getAuthToken(context));
         setAuthToken(context, null);
     }
 
@@ -356,11 +394,42 @@ public class AccountUtilities {
                 : getUserProfileOnGingerbreadDevice(context);
     }
 
+/* Methods to override */
+    /**
+     * <p>Defines the launching {@link Intent} action to launch the connect account {@link Activity}.</p>
+     * @return The name of the action, {@code null} indicates that there is no connect account activity
+     */
+    @Nullable public String connectAccountActionName() {
+        return null;
+    }
+
+    /**
+     * <p>Defines the launching {@link Intent} action to launch the add account {@link Activity}.</p>
+     * @return The name of the action, {@code null} indicates that there is no add account activity
+     */
+    @Nullable public String addAccountActionName() {
+        return null;
+    }
+
+    @Nullable public String login(String account_name, String password) {
+        return null;
+    }
+
+    /**
+     * <p>Invalidates the chosen account and removes it from the stored user settings.</p>
+     * @param context the context to disconnect the account from
+     */
+    public void logout(Context context) {
+        invalidateAuthToken(context);
+        final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+        settings.edit().clear().apply();
+    }
+
     /**
      * <p>The account type for the app.</p>
      * @return The account type
      */
-    protected static String accountType() {
+    @Nonnull public String accountType() {
         return GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE;
     }
 
@@ -368,8 +437,12 @@ public class AccountUtilities {
      * <p>The auth token type for the app.</p>
      * @return The auth token type
      */
-    protected static String authTokenType() {
+    @Nonnull public String authTokenType() {
         return "https://api.example.com";
+    }
+
+    @Nonnull protected String authority() {
+        return BaseContract.CONTENT_AUTHORITY;
     }
 
     /**
@@ -377,7 +450,7 @@ public class AccountUtilities {
      * @param context the current context
      * @param user_data the user data
      */
-    protected static void didRetrieveUserData(Context context, Bundle user_data) { }
+    protected void didRetrieveUserData(Context context, Bundle user_data) { }
 
     /**
      * <p>Contacts user profile query interface.</p>
@@ -417,11 +490,11 @@ public class AccountUtilities {
 
     /**
      * <p>Constructs an {@link android.accounts.AccountManagerCallback} that can handle cancellation through
-     * {@link com.imminentmeals.android.utils.AccountUtils.AuthenticationCallbacks#shouldCancelAuthentication()}.
+     * {@link AuthenticationCallbacks#shouldCancelAuthentication()}.
      * The call back will start the {@link android.content.Intent} returned to it or establish the authenticated
      * account and trigger
-     * {@link com.imminentmeals.android.utils.AccountUtils.AuthenticationCallbacks#onAuthTokenAvailable(String)}
-     * on the given {@link com.imminentmeals.android.utils.AccountUtils.AuthenticationCallbacks}.</p>
+     * {@link AuthenticationCallbacks#onAuthTokenAvailable(String)}
+     * on the given {@link AuthenticationCallbacks}.</p>
      * @param callback the given AuthenticationCallbacks
      * @param account the account of interest
      * @param context the current context
@@ -429,7 +502,7 @@ public class AccountUtilities {
      * @param activity_request_code the current activity's request code used when starting the intent
      * @return the constructed AccountManagerCallback
      */
-    private static AccountManagerCallback<Bundle> getAccountManagerCallback(final AuthenticationCallbacks callback,
+    private AccountManagerCallback<Bundle> getAccountManagerCallback(final AuthenticationCallbacks callback,
             final Account account, final Context context, final Activity activity, final int activity_request_code) {
         return new AccountManagerCallback<Bundle>() {
             @Override
@@ -580,10 +653,6 @@ public class AccountUtilities {
 
         return user_profile;
     }
-
-/* Private Constructor */
-    /** Blocks instantiation of the {@link AccountUtilities} class. */
-    private AccountUtilities() { }
 
     private static final String _PREF = "com.imminentmeals.android.base.utilities.pref";
     /** Name for the chosen account stored in the {@linkplain android.content.SharedPreferences user settings} */

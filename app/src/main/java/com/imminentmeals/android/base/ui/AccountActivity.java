@@ -2,6 +2,7 @@ package com.imminentmeals.android.base.ui;
 
 import static com.imminentmeals.android.base.utilities.AnalyticsUtilities.ACTION_BUTTON_PRESS;
 import static com.imminentmeals.android.base.utilities.AnalyticsUtilities.CATEGORY_UX;
+import static com.imminentmeals.android.base.utilities.LogUtilities.LOGV;
 import static com.imminentmeals.android.base.utilities.LogUtilities.makeLogTag;
 
 import java.util.Arrays;
@@ -21,7 +22,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.text.Html;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -38,7 +38,6 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 import com.imminentmeals.android.base.R;
-import com.imminentmeals.android.base.data.provider.BaseContract;
 import com.imminentmeals.android.base.utilities.AccountUtilities;
 import com.imminentmeals.android.base.utilities.ObjectGraph;
 
@@ -53,6 +52,7 @@ import de.keyboardsurfer.android.widget.crouton.Style;
  * @author Dandré Allison
  */
 public class AccountActivity extends Activity implements AccountUtilities.AuthenticationCallbacks {
+    @Inject /* package */Lazy<AccountUtilities> account_utilities;
     /** Name for the {@link Intent} to launch when the authentication finishes stored in the calling {@link Intent} */
     public static final String EXTRA_FINISH_INTENT = "com.imminentmeals.android.base.ui.extra.FINISH_INTENT";
 
@@ -66,6 +66,8 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
         // Gets the continuation intent from the calling intent
         if (getIntent().hasExtra(EXTRA_FINISH_INTENT))
             _continuation_intent = getIntent().getParcelableExtra(EXTRA_FINISH_INTENT);
+
+        LOGV("Started connect account activity with continuation " + _continuation_intent);
 
         // Adds the Choose Account fragment to the screen, if this is a new creation of the activity
         if (icicle == null)
@@ -132,7 +134,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
      * <p>Attempts to authenticate the {@linkplain #_chosen_account chosen account}.</p>
      */
     private void tryAuthenticate() {
-        AccountUtilities.tryAuthenticate(this, this, _REQUEST_AUTHENTICATE, _chosen_account);
+        account_utilities.get().tryAuthenticate(this, this, _REQUEST_AUTHENTICATE, _chosen_account);
     }
 
     /**
@@ -141,6 +143,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
      */
     public static class ChooseAccountFragment extends ListFragment {
         @Inject /* package */Lazy<Account> test_account;
+        @Inject /* package */Lazy<AccountUtilities> account_utilities;
 
         /** Constructor */
         public ChooseAccountFragment() { }
@@ -185,13 +188,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
                 // Tracks the add account event
                 EasyTracker.getTracker().sendTiming(CATEGORY_UX, _timer.elapsed(TimeUnit.MILLISECONDS),
                                                     ACTION_BUTTON_PRESS, "add_account");
-                // Starts the add account connection activity when the add account action is selected
-                // Note: this is the activity in AccountAuthenticatorService addAccount method, as it gets registered
-                //       for this intent
-                final Intent add_account_intent = new Intent(Settings.ACTION_ADD_ACCOUNT);
-                add_account_intent.putExtra(Settings.EXTRA_AUTHORITIES,
-                        new String[]{ BaseContract.CONTENT_AUTHORITY });
-                startActivity(add_account_intent);
+                account_utilities.get().startAddAccountActivity(this);
                 return true;
             }
             return super.onOptionsItemSelected(action);
@@ -275,7 +272,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
              */
             /* package */static class ViewHolder {
                 /** The {@link TextView} into which to bind the account name */
-                /*@InjectView(android.R.id.text1)*/ /* package */TextView text_view;
+                /* package */TextView text_view;
 
                 /**
                  * <p>Finds the {@link View}s, and remembers where they are.</p>
@@ -283,7 +280,6 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
                  */
                 public ViewHolder(View view) {
                     text_view = (TextView) view.findViewById(android.R.id.text1);
-//                    Views.inject(this, view);
                 }
             }
 
@@ -304,7 +300,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
             // Notice that AccountManager doesn't provide tools to determine what has changed from previous
             // account lists, so it is simpler to forget the previous list each time
             final AccountManager account_manager = AccountManager.get(getActivity());
-            final Account[] accounts = account_manager.getAccountsByType(AccountUtilities.ACCOUNT_TYPE);
+            final Account[] accounts = account_manager.getAccountsByType(account_utilities.get().accountType());
             _account_list_adapter = new AccountListAdapter(getActivity(), test_account.get() == null
                     ? Arrays.asList(accounts)
                     : Lists.asList(test_account.get(), accounts));
