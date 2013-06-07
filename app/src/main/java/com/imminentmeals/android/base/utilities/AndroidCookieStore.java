@@ -1,20 +1,21 @@
 package com.imminentmeals.android.base.utilities;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.imminentmeals.android.base.BaseAndroidLibraryApplication.COOKIE_AUTH_TOKEN;
-import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
+import android.content.SharedPreferences;
+import android.os.PatternMatcher;
 
 import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.URI;
 import java.util.List;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import android.content.SharedPreferences;
-import android.os.PatternMatcher;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.imminentmeals.android.base.BaseAndroidLibraryApplication.COOKIE_AUTH_TOKEN;
+import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGE;
 
 /**
  * A simple {@linkplain CookieStore cookie jar} that only cares to store the {@link #_COOKIE_AUTH_TOKEN}.
@@ -22,6 +23,7 @@ import android.os.PatternMatcher;
  * @author Dandré Allison
  */
 @Singleton
+@ParametersAreNonnullByDefault
 public class AndroidCookieStore implements CookieStore {
     /** Name of the authentication token stored in a {@link SharedPreferences} */
     public static final String KEY_AUTH_TOKEN = "com.keepandshare.android.key.AndroidCookieStore.AUTH_TOKEN";
@@ -45,7 +47,7 @@ public class AndroidCookieStore implements CookieStore {
             try {
                 editor.putString(KEY_AUTH_TOKEN, _crypto.encrypt(cookie.getValue()));
             } catch (Exception error) {
-                LOGE(error.getCause());
+                AUTOTAGLOGE(error.getCause());
             }
             editor.apply();
         }
@@ -67,7 +69,7 @@ public class AndroidCookieStore implements CookieStore {
                 cookie.setVersion(0);
                 return newArrayList(cookie);
             } catch (Exception error) {
-                LOGE(error.getCause());
+                AUTOTAGLOGE(error.getCause());
             }
         return newArrayList();
     }

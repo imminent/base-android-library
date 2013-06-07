@@ -8,6 +8,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -33,7 +34,9 @@ import javax.inject.Singleton;
  * @author ferenc.hechler (http://www.androidsnippets.com/encryptdecrypt-strings)
  * @author Dandré Allison
  */
+@SuppressWarnings("UnusedDeclaration")
 @Singleton
+@ParametersAreNonnullByDefault
 public class CryptographyUtilities {
     /** Name of the secret key stored in the {@link android.content.SharedPreferences} (Note: expected to be
      * a {@link String}) */
@@ -43,11 +46,11 @@ public class CryptographyUtilities {
     public static final String AES = "AES";
 
     /**
-     * <p>Constructs the {@link CryptographyUtilitiesTest}.</p>
+     * <p>Constructs the {@link CryptographyUtilities}.</p>
      * @param secret_key The key used to encrypt and decipher messages
      */
     @Inject
-    public CryptographyUtilities(@Nonnull SecretKey secret_key) {
+    public CryptographyUtilities(SecretKey secret_key) {
         _SECRET_KEY = secret_key;
     }
 
@@ -63,7 +66,7 @@ public class CryptographyUtilities {
      *                                   size
      * @throws InvalidKeyException Indicates an invalid key ({@link #_SECRET_KEY}) was used
      */
-    @Nonnull public String encrypt(@Nonnull String message)
+    @Nonnull public String encrypt(String message)
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
                    NoSuchPaddingException, UnsupportedEncodingException  {
         final byte[] digest = encrypt(_SECRET_KEY.getEncoded(), message.getBytes(_CHARSET));
@@ -83,7 +86,7 @@ public class CryptographyUtilities {
      * @throws InvalidKeyException Indicates an invalid key ({@link #_SECRET_KEY}) was used
      * @throws UnsupportedEncodingException Indicates the String encoding ({@link #_CHARSET}) not valid
      */
-    @Nonnull public String decipher(@Nonnull String digest)
+    @Nonnull public String decipher(String digest)
             throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException,
                    NoSuchPaddingException, UnsupportedEncodingException {
         final byte[] encrypted_message = toByte(digest);
@@ -123,7 +126,7 @@ public class CryptographyUtilities {
     }
 
 /* Helpers */
-    @Nonnull private static byte[] encrypt(@Nonnull byte[] raw, @Nonnull byte[] clear)
+    @Nonnull private static byte[] encrypt(byte[] raw, byte[] clear)
             throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException,
                    NoSuchPaddingException {
         final SecretKeySpec private_key_spec = new SecretKeySpec(raw, AES);
@@ -132,7 +135,7 @@ public class CryptographyUtilities {
         return cipher.doFinal(clear);
     }
 
-    @Nonnull private static byte[] decipher(@Nonnull byte[] raw, @Nonnull byte[] digest)
+    @Nonnull private static byte[] decipher(byte[] raw, byte[] digest)
             throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, NoSuchAlgorithmException,
             NoSuchPaddingException {
         final SecretKeySpec private_key_spec = new SecretKeySpec(raw, AES);
@@ -141,7 +144,7 @@ public class CryptographyUtilities {
         return cipher.doFinal(digest);
     }
 
-    @Nonnull private static byte[] toByte(@Nonnull String hex_string) {
+    @Nonnull private static byte[] toByte(String hex_string) {
         final int length = hex_string.length()/2;
         final byte[] result = new byte[length];
         for (int i = 0; i < length; i++)
@@ -149,7 +152,7 @@ public class CryptographyUtilities {
         return result;
     }
 
-    @Nonnull private static String toHex(@Nonnull byte[] buffer) {
+    @Nonnull private static String toHex(byte[] buffer) {
         final StringBuilder result = new StringBuilder(2 * buffer.length);
         for (byte b : buffer)
             appendHex(result, b);
@@ -157,7 +160,7 @@ public class CryptographyUtilities {
         return result.toString();
     }
 
-    private static void appendHex(@Nonnull StringBuilder string_builder, byte b) {
+    private static void appendHex(StringBuilder string_builder, byte b) {
         string_builder.append(_HEX.charAt((b >> _APPEND_HEX_OFFSET) & _HEX_BIT_MASK))
                       .append(_HEX.charAt(b & _HEX_BIT_MASK));
     }

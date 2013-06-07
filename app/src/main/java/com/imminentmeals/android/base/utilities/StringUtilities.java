@@ -1,7 +1,5 @@
 package com.imminentmeals.android.base.utilities;
 
-import static com.google.common.collect.Maps.newHashMap;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,11 +18,17 @@ import java.util.Map.Entry;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.google.common.collect.Maps.newHashMap;
 
 /**
  * <p>A collection of String utilities.</p>
  * @author Dandré Allison
  */
+@SuppressWarnings("UnusedDeclaration")
+@ParametersAreNonnullByDefault
 public final class StringUtilities {
 
     /**
@@ -70,8 +74,8 @@ public final class StringUtilities {
      * @param <T> The type of objects in the collection
      * @return The string of the objects joined by the delimiters
      */
-    @Nonnull public static <T> String joinAnd(@Nonnull final String delimiter, final String last_delimiter,
-                                              final Collection<T> objects) {
+    @Nonnull public static <T> String joinAnd(final String delimiter, final String last_delimiter,
+                                              @Nullable final Collection<T> objects) {
         // Returns an empty String if there are no objects in the collection
         if (objects == null || objects.isEmpty())
             return "";
@@ -100,9 +104,9 @@ public final class StringUtilities {
      * @param <T> The type of objects in the collection
      * @return The string of the objects joined by the delimiters
      */
-    @Nonnull public static <T> String joinAnd(@Nonnull final String delimiter, final String last_delimiter,
-                                              final T... objects) {
-        return joinAnd(delimiter, last_delimiter, Arrays.asList(objects));
+    @Nonnull public static <T> String joinAnd(final String delimiter, final String last_delimiter,
+                                              @Nullable final T... objects) {
+        return joinAnd(delimiter, last_delimiter, objects == null? null : Arrays.asList(objects));
     }
 
     /**
@@ -114,7 +118,7 @@ public final class StringUtilities {
      * @param <T> The type of objects in the collection
      * @return The string of the objects joined by the delimiters
      */
-    @Nonnull public static <T> String join(@Nonnull final String delimiter, final Collection<T> objects) {
+    @Nonnull public static <T> String join(final String delimiter, @Nullable final Collection<T> objects) {
         // Returns an empty String if there are no objects in the collection
         if (objects == null || objects.isEmpty())
             return "";
@@ -138,8 +142,8 @@ public final class StringUtilities {
      * @param <T> The type of objects in the collection
      * @return The string of the objects joined by the delimiters
      */
-    @Nonnull public static <T> String join(@Nonnull final String delimiter, final T... objects ) {
-        return join(delimiter, Arrays.asList(objects));
+    @Nonnull public static <T> String join(final String delimiter, @Nullable final T... objects) {
+        return join(delimiter, objects == null? null : Arrays.asList(objects));
     }
 
     /**
@@ -157,9 +161,9 @@ public final class StringUtilities {
      * <p>Converts an {@link Reader} to a String.</p>
      * @param input The given Reader
      * @return The converted String
-     * @throws {@link ReadWriteException} when there is an {@link IOException} reading or writing
+     * @throws ReadWriteException when there is an {@link IOException} reading or writing
      */
-    @Nonnull public static String toString(@Nonnull Reader input) {
+    @Nonnull public static String toString(Reader input) throws ReadWriteException {
         final StringWriter writer = new StringWriter();
         copy(input, writer);
         return writer.toString();
@@ -170,9 +174,9 @@ public final class StringUtilities {
      * @param input The input
      * @param output The output
      * @return The number of characters copied, or {@code -1} if the size exceeds the size of {@code int}
-     * @throws {@link ReadWriteException} when there is an {@link IOException} reading or writing
+     * @throws ReadWriteException when there is an {@link IOException} reading or writing
      */
-    public static int copy(@Nonnull Reader input, @Nonnull Writer output) {
+    public static int copy(Reader input, Writer output) throws ReadWriteException {
         final long count = copyLarge(input, output);
         return count > Integer.MAX_VALUE ? -1 : (int) count;
     }
@@ -183,9 +187,10 @@ public final class StringUtilities {
      * @param input The input
      * @param output The output
      * @return The number of characters copied
-     * @throws {@link ReadWriteException} when there is an {@link IOException} reading or writing
+     * @throws ReadWriteException when there is an {@link IOException} reading or writing
      */
-    @Nonnegative public static long copyLarge(@Nonnull Reader input, @Nonnull Writer output) {
+    @Nonnegative public static long copyLarge(Reader input, Writer output)
+        throws ReadWriteException {
         try {
             final char[] buffer = new char[_DEFAULT_BUFFER_SIZE];
             long count = 0;
@@ -205,16 +210,16 @@ public final class StringUtilities {
      * @param string The given String
      * @return A non {@code null} String
      */
-    @Nonnull public static String emptyIfNull(final String string) {
+    @Nonnull public static String emptyIfNull(@Nullable String string) {
         return string == null? "" : string;
     }
 
     /**
      * <p>Converts the given object to a String.</p>
-     * @param Object the given object
+     * @param object the given object
      * @return A non {@code null} String
      */
-    @Nonnull public static String toString(final Object object) {
+    @Nonnull public static String toString(@Nullable Object object) {
         return toString(object, "");
     }
 
@@ -224,7 +229,7 @@ public final class StringUtilities {
      * @param default_string The default String
      * @return A non {@code null} String
      */
-    @Nonnull public static String toString(final Object object, final String default_string) {
+    @Nonnull public static String toString(@Nullable Object object, @Nullable String default_string) {
         return object == null ? emptyIfNull(default_string) :
                 object instanceof InputStream ? toString((InputStream) object) :
                         object instanceof Reader ? toString((Reader) object) :
@@ -239,7 +244,7 @@ public final class StringUtilities {
      * @param object The given object
      * @return {@code true} indicates that the given object produces an empty String
      */
-    public static boolean isEmpty(final Object object) {
+    public static boolean isEmpty(@Nullable Object object) {
         return toString(object).trim().length() == 0;
     }
 
@@ -248,7 +253,7 @@ public final class StringUtilities {
      * @param object the given object
      * @return {@code true} indicates that the given object doesn't produce an empty String
      */
-    public static boolean notEmpty(final Object object) {
+    public static boolean notEmpty(@Nullable Object object) {
         return toString(object).trim().length() != 0;
     }
 
@@ -256,9 +261,9 @@ public final class StringUtilities {
      * <p>Digests the given String a produces a encrypted String.</p>
      * @param message The given message
      * @return The encrypted String
-     * @throws {@link Md5DigestException} when there is an {@link Exception}
+     * @throws Md5DigestException when there is an {@link Exception}
      */
-    @Nonnull public static String md5(@Nonnull String message) {
+    @Nonnull public static String md5(String message) throws Md5DigestException {
         // http://stackoverflow.com/questions/1057041/difference-between-java-and-php5-md5-hash
         // http://code.google.com/p/roboguice/issues/detail?id=89
         try {
@@ -288,8 +293,8 @@ public final class StringUtilities {
      * @param string The given String
      * @return A capitalized version of the given String
      */
-    @Nonnull public static String capitalize(String string) {
-        final String capitalized_string = StringUtilities.toString(string);
+    @Nonnull public static String capitalize(@Nullable String string) {
+        final String capitalized_string = toString(string);
         return capitalized_string.length() >= 2
                 ? capitalized_string.substring(0, 1).toUpperCase() + capitalized_string.substring(1)
                 : capitalized_string.length() >= 1 ? capitalized_string.toUpperCase() : capitalized_string;
@@ -301,8 +306,8 @@ public final class StringUtilities {
      * @param b Another given object
      * @return {@code true} indicates that the two objects produce identical Strings
      */
-    public static boolean textuallyEquivalent(Object a, Object b) {
-        return StringUtilities.toString(a).equals(StringUtilities.toString(b));
+    public static boolean textuallyEquivalent(@Nullable Object a, @Nullable Object b) {
+        return toString(a).equals(toString(b));
     }
 
     /**
@@ -312,8 +317,8 @@ public final class StringUtilities {
      * @param b Another given object
      * @return {@code true} indicates that the two objects produce equivalent Strings
      */
-    public static boolean textuallyEquivalentIgnoringCase(Object a, Object b) {
-        return StringUtilities.toString(a).equalsIgnoreCase(StringUtilities.toString(b));
+    public static boolean textuallyEquivalentIgnoringCase(@Nullable Object a, @Nullable Object b) {
+        return toString(a).equalsIgnoreCase(toString(b));
     }
 
     /**
@@ -322,10 +327,11 @@ public final class StringUtilities {
      * @param chunk_size The requested chunk size
      * @return A list of the given String partitioned by the given chunk size
      */
-    @Nonnull public static String[] chunk(String string, @Nonnegative int chunk_size) {
+    @Nonnull public static String[] chunk(@Nullable String string, @Nonnegative int chunk_size) {
         if (isEmpty(string) || chunk_size == 0)
             return new String[0];
 
+        assert string != null;
         final int length = string.length();
         // Computes the number of chunks in the String based on the chunk size
         final int number_of_chunks = ((length - 1)/chunk_size) + 1;
@@ -345,7 +351,7 @@ public final class StringUtilities {
      * @param substitutions The set of substitutions
      * @return The String after the substitutions have been made
      */
-    @Nonnull public static String namedFormat(@Nonnull String string, @Nonnull Map<String, String> substitutions) {
+    @Nonnull public static String namedFormat(String string, Map<String, String> substitutions) {
         for (Entry<String, String> entry : substitutions.entrySet())
             string = string.replace('$' + entry.getKey(), entry.getValue());
 
@@ -357,13 +363,13 @@ public final class StringUtilities {
      * value for the key. The keys must be marked with a {@code '$'}. This is an alternative to
      * {@link String#format(String, Object...)} that allows the format parameters to be named. This method
      * expects a key object parameter followed by the value for that key, such as
-     * {@code namedFormat(string, "key1", "value1", "key2", "value2");}</p>
+     * {@code namedFormat(string, key1, value1, key2, value2);}</p>
      * @param string The given String
      * @param key_value_pairs The set of substitutions
      * @return The String after the substitutions have been made
      * @throws InvalidParameterException when their is a mismatch between the key and value pairs
      */
-    @Nonnull public static String namedFormat(@Nonnull String string, Object... key_value_pairs) {
+    @Nonnull public static String namedFormat(String string, Object... key_value_pairs) {
         if (key_value_pairs.length % 2 != 0)
             throw new InvalidParameterException("You must include one value for each parameter");
 

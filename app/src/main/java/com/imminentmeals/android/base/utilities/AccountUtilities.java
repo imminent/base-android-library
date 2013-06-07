@@ -1,18 +1,5 @@
 package com.imminentmeals.android.base.utilities;
 
-import static android.content.Context.TELEPHONY_SERVICE;
-import static com.google.common.collect.Lists.newArrayList;
-import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
-import static com.imminentmeals.android.base.utilities.LogUtilities.LOGV;
-import static com.imminentmeals.android.base.utilities.LogUtilities.makeLogTag;
-
-import java.util.List;
-import java.util.regex.Matcher;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
@@ -38,11 +25,25 @@ import android.util.Patterns;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.imminentmeals.android.base.data.provider.BaseContract;
 
+import java.util.List;
+import java.util.regex.Matcher;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+
+import static android.content.Context.TELEPHONY_SERVICE;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGV;
+import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
+import static com.imminentmeals.android.base.utilities.LogUtilities.makeLogTag;
+
 /**
  * <p>A collection of authentication and account connection utilities. With strong inspiration from the Google IO session
  * app.</p>
  * @author Dandré Allison
  */
+@SuppressWarnings("UnusedDeclaration")
 public class AccountUtilities {
     /** Name of the owner name stored in a {@link Bundle} */
     public static final String KEY_OWNER_NAME = "com.imminentmeals.android.base.utilities.key.AccountUtlities.OWNER_NAME";
@@ -79,6 +80,7 @@ public class AccountUtilities {
     /**
      * <p>Interface for interacting with the result of {@link AccountUtilities#getUserProfile}.</p>
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static class UserProfile {
 
         /**
@@ -349,7 +351,7 @@ public class AccountUtilities {
         // Starts the add account connection activity when the add account action is selected
         // Note: this is the activity in AccountAuthenticatorService addAccount method, as it gets registered
         //       for this intent
-        LOGV("Starting add account activity for authority: " + authority());
+        AUTOTAGLOGV("Starting add account activity for authority: " + authority());
         final Intent add_account_intent = new Intent(Settings.ACTION_ADD_ACCOUNT);
         add_account_intent.putExtra(Settings.EXTRA_AUTHORITIES, new String[]{ authority() });
         context.startActivity(add_account_intent);
@@ -366,7 +368,7 @@ public class AccountUtilities {
         // Starts the add account connection activity when the add account action is selected
         // Note: this is the activity in AccountAuthenticatorService addAccount method, as it gets registered
         //       for this intent
-        LOGV("Starting add account activity for authority: " + authority());
+        AUTOTAGLOGV("Starting add account activity for authority: " + authority());
         final Intent add_account_intent = new Intent(Settings.ACTION_ADD_ACCOUNT);
         add_account_intent.putExtra(Settings.EXTRA_AUTHORITIES, new String[]{ authority() });
         fragment.startActivity(add_account_intent);

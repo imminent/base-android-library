@@ -1,16 +1,5 @@
 package com.imminentmeals.android.base.ui;
 
-import static com.imminentmeals.android.base.utilities.AnalyticsUtilities.ACTION_BUTTON_PRESS;
-import static com.imminentmeals.android.base.utilities.AnalyticsUtilities.CATEGORY_UX;
-import static com.imminentmeals.android.base.utilities.LogUtilities.LOGV;
-import static com.imminentmeals.android.base.utilities.LogUtilities.makeLogTag;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
@@ -37,13 +26,29 @@ import android.widget.TextView;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
-import com.imminentmeals.android.base.R;
+import com.imminentmeals.android.base.R.id;
+import com.imminentmeals.android.base.R.layout;
+import com.imminentmeals.android.base.R.menu;
+import com.imminentmeals.android.base.R.string;
 import com.imminentmeals.android.base.utilities.AccountUtilities;
 import com.imminentmeals.android.base.utilities.ObjectGraph;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import dagger.Lazy;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
+
+import static com.imminentmeals.android.base.utilities.AnalyticsUtilities.ACTION_BUTTON_PRESS;
+import static com.imminentmeals.android.base.utilities.AnalyticsUtilities.CATEGORY_UX;
+import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGV;
+import static com.imminentmeals.android.base.utilities.LogUtilities.makeLogTag;
+
+//import com.google.android.gms.R;
 
 /**
  * <p>This wizard-like activity first presents an {@linkplain ChooseAccountFragment account selection fragment}, and
@@ -61,18 +66,18 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        setContentView(R.layout.activity_account);
+        setContentView(layout.activity_account);
 
         // Gets the continuation intent from the calling intent
         if (getIntent().hasExtra(EXTRA_FINISH_INTENT))
             _continuation_intent = getIntent().getParcelableExtra(EXTRA_FINISH_INTENT);
 
-        LOGV("Started connect account activity with continuation " + _continuation_intent);
+        AUTOTAGLOGV("Started connect account activity with continuation " + _continuation_intent);
 
         // Adds the Choose Account fragment to the screen, if this is a new creation of the activity
         if (icicle == null)
             getFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, new ChooseAccountFragment(), _TAG_CHOOSE_ACCOUNT)
+                    .add(id.fragment_container, new ChooseAccountFragment(), _TAG_CHOOSE_ACCOUNT)
                     .commit();
     }
 
@@ -177,14 +182,14 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
         }
 
         @Override
-        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-            inflater.inflate(R.menu.add_account, menu);
-            super.onCreateOptionsMenu(menu, inflater);
+        public void onCreateOptionsMenu(Menu actions, MenuInflater inflater) {
+            inflater.inflate(menu.add_account, actions);
+            super.onCreateOptionsMenu(actions, inflater);
         }
 
         @Override
         public boolean onOptionsItemSelected(MenuItem action) {
-            if (action.getItemId() == R.id.menu_add_account) {
+            if (action.getItemId() == id.menu_add_account) {
                 // Tracks the add account event
                 EasyTracker.getTracker().sendTiming(CATEGORY_UX, _timer.elapsed(TimeUnit.MILLISECONDS),
                                                     ACTION_BUTTON_PRESS, "add_account");
@@ -197,10 +202,10 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle icicle) {
             final ViewGroup root_view = (ViewGroup) inflater.inflate(
-                    R.layout.fragment_choose_account, container, false);
+                    layout.fragment_choose_account, container, false);
             // Sets the description above the list of accounts, notice that it is parsed from HTML
-            final TextView description = (TextView) root_view.findViewById(R.id.choose_account_intro);
-            description.setText(Html.fromHtml(getString(R.string.description_choose_account)));
+            final TextView description = (TextView) root_view.findViewById(id.choose_account_intro);
+            description.setText(Html.fromHtml(getString(string.description_choose_account)));
             return root_view;
         }
 
@@ -211,7 +216,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
             final NetworkInfo active_network = ((ConnectivityManager) activity
                     .getSystemService(CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
             if (active_network == null || !active_network.isConnected()) {
-                Crouton.showText(activity, R.string.no_connection_cant_login, Style.INFO);
+                Crouton.showText(activity, string.no_connection_cant_login, Style.INFO);
                 return;
             }
 
@@ -219,7 +224,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
             activity._authentication_was_cancelled = false;
             activity._chosen_account = _account_list_adapter.getItem(position);
             activity.getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new AuthProgressFragment(), _TAG_LOADING)
+                    .replace(id.fragment_container, new AuthProgressFragment(), _TAG_LOADING)
                     .addToBackStack(_TAG_CHOOSE_ACCOUNT)
                     .commit();
 
@@ -337,10 +342,10 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle icicle) {
-            final ViewGroup root_view = (ViewGroup) inflater.inflate(R.layout.fragment_authentication_progress,
+            final ViewGroup root_view = (ViewGroup) inflater.inflate(layout.fragment_authentication_progress,
                     container, false);
-            final View taking_a_while_panel = root_view.findViewById(R.id.taking_a_while_panel);
-            final View try_again_button = root_view.findViewById(R.id.retry_button);
+            final View taking_a_while_panel = root_view.findViewById(id.taking_a_while_panel);
+            final View try_again_button = root_view.findViewById(id.retry_button);
             // Returns to Choose Account screen if user wants to retry
             try_again_button.setOnClickListener(
                 new View.OnClickListener() {

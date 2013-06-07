@@ -1,18 +1,5 @@
 package com.imminentmeals.android.base.utilities;
 
-import static com.imminentmeals.android.base.utilities.GateKeeper.isIcsTablet;
-import static com.imminentmeals.android.base.utilities.LogUtilities.LOGW;
-import static com.imminentmeals.android.base.utilities.LogUtilities.makeLogTag;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.google.analytics.tracking.android.GoogleAnalytics;
-import com.imminentmeals.android.base.R;
-
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -22,10 +9,24 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.google.analytics.tracking.android.GoogleAnalytics;
+import com.imminentmeals.android.base.R.string;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
+
+import static com.imminentmeals.android.base.utilities.GateKeeper.isIcsTablet;
+import static com.imminentmeals.android.base.utilities.LogUtilities.LOGW;
+import static com.imminentmeals.android.base.utilities.LogUtilities.makeLogTag;
+
 /**
  * <p>Assortment of UI helper methods.</p>
  * @author Dandré Allison
  */
+@SuppressWarnings("UnusedDeclaration")
 public final class UiUtilities {
 
     /**
@@ -33,7 +34,7 @@ public final class UiUtilities {
      * and the current device. Add {@literal <meta-data name="target device" value="tablet|phone|universal" />} to
      * an activity to specify its target device.</p>
      * @param context the current context of the device
-     * @see #isIcsTablet(android.content.Context)
+     * @see GateKeeper#isIcsTablet(android.content.Context)
      */
     public static void configureDeviceSpecificActivities(@Nonnull Context context) {
         final PackageManager package_manager = context.getPackageManager();
@@ -78,9 +79,9 @@ public final class UiUtilities {
                             return;
 
                         if (did_opt_out)
-                            Crouton.showText((Activity) context, R.string.did_opt_out, Style.CONFIRM);
+                            Crouton.showText((Activity) context, string.did_opt_out, Style.CONFIRM);
                         else
-                            Crouton.showText((Activity) context, R.string.did_opt_in, Style.CONFIRM);
+                            Crouton.showText((Activity) context, string.did_opt_in, Style.CONFIRM);
 
                         if (callback != null)
                             callback.reportAppOptOut(did_opt_out);
@@ -134,7 +135,7 @@ public final class UiUtilities {
     }
 
 /* Private Constructor */
-    /** Blocks instantiation of the {@link UiUtilies} class. */
+    /** Blocks instantiation of the {@link UiUtilities} class. */
     private UiUtilities() { }
 
     /** Tag to label {@link UiUtilities} log messages */

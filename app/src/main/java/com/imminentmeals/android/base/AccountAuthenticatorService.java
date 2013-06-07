@@ -1,6 +1,20 @@
 package com.imminentmeals.android.base;
-import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
-import static com.imminentmeals.android.base.utilities.LogUtilities.LOGV;
+import android.accounts.AbstractAccountAuthenticator;
+import android.accounts.Account;
+import android.accounts.AccountAuthenticatorResponse;
+import android.accounts.AccountManager;
+import android.accounts.NetworkErrorException;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.os.PatternMatcher;
+
+import com.imminentmeals.android.base.utilities.AccountUtilities;
+import com.imminentmeals.android.base.utilities.CryptographyUtilities;
+import com.imminentmeals.android.base.utilities.ObjectGraph;
+import com.imminentmeals.android.base.utilities.StringUtilities;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
@@ -13,24 +27,10 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
-import com.imminentmeals.android.base.utilities.AccountUtilities;
-import com.imminentmeals.android.base.utilities.CryptographyUtilities;
-import com.imminentmeals.android.base.utilities.ObjectGraph;
-import com.imminentmeals.android.base.utilities.StringUtilities;
-
 import dagger.Lazy;
 
-import android.accounts.AbstractAccountAuthenticator;
-import android.accounts.Account;
-import android.accounts.AccountAuthenticatorResponse;
-import android.accounts.AccountManager;
-import android.accounts.NetworkErrorException;
-import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.os.PatternMatcher;
+import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGE;
+import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGV;
 
 
 /**
@@ -78,7 +78,7 @@ public class AccountAuthenticatorService extends Service {
             // If no connect account action is defined, then there is no connect account activity to start
             if (_account_utilities.addAccountActionName() == null) return Bundle.EMPTY;
 
-            LOGV("Creating add account activity bundle");
+            AUTOTAGLOGV("Creating add account activity bundle");
             // Creates the intent to start the connect account activity
             return addAccountBundle(response, account_type, auth_token_type, true);
         }
@@ -136,7 +136,7 @@ public class AccountAuthenticatorService extends Service {
 
         @Override
         public String getAuthTokenLabel(String auth_token_type) {
-            return _token_matcher.match(_account_utilities.authTokenType()) ? auth_token_type : null;
+            return _token_matcher.match(auth_token_type) ? auth_token_type : null;
         }
 
         @Override
@@ -154,7 +154,7 @@ public class AccountAuthenticatorService extends Service {
         }
 
         /**
-         * <p>Creates the {@link Bundle} used when creating the connect account {@link Activity} when the user must be prompted
+         * <p>Creates the {@link Bundle} used when creating the connect account {@link android.app.Activity} when the user must be prompted
          * for account credentials.</p>
          * @param response The response returned to the account authenticator
          * @param account_type The account type
@@ -185,17 +185,17 @@ public class AccountAuthenticatorService extends Service {
                 try {
                     return _account_utilities.login(account.name, _crypto.decipher(password));
                 } catch (InvalidKeyException exception) {
-                    LOGE(exception);
+                    AUTOTAGLOGE(exception);
                 } catch (IllegalBlockSizeException exception) {
-                    LOGE(exception);
+                    AUTOTAGLOGE(exception);
                 } catch (BadPaddingException exception) {
-                    LOGE(exception);
+                    AUTOTAGLOGE(exception);
                 } catch (NoSuchAlgorithmException exception) {
-                    LOGE(exception);
+                    AUTOTAGLOGE(exception);
                 } catch (NoSuchPaddingException exception) {
-                    LOGE(exception);
+                    AUTOTAGLOGE(exception);
                 } catch (UnsupportedEncodingException exception) {
-                    LOGE(exception);
+                    AUTOTAGLOGE(exception);
                 }
             return null;
         }
@@ -206,13 +206,13 @@ public class AccountAuthenticatorService extends Service {
         private final CryptographyUtilities _crypto;
         /** The {@link AccountManager} provider */
         private final Provider<AccountManager> _accounts;
-        /** Matches against {@link AccountUtilities#AUTH_TOKEN_TYPE} */
+        /** Matches against {@link com.imminentmeals.android.base.utilities.AccountUtilities#authTokenType()} */
         private final PatternMatcher _token_matcher;
     }
 
     @Override
     public void onCreate() {
-        LOGV("Authentication service started");
+        AUTOTAGLOGV("Authentication service started");
         ObjectGraph.inject(this);
     }
 

@@ -1,16 +1,19 @@
 package com.imminentmeals.android.base.utilities;
 
-import javax.annotation.Nonnull;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 
-import com.imminentmeals.android.base.R;
+import com.imminentmeals.android.base.R.id;
+import com.imminentmeals.android.base.R.menu;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * <p>Utilities for generating the {@link android.app.ActionBar} actions.</p>
  * @author Dandre Allison
  */
+@SuppressWarnings("UnusedDeclaration")
+@ParametersAreNonnullByDefault
 public final class ActionUtilities {
 
    /**
@@ -19,7 +22,7 @@ public final class ActionUtilities {
     * @param actions Holds the inflated actions
     * @param resource Menu resource ID of the given actions if greater than {@code 0}
     */
-   public static void generateActions(@Nonnull MenuInflater inflater, @Nonnull Menu actions, int resource) {
+   public static void generateActions(MenuInflater inflater, Menu actions, int resource) {
        inflater.inflate(_BASE_ACTIONS, actions);
        if (resource > 0) inflater.inflate(resource, actions);
    }
@@ -30,9 +33,9 @@ public final class ActionUtilities {
     * @param actions Holds the inflated actions
     * @param resource Menu resource ID of the given actions if greater than {@code 0}
     */
-   public static void generateActionsWithSyncStatus(@Nonnull MenuInflater inflater, @Nonnull Menu actions, int resource) {
+   public static void generateActionsWithSyncStatus(MenuInflater inflater, Menu actions, int resource) {
        inflater.inflate(_BASE_ACTIONS, actions);
-       actions.findItem(R.id.menu_refresh).setVisible(true);
+       actions.findItem(id.menu_refresh).setVisible(true);
        if (resource > 0) inflater.inflate(resource, actions);
    }
 
@@ -40,5 +43,5 @@ public final class ActionUtilities {
     /** Blocks instantiation of the {@link HelpUtilities} class. */
     private ActionUtilities() { }
     /** The base actions resource ID */
-    private static final int _BASE_ACTIONS = R.menu.base;
+    private static final int _BASE_ACTIONS = menu.base;
 }

@@ -1,11 +1,11 @@
 package com.imminentmeals.android.base.utilities;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import android.util.Log;
 
 import com.imminentmeals.android.base.BuildConfig;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * <p>Helper functions that make logging more consistent throughout the app. Be sure to set {@code _LOG_PREFIX} to
@@ -38,6 +38,7 @@ import com.imminentmeals.android.base.BuildConfig;
  * </ul>
  * </p>
  */
+@SuppressWarnings({"JavaDoc", "UnusedDeclaration"})
 @ParametersAreNonnullByDefault
 public final class LogUtilities {
 
@@ -110,10 +111,9 @@ public final class LogUtilities {
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      * @param cause the given error cause
      */
-    public static void LOGD(final String tag, Throwable cause, Object format, Object... arguments) {
+    public static void LOGD(final String tag, Throwable cause, String format, Object... arguments) {
         if (BuildConfig.DEBUG) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+            final String message = (arguments.length > 0 ? String.format(format, arguments) : format)
                     + '\n'
                     + Log.getStackTraceString(cause);
             Log.d(tag, message);
@@ -129,10 +129,9 @@ public final class LogUtilities {
      *               used to format the arguments
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
-    public static void LOGD(final String tag, Object format, Object... arguments) {
+    public static void LOGD(final String tag, String format, Object... arguments) {
         if (BuildConfig.DEBUG) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+            final String message = arguments.length > 0 ? String.format(format, arguments) : format;
             Log.d(tag, message);
         }
     }
@@ -143,7 +142,7 @@ public final class LogUtilities {
      * will use a default tag.</p>
      * @param message the message to log
      */
-    public static void LOGD(String message) {
+    public static void AUTOTAGLOGD(String message) {
         final String tag = getAutomaticTag();
         if (BuildConfig.DEBUG) Log.d(tag, message);
     }
@@ -155,7 +154,7 @@ public final class LogUtilities {
      * @param cause the given error cause
      * @param message the message to log
      */
-    public static void LOGD(Throwable cause, String message) {
+    public static void AUTOTAGLOGD(Throwable cause, String message) {
         final String tag = getAutomaticTag();
         if (BuildConfig.DEBUG) Log.d(tag, message, cause);
     }
@@ -166,7 +165,7 @@ public final class LogUtilities {
      * but will use a default tag.</p>
      * @param cause the given error cause
      */
-    public static void LOGD(Throwable cause) {
+    public static void AUTOTAGLOGD(Throwable cause) {
         final String tag = getAutomaticTag();
         if (BuildConfig.DEBUG) Log.d(tag, Log.getStackTraceString(cause));
     }
@@ -174,17 +173,16 @@ public final class LogUtilities {
     /**
      * <p>Logs a {@linkplain Log#DEBUG debug-level} message with the given error cause and formatted message, for a
      * default tag. Nothing will be logged if not running a {@link BuildConfig#DEBUG debug build}. This is like
-     * {@link #LOGD(String, Throwable, Object, Object...)}, but will use a default tag.</p>
+     * {@link #LOGD(String, Throwable, String, Object...)}, but will use a default tag.</p>
      * @param format the object (usually a format string, like those used in {@link String#format(String, Object...)})
      *               used to format the arguments
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      * @param cause the given error cause
      */
-    public static void LOGD(Throwable cause, Object format, Object... arguments) {
+    public static void AUTOTAGLOGD(Throwable cause, String format, Object... arguments) {
         final String tag = getAutomaticTag();
         if (BuildConfig.DEBUG) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+            final String message = (arguments.length > 0 ? String.format(format, arguments) : format)
                     + '\n'
                     + Log.getStackTraceString(cause);
             Log.d(tag, message);
@@ -194,16 +192,15 @@ public final class LogUtilities {
     /**
      * <p>Logs a {@linkplain Log#DEBUG debug-level} message with the formatted message, for a default tag. Nothing will
      * be logged if not running a {@link BuildConfig#DEBUG debug build}. This is like
-     * {@link #LOGD(String, Object, Object...)}, but will use a default tag.</p>
+     * {@link #LOGD(String, String, Object...)}, but will use a default tag.</p>
      * @param format the object (usually a format string, like those used in {@link String#format(String, Object...)})
      *               used to format the arguments
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
-    public static void LOGD(Object format, Object... arguments) {
+    public static void AUTOTAGLOGD(String format, Object... arguments) {
         final String tag = getAutomaticTag();
         if (BuildConfig.DEBUG) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+            final String message = arguments.length > 0 ? String.format(format, arguments) : format;
             Log.d(tag, message);
         }
     }
@@ -253,10 +250,9 @@ public final class LogUtilities {
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      * @param cause the given error cause
      */
-    public static void LOGV(final String tag, Throwable cause, Object format, Object... arguments) {
+    public static void LOGV(final String tag, Throwable cause, String format, Object... arguments) {
         if (BuildConfig.DEBUG) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+                        final String message = (arguments.length > 0 ? String.format(format, arguments) : format)
                     + '\n'
                     + Log.getStackTraceString(cause);
             Log.v(tag, message);
@@ -272,10 +268,9 @@ public final class LogUtilities {
      *               used to format the arguments
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
-    public static void LOGV(final String tag, Object format, Object... arguments) {
+    public static void LOGV(final String tag, String format, Object... arguments) {
         if (BuildConfig.DEBUG) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+                        final String message = arguments.length > 0 ? String.format(format, arguments) : format;
             Log.v(tag, message);
         }
     }
@@ -286,7 +281,7 @@ public final class LogUtilities {
      * will use a default tag.</p>
      * @param message the message to log
      */
-    public static void LOGV(String message) {
+    public static void AUTOTAGLOGV(String message) {
         final String tag = getAutomaticTag();
         if (BuildConfig.DEBUG) Log.v(tag, message);
     }
@@ -298,7 +293,7 @@ public final class LogUtilities {
      * @param cause the given error cause
      * @param message the message to log
      */
-    public static void LOGV(Throwable cause, String message) {
+    public static void AUTOTAGLOGV(Throwable cause, String message) {
         final String tag = getAutomaticTag();
         if (BuildConfig.DEBUG) Log.v(tag, message, cause);
     }
@@ -309,7 +304,7 @@ public final class LogUtilities {
      * but will use a default tag.</p>
      * @param cause the given error cause
      */
-    public static void LOGV(Throwable cause) {
+    public static void AUTOTAGLOGV(Throwable cause) {
         final String tag = getAutomaticTag();
         if (BuildConfig.DEBUG) Log.v(tag, Log.getStackTraceString(cause));
     }
@@ -317,17 +312,16 @@ public final class LogUtilities {
     /**
      * <p>Logs a {@linkplain Log#DEBUG debug-level} message with the given error cause and formatted message, for a
      * default tag. Nothing will be logged if not running a {@link BuildConfig#DEBUG debug build}. This is like
-     * {@link #LOGV(String, Throwable, Object, Object...)}, but will use a default tag.</p>
+     * {@link #LOGV(String, Throwable, String, Object...)}, but will use a default tag.</p>
      * @param format the object (usually a format string, like those used in {@link String#format(String, Object...)})
      *               used to format the arguments
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      * @param cause the given error cause
      */
-    public static void LOGV(Throwable cause, Object format, Object... arguments) {
+    public static void AUTOTAGLOGV(Throwable cause, String format, Object... arguments) {
         final String tag = getAutomaticTag();
         if (BuildConfig.DEBUG) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+                        final String message = (arguments.length > 0 ? String.format(format, arguments) : format)
                     + '\n'
                     + Log.getStackTraceString(cause);
             Log.v(tag, message);
@@ -337,16 +331,15 @@ public final class LogUtilities {
     /**
      * <p>Logs a {@linkplain Log#DEBUG debug-level} message with the formatted message, for a default tag. Nothing will
      * be logged if not running a {@link BuildConfig#DEBUG debug build}. This is like
-     * {@link #LOGV(String, Object, Object...)}, but will use a default tag.</p>
+     * {@link #LOGV(String, String, Object...)}, but will use a default tag.</p>
      * @param format the object (usually a format string, like those used in {@link String#format(String, Object...)})
      *               used to format the arguments
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
-    public static void LOGV(Object format, Object... arguments) {
+    public static void AUTOTAGLOGV(String format, Object... arguments) {
         final String tag = getAutomaticTag();
         if (BuildConfig.DEBUG) {
-            final String format_string = StringUtilities.toString(format);
-            final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+                        final String message = arguments.length > 0 ? String.format(format, arguments) : format;
             Log.v(tag, message);
         }
     }
@@ -394,9 +387,8 @@ public final class LogUtilities {
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      * @param cause the given error cause
      */
-    public static void LOGI(final String tag, Throwable cause, Object format, Object... arguments) {
-        final String format_string = StringUtilities.toString(format);
-        final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+    public static void LOGI(final String tag, Throwable cause, String format, Object... arguments) {
+                final String message = (arguments.length > 0 ? String.format(format, arguments) : format)
                 + '\n'
                 + Log.getStackTraceString(cause);
         Log.i(tag, message);
@@ -410,9 +402,8 @@ public final class LogUtilities {
      *               used to format the arguments
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
-    public static void LOGI(final String tag, Object format, Object... arguments) {
-        final String format_string = StringUtilities.toString(format);
-        final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+    public static void LOGI(final String tag, String format, Object... arguments) {
+                final String message = arguments.length > 0 ? String.format(format, arguments) : format;
         Log.i(tag, message);
     }
 
@@ -422,7 +413,7 @@ public final class LogUtilities {
      * will use a default tag.</p>
      * @param message the message to log
      */
-    public static void LOGI(String message) {
+    public static void AUTOTAGLOGI(String message) {
         final String tag = getAutomaticTag();
         Log.i(tag, message);
     }
@@ -433,7 +424,7 @@ public final class LogUtilities {
      * @param cause the given error cause
      * @param message the message to log
      */
-    public static void LOGI(Throwable cause, String message) {
+    public static void AUTOTAGLOGI(Throwable cause, String message) {
         final String tag = getAutomaticTag();
         Log.i(tag, message, cause);
     }
@@ -443,23 +434,22 @@ public final class LogUtilities {
      * like {@link #LOGI(String, Throwable)}, but will use a default tag.</p>
      * @param cause the given error cause
      */
-    public static void LOGI(Throwable cause) {
+    public static void AUTOTAGLOGI(Throwable cause) {
         final String tag = getAutomaticTag();
         Log.i(tag, Log.getStackTraceString(cause));
     }
 
     /**
      * <p>Logs a {@linkplain Log#DEBUG debug-level} message with the given error cause and formatted message, for a
-     * default tag. This is like {@link #LOGI(String, Throwable, Object, Object...)}, but will use a default tag.</p>
+     * default tag. This is like {@link #LOGI(String, Throwable, String, Object...)}, but will use a default tag.</p>
      * @param format the object (usually a format string, like those used in {@link String#format(String, Object...)})
      *               used to format the arguments
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      * @param cause the given error cause
      */
-    public static void LOGI(Throwable cause, Object format, Object... arguments) {
+    public static void AUTOTAGLOGI(Throwable cause, String format, Object... arguments) {
         final String tag = getAutomaticTag();
-        final String format_string = StringUtilities.toString(format);
-        final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+                final String message = (arguments.length > 0 ? String.format(format, arguments) : format)
                 + '\n'
                 + Log.getStackTraceString(cause);
         Log.i(tag, message);
@@ -467,15 +457,14 @@ public final class LogUtilities {
 
     /**
      * <p>Logs a {@linkplain Log#DEBUG debug-level} message with the formatted message, for a default tag. This is like
-     * {@link #LOGI(String, Object, Object...)}, but will use a default tag.</p>
+     * {@link #LOGI(String, String, Object...)}, but will use a default tag.</p>
      * @param format the object (usually a format string, like those used in {@link String#format(String, Object...)})
      *               used to format the arguments
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
-    public static void LOGI(Object format, Object... arguments) {
+    public static void AUTOTAGLOGI(String format, Object... arguments) {
         final String tag = getAutomaticTag();
-        final String format_string = StringUtilities.toString(format);
-        final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+                final String message = arguments.length > 0 ? String.format(format, arguments) : format;
         Log.i(tag, message);
     }
 
@@ -522,9 +511,8 @@ public final class LogUtilities {
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      * @param cause the given error cause
      */
-    public static void LOGW(final String tag, Throwable cause, Object format, Object... arguments) {
-        final String format_string = StringUtilities.toString(format);
-        final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+    public static void LOGW(final String tag, Throwable cause, String format, Object... arguments) {
+                final String message = (arguments.length > 0 ? String.format(format, arguments) : format)
                 + '\n'
                 + Log.getStackTraceString(cause);
         Log.w(tag, message);
@@ -538,9 +526,8 @@ public final class LogUtilities {
      *               used to format the arguments
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
-    public static void LOGW(final String tag, Object format, Object... arguments) {
-        final String format_string = StringUtilities.toString(format);
-        final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+    public static void LOGW(final String tag, String format, Object... arguments) {
+                final String message = arguments.length > 0 ? String.format(format, arguments) : format;
         Log.w(tag, message);
     }
 
@@ -550,7 +537,7 @@ public final class LogUtilities {
      * will use a default tag.</p>
      * @param message the message to log
      */
-    public static void LOGW(String message) {
+    public static void AUTOTAGLOGW(String message) {
         final String tag = getAutomaticTag();
         Log.w(tag, message);
     }
@@ -560,7 +547,7 @@ public final class LogUtilities {
      * like {@link #LOGW(String, Throwable)}, but will use a default tag.</p>
      * @param cause the given error cause
      */
-    public static void LOGW(Throwable cause, String message) {
+    public static void AUTOTAGLOGW(Throwable cause, String message) {
         final String tag = getAutomaticTag();
         Log.w(tag, message, cause);
     }
@@ -570,23 +557,22 @@ public final class LogUtilities {
      * like {@link #LOGW(String, Throwable)}, but will use a default tag.</p>
      * @param cause the given error cause
      */
-    public static void LOGW(Throwable cause) {
+    public static void AUTOTAGLOGW(Throwable cause) {
         final String tag = getAutomaticTag();
         Log.w(tag, Log.getStackTraceString(cause));
     }
 
     /**
      * <p>Logs a {@linkplain Log#DEBUG debug-level} message with the given error cause and formatted message, for a
-     * default tag. This is like {@link #LOGW(String, Throwable, Object, Object...)}, but will use a default tag.</p>
+     * default tag. This is like {@link #LOGW(String, Throwable, String, Object...)}, but will use a default tag.</p>
      * @param format the object (usually a format string, like those used in {@link String#format(String, Object...)})
      *               used to format the arguments
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      * @param cause the given error cause
      */
-    public static void LOGW(Throwable cause, Object format, Object... arguments) {
+    public static void AUTOTAGLOGW(Throwable cause, String format, Object... arguments) {
         final String tag = getAutomaticTag();
-        final String format_string = StringUtilities.toString(format);
-        final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+                final String message = (arguments.length > 0 ? String.format(format, arguments) : format)
                 + '\n'
                 + Log.getStackTraceString(cause);
         Log.w(tag, message);
@@ -594,15 +580,14 @@ public final class LogUtilities {
 
     /**
      * <p>Logs a {@linkplain Log#DEBUG debug-level} message with the formatted message, for a default tag. This is like
-     * {@link #LOGW(String, Object, Object...)}, but will use a default tag.</p>
+     * {@link #LOGW(String, String, Object...)}, but will use a default tag.</p>
      * @param format the object (usually a format string, like those used in {@link String#format(String, Object...)})
      *               used to format the arguments
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
-    public static void LOGW(Object format, Object... arguments) {
+    public static void AUTOTAGLOGW(String format, Object... arguments) {
         final String tag = getAutomaticTag();
-        final String format_string = StringUtilities.toString(format);
-        final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+                final String message = arguments.length > 0 ? String.format(format, arguments) : format;
         Log.w(tag, message);
     }
 
@@ -649,9 +634,8 @@ public final class LogUtilities {
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      * @param cause the given error cause
      */
-    public static void LOGE(final String tag, Throwable cause, Object format, Object... arguments) {
-        final String format_string = StringUtilities.toString(format);
-        final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+    public static void LOGE(final String tag, Throwable cause, String format, Object... arguments) {
+                final String message = (arguments.length > 0 ? String.format(format, arguments) : format)
                 + '\n'
                 + Log.getStackTraceString(cause);
         Log.e(tag, message);
@@ -665,9 +649,8 @@ public final class LogUtilities {
      *               used to format the arguments
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
-    public static void LOGE(final String tag, Object format, Object... arguments) {
-        final String format_string = StringUtilities.toString(format);
-        final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+    public static void LOGE(final String tag, String format, Object... arguments) {
+                final String message = arguments.length > 0 ? String.format(format, arguments) : format;
         Log.e(tag, message);
     }
 
@@ -677,7 +660,7 @@ public final class LogUtilities {
      * will use a default tag.</p>
      * @param message the message to log
      */
-    public static void LOGE(String message) {
+    public static void AUTOTAGLOGE(String message) {
         final String tag = getAutomaticTag();
         Log.e(tag, message);
     }
@@ -687,7 +670,7 @@ public final class LogUtilities {
      * like {@link #LOGE(String, Throwable)}, but will use a default tag.</p>
      * @param cause the given error cause
      */
-    public static void LOGE(Throwable cause, String message) {
+    public static void AUTOTAGLOGE(Throwable cause, String message) {
         final String tag = getAutomaticTag();
         Log.e(tag, message, cause);
     }
@@ -697,7 +680,7 @@ public final class LogUtilities {
      * like {@link #LOGE(String, Throwable)}, but will use a default tag.</p>
      * @param cause the given error cause
      */
-    public static void LOGE(Throwable cause) {
+    public static void AUTOTAGLOGE(Throwable cause) {
         final String tag = getAutomaticTag();
         Log.e(tag, Log.getStackTraceString(cause));
     }
@@ -707,10 +690,9 @@ public final class LogUtilities {
      * like {@link #LOGE(String, Throwable)}, but will use a default tag.</p>
      * @param cause the given error cause
      */
-    public static void LOGE(Throwable cause, Object format, Object... arguments) {
+    public static void AUTOTAGLOGE(Throwable cause, String format, Object... arguments) {
         final String tag = getAutomaticTag();
-        final String format_string = StringUtilities.toString(format);
-        final String message = (arguments.length > 0 ? String.format(format_string, arguments) : format_string)
+                final String message = (arguments.length > 0 ? String.format(format, arguments) : format)
                 + '\n'
                 + Log.getStackTraceString(cause);
         Log.e(tag, message);
@@ -718,15 +700,14 @@ public final class LogUtilities {
 
     /**
      * <p>Logs a {@linkplain Log#DEBUG debug-level} message with the formatted message, for a default tag. This is like
-     * {@link #LOGE(String, Object, Object...)}, but will use a default tag.</p>
+     * {@link #LOGE(String, String, Object...)}, but will use a default tag.</p>
      * @param format the object (usually a format string, like those used in {@link String#format(String, Object...)})
      *               used to format the arguments
      * @param arguments a list (Varargs) of arguments to format; once formatted, these produce the formatted message
      */
-    public static void LOGE(Object format, Object... arguments) {
+    public static void AUTOTAGLOGE(String format, Object... arguments) {
         final String tag = getAutomaticTag();
-        final String format_string = StringUtilities.toString(format);
-        final String message = arguments.length > 0 ? String.format(format_string, arguments) : format_string;
+                final String message = arguments.length > 0 ? String.format(format, arguments) : format;
         Log.e(tag, message);
     }
 

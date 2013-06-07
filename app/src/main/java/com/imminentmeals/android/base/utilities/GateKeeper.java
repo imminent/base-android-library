@@ -1,16 +1,18 @@
 package com.imminentmeals.android.base.utilities;
 
-import javax.annotation.Nonnull;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
- * <p>Keeper of the {@linkplain Build#VERSION_CODES Android version gates}, used to guarantee non shall pass,
+ * <p>Keeper of the {@linkplain Build.VERSION_CODES Android version gates}, used to guarantee non shall pass,
  * unless they are worthy.</p>
  * @author Dandre Allison
  */
+@SuppressWarnings("UnusedDeclaration")
+@ParametersAreNonnullByDefault
 public final class GateKeeper {
 
     /**
@@ -46,7 +48,7 @@ public final class GateKeeper {
      * @param context the context from which to retrieve the screen layout
      * @return {@code true} indicates that the current device is a tablet
      */
-    public static boolean isTablet(@Nonnull Context context) {
+    public static boolean isTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
@@ -59,17 +61,17 @@ public final class GateKeeper {
      * @return {@code true} indicates that the current device is a tablet that supports the Honeycomb API
      * @see {@link #isTablet(android.content.Context)}
      */
-    public static boolean isIcsTablet(@Nonnull Context context) {
+    public static boolean isIcsTablet(Context context) {
         return hasIcs() && isTablet(context);
     }
 
     /**
      * <p>Determines if the the current device is a Google TV. This approach uses the
-     * {@link PackageManager#hasSystemFeature(String)} to determine this.</p>
+     * {@link android.content.pm.PackageManager#hasSystemFeature(String)} to determine this.</p>
      * @param context the context from which to determine if the device has a system feature
      * @return {@code true} indicates that the current device is a Google TV
      */
-    public static boolean isGoogleTv(@Nonnull Context context) {
+    public static boolean isGoogleTv(Context context) {
         return context.getPackageManager().hasSystemFeature("com.google.android.tv");
     }
 

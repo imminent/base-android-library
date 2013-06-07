@@ -11,14 +11,17 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 
-import com.imminentmeals.android.base.R;
+import com.imminentmeals.android.base.R.dimen;
+import com.imminentmeals.android.base.R.id;
+import com.imminentmeals.android.base.R.layout;
 
 /**
  * <p>{@link android.app.ListFragment} that hosts a quick return bar. The bar can be found at
- * {@link com.keepandshare.android.R.id#quick_return_bar} and Views can be added to it.</p>
+ * {@link com.imminentmeals.android.base.R.id#quick_return_bar} and Views can be added to it.</p>
  * @author Dandré Allison
  * @see <a href="https://plus.google.com/u/0/113735310430199015092/posts/1Sb549FvpJt">Quick Return post</a>
  */
+@SuppressWarnings("UnusedDeclaration")
 public class QuickReturnListFragment extends ListFragment implements OnScrollListener {
 
     public QuickReturnListFragment() { }
@@ -26,10 +29,10 @@ public class QuickReturnListFragment extends ListFragment implements OnScrollLis
 /* Lifecycle */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle icicle) {
-        final ViewGroup root_view = (ViewGroup) inflater.inflate(R.layout.fragment_quick_return, container, false);
+        final ViewGroup root_view = (ViewGroup) inflater.inflate(layout.fragment_quick_return, container, false);
 
         // Gathers views
-        final View quick_return_bar = root_view.findViewById(R.id.quick_return_bar);
+        final View quick_return_bar = root_view.findViewById(id.quick_return_bar);
 
         // Sets up animation
         _quick_return_bar_return_animator = ObjectAnimator.ofFloat(quick_return_bar,
@@ -59,7 +62,7 @@ public class QuickReturnListFragment extends ListFragment implements OnScrollLis
         );
         _quick_return_bar_hide_animator = ObjectAnimator.ofFloat(quick_return_bar,
                 View.TRANSLATION_Y,
-                getResources().getDimension(R.dimen.quick_return_bar_height));
+                getResources().getDimension(dimen.quick_return_bar_height));
         _quick_return_bar_hide_animator.addListener(
                 new Animator.AnimatorListener() {
                     @Override

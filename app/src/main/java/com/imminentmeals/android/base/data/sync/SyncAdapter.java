@@ -1,19 +1,19 @@
 package com.imminentmeals.android.base.data.sync;
 
-import static com.imminentmeals.android.base.utilities.LogUtilities.LOGD;
-import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import com.imminentmeals.android.base.BuildConfig;
-
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
+
+import com.imminentmeals.android.base.BuildConfig;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGD;
+import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGE;
 
 /**
  * <p>Sync adapter.</p>
@@ -43,7 +43,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
                 @Override
                 public void uncaughtException(Thread _, Throwable throwable) {
-                    LOGE(throwable, "Uncaught sync exception, suppressing UI in release build.");
+                    AUTOTAGLOGE(throwable, "Uncaught sync exception, suppressing UI in release build.");
                 }
             });
         }
@@ -53,6 +53,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider,
             SyncResult sync_result) {
         // TODO Auto-generated method stub
-        LOGD("perform sync");
+        AUTOTAGLOGD("perform sync");
     }
 }

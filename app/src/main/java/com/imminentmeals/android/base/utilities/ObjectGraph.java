@@ -1,10 +1,10 @@
 package com.imminentmeals.android.base.utilities;
 
-import javax.annotation.Nonnull;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.Service;
+
+import javax.annotation.Nonnull;
 
 /**
  * <p>Retrieves the {@link dagger.ObjectGraph} and injects dependencies.</p>
@@ -20,7 +20,7 @@ public final class ObjectGraph {
         /**
          * <p>Injects dependencies into the given Object.</p>
          */
-        @Nonnull void inject(Object dependent);
+        void inject(@Nonnull Object dependent);
     }
 
     /**

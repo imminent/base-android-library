@@ -1,20 +1,21 @@
 package com.imminentmeals.android.base.ui;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.imminentmeals.android.base.R;
+import com.imminentmeals.android.base.R.id;
+import com.imminentmeals.android.base.R.string;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks;
 import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks.Syncable;
 import com.imminentmeals.android.base.utilities.ActionUtilities;
 import com.imminentmeals.android.base.utilities.HelpUtilities;
 import com.squareup.otto.Bus;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 /**
  * <p>Controller that provides the Home screen.</p>
@@ -27,7 +28,7 @@ public class HomeActivity extends Activity implements Syncable {
     @Override
     protected void onCreate(@CheckForNull Bundle icicle) {
         super.onCreate(icicle);
-        getActionBar().setTitle(R.string.title_home_screen);
+        getActionBar().setTitle(string.title_home_screen);
     }
 
 /* Activity Callbacks */
@@ -43,7 +44,7 @@ public class HomeActivity extends Activity implements Syncable {
     @Override
     public boolean onOptionsItemSelected(MenuItem action) {
         final int action_id = action.getItemId();
-        if (action_id == R.id.menu_help) {
+        if (action_id == id.menu_help) {
             HelpUtilities.showAbout(this);
             return true;
         }

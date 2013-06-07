@@ -16,14 +16,9 @@
  */
 package com.imminentmeals.android.base.activity_lifecycle_callbacks;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -33,6 +28,12 @@ import android.widget.TextView;
 
 import com.imminentmeals.android.base.R;
 import com.imminentmeals.android.base.utilities.SimpleActivityLifecycleCallbacks;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 /**
  * <p>Defines the callbacks for the Done/Discard Bar pattern and creates the bar for {@link Activity}s that
@@ -163,6 +164,14 @@ public class DoneDiscardCallbacks extends SimpleActivityLifecycleCallbacks {
         }
 
         /**
+         * <p>Get the {@link LayoutInflater}.</p>
+         * @return The layout inflater
+         */
+        LayoutInflater getLayoutInflater() {
+            return (LayoutInflater) _activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        /**
          * <p>Indicates when the wrapped {@link Activity} provides a custom done button.</p>
          * @return {@code true} indicates the wrapped activity provides a custom done button
          */
@@ -222,17 +231,23 @@ public class DoneDiscardCallbacks extends SimpleActivityLifecycleCallbacks {
     @Nonnull private <T extends ActivityWrapper & UsesDoneDiscardBarDoneOnlyMode> View createDoneDiscardDoneOnlyBar(
             @Nonnull final T activity,
             @Nonnegative int layout) {
+        if (activity.getActionBar() == null)
+            throw new IllegalStateException("Done/Discard Bar cannot be used on an Activity without an ActionBar.");
         // Inflates a "Done/Discard" custom action bar view.
-        final LayoutInflater inflater = (LayoutInflater) activity.getActionBar().getThemedContext()
-                .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        final Context context = activity.getActionBar().getThemedContext();
+        final LayoutInflater inflater = (LayoutInflater) (context == null
+                ?  activity.getLayoutInflater()
+                : context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE));
         final View done_discard_bar = inflater.inflate(layout, null);
+        assert done_discard_bar != null;
         final ViewGroup done_button = (ViewGroup) done_discard_bar.findViewById(R.id.actionbar_done);
         // Allows for customization of the done button
         if (activity.providesCustomDoneButton()) {
             final TextView done_button_display = (TextView) done_button.getChildAt(0);
-            final CharSequence done_text = ((ProvidesCustomDoneButton) activity).doneButtonText();
+            final CharSequence done_text = activity.doneButtonText();
+            assert done_button_display != null;
             if (done_text != null) done_button_display.setText(done_text);
-            final Drawable done_icon = ((ProvidesCustomDoneButton) activity).doneButtonIcon();
+            final Drawable done_icon = activity.doneButtonIcon();
             if (done_icon != null) done_button_display.setCompoundDrawablesWithIntrinsicBounds(done_icon, null, null, null);
         }
         done_button.setOnClickListener(

@@ -4,9 +4,10 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 
 /**
- * <p>A custom {@link android.content.Loader} that retrieves the {@link AccountUtils.UserProfile} asynchronously.</p>
+ * <p>A custom {@link android.content.Loader} that retrieves the {@link AccountUtilities.UserProfile} asynchronously.</p>
  * @author Dandré Allison
  */
+@SuppressWarnings("UnusedDeclaration")
 public class UserProfileLoader extends AsyncTaskLoader<AccountUtilities.UserProfile> {
 
     /**

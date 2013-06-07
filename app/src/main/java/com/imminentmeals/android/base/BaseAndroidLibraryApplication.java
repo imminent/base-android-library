@@ -1,10 +1,26 @@
 package com.imminentmeals.android.base;
 
-import static android.util.Base64.DEFAULT;
-import static android.util.Base64.decode;
-import static android.util.Base64.encodeToString;
-import static com.google.common.collect.Lists.newArrayList;
-import static com.imminentmeals.android.base.utilities.LogUtilities.LOGE;
+import android.accounts.AccountManager;
+import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.http.HttpResponseCache;
+import android.os.StrictMode;
+import android.preference.PreferenceManager;
+
+import com.imminentmeals.android.base.activity_lifecycle_callbacks.AccountFlowCallbacks;
+import com.imminentmeals.android.base.activity_lifecycle_callbacks.DoneDiscardCallbacks;
+import com.imminentmeals.android.base.activity_lifecycle_callbacks.GoogleAnalyticsCallbacks;
+import com.imminentmeals.android.base.activity_lifecycle_callbacks.InjectionCallbacks;
+import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks;
+import com.imminentmeals.android.base.data.sync.SyncService;
+import com.imminentmeals.android.base.ui.AccountActivity;
+import com.imminentmeals.android.base.ui.HomeActivity;
+import com.imminentmeals.android.base.utilities.AndroidCookieStore;
+import com.imminentmeals.android.base.utilities.CryptographyUtilities;
+import com.imminentmeals.android.base.utilities.ObjectGraph.ObjectGraphApplication;
+import com.imminentmeals.android.base.utilities.StringUtilities;
+import com.squareup.otto.Bus;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,44 +38,26 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.http.HttpResponseCache;
-import android.os.StrictMode;
-import android.preference.PreferenceManager;
-
-import com.imminentmeals.android.base.activity_lifecycle_callbacks.AccountFlowCallbacks;
-import com.imminentmeals.android.base.activity_lifecycle_callbacks.DoneDiscardCallbacks;
-import com.imminentmeals.android.base.activity_lifecycle_callbacks.GoogleAnalyticsCallbacks;
-import com.imminentmeals.android.base.activity_lifecycle_callbacks.InjectionCallbacks;
-import com.imminentmeals.android.base.activity_lifecycle_callbacks.SyncCallbacks;
-import com.imminentmeals.android.base.data.sync.SyncService;
-import com.imminentmeals.android.base.ui.AccountActivity;
-import com.imminentmeals.android.base.ui.HomeActivity;
-import com.imminentmeals.android.base.utilities.AccountUtilities;
-import com.imminentmeals.android.base.utilities.AndroidCookieStore;
-import com.imminentmeals.android.base.utilities.CryptographyUtilities;
-import com.imminentmeals.android.base.utilities.ObjectGraph.ObjectGraphApplication;
-import com.imminentmeals.android.base.utilities.StringUtilities;
-import com.squareup.otto.Bus;
-
 import dagger.Lazy;
 import dagger.Module;
 import dagger.ObjectGraph;
 import dagger.Provides;
 
+import static android.util.Base64.DEFAULT;
+import static android.util.Base64.decode;
+import static android.util.Base64.encodeToString;
+import static com.google.common.collect.Lists.newArrayList;
+import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGE;
+
 /**
  * <p>Enables {@link StrictMode} during debugging, creates the {@linkplain ObjectGraph object graph} for dependency
- * injection, and registers {@linkplain Application#ActivityLifecycleCallbacks Activity lifecycle callbacks}.
+ * injection, and registers {@linkplain android.app.Application.ActivityLifecycleCallbacks Activity lifecycle callbacks}.
  * @author Dandré Allison
  */
 public class BaseAndroidLibraryApplication extends Application implements ObjectGraphApplication {
     @Inject /* package */SharedPreferences settings;
     @Inject /* package */AccountFlowCallbacks account_flow_callbacks;
-    @Inject /* package */GoogleAnalyticsCallbacks google_analytics_callbakcs;
+    @Inject /* package */GoogleAnalyticsCallbacks google_analytics_callbacks;
     @Inject /* package */InjectionCallbacks injection_callbacks;
     @Inject /* package */SyncCallbacks sync_callbacks;
     @Inject /* package */DoneDiscardCallbacks done_discard_callbacks;
@@ -85,7 +83,7 @@ public class BaseAndroidLibraryApplication extends Application implements Object
 
         // Registers the Activity lifecycle callbacks
         registerActivityLifecycleCallbacks(account_flow_callbacks);
-        registerActivityLifecycleCallbacks(google_analytics_callbakcs);
+        registerActivityLifecycleCallbacks(google_analytics_callbacks);
         registerActivityLifecycleCallbacks(injection_callbacks);
         registerActivityLifecycleCallbacks(sync_callbacks);
         registerActivityLifecycleCallbacks(done_discard_callbacks);
@@ -98,7 +96,7 @@ public class BaseAndroidLibraryApplication extends Application implements Object
                                    encodeToString(CryptographyUtilities.generateKey().getEncoded(), DEFAULT))
                     .apply();
             } catch (NoSuchAlgorithmException error) {
-                LOGE(error);
+                AUTOTAGLOGE(error);
             }
 
         // Enables HTTP response caching
@@ -133,7 +131,7 @@ public class BaseAndroidLibraryApplication extends Application implements Object
 
 /* ObjectGraphApplication Contract */
     @Override
-    public void inject(Object dependent) {
+    public void inject(@Nonnull Object dependent) {
         _object_graph.inject(dependent);
     }
 
@@ -162,9 +160,10 @@ public class BaseAndroidLibraryApplication extends Application implements Object
                     AccountAuthenticatorService.class,
                     SyncService.class
     		},
-    		library = true
+    		library = true,
+            complete = false
     )
-    protected static class BaseAndroidLibraryModule {
+    /* package */static class BaseAndroidLibraryModule {
 
         /**
          * <p>Constructs the module using the {@link Context} to retrieve the application context
@@ -191,10 +190,6 @@ public class BaseAndroidLibraryApplication extends Application implements Object
             return _context;
         }
 
-        @Provides Account provideTestAccount(AccountUtilities account_utilities) {
-            return null;
-        }
-
         @Provides SecretKey provideSecretKey(final SharedPreferences settings) {
             return new SecretKey() {
 
@@ -215,15 +210,6 @@ public class BaseAndroidLibraryApplication extends Application implements Object
 
                 private static final long serialVersionUID = 4664651834175207772L;
             };
-        }
-
-        @SuppressWarnings("rawtypes")
-        @Provides @Named(ACCOUNT_ACTIVITY) Class provideAccountActivity() {
-            return AccountActivity.class;
-        }
-
-        @Provides @Named(COOKIE_AUTH_TOKEN) String providesCookieAuthToken() {
-            return "";
         }
 
         @Provides @Singleton CookieStore provideCookieStore(AndroidCookieStore cookie_jar) {
@@ -254,7 +240,7 @@ public class BaseAndroidLibraryApplication extends Application implements Object
                     final File cache_directory = new File(getCacheDir(), "http");
                     HttpResponseCache.install(cache_directory, _CACHE_SIZE);
                 } catch (IOException error) {
-                    LOGE(error.getCause(), "HTTP cache installation failed.");
+                    AUTOTAGLOGE(error.getCause(), "HTTP cache installation failed.");
                 }
             }
         }).start();
