@@ -12,7 +12,7 @@
     <!-- Allows application to see the sync status like from isSyncActive and isSyncPending -->
     <uses-permission android:name="android.permission.READ_SYNC_STATS"/>
 
-    <application android:name="BaseAndroidLibraryApplication" android:hardwareAccelerated="true" android:icon="@drawable/ic_launcher" android:label="@string/title_app" android:supportsRtl="true" android:allowBackup="true">
+    <application android:name="BaseAndroidLibraryApplication" android:hardwareAccelerated="true" android:icon="@drawable/icon_launcher" android:label="@string/title_app" android:supportsRtl="true" android:allowBackup="true">
         <!-- Note: specify the target device for Activities with target device meta-data of "universal|phone|tablet"
                    see UiUtilities.java (configureDeviceSpecificActivities) for more details. -->
         <!-- Note: you should also specify a description of account in analytics.xml for analytics tracking. -->

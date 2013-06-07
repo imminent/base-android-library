@@ -1,9 +1,5 @@
 package com.imminentmeals.android.base.activity_lifecycle_callbacks;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
-
 import android.accounts.Account;
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -12,12 +8,17 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.imminentmeals.android.base.R;
+import com.imminentmeals.android.base.R.id;
+import com.imminentmeals.android.base.R.layout;
 import com.imminentmeals.android.base.data.provider.BaseContract;
 import com.imminentmeals.android.base.utilities.AccountUtilities;
 import com.imminentmeals.android.base.utilities.SimpleActivityLifecycleCallbacks;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 /**
  * <p>Handles display of sync status in the {@link android.app.ActionBar}.</p>
@@ -118,10 +119,10 @@ public class SyncCallbacks extends SimpleActivityLifecycleCallbacks {
      * @param is_refreshing whether the app is refreshing data
      */
     private void setRefreshActionButtonState(@Nonnull Syncable activity, boolean is_refreshing) {
-        final MenuItem refresh_action = activity.actionMenu().findItem(R.id.menu_refresh);
+        final MenuItem refresh_action = activity.actionMenu().findItem(id.action_refresh);
         if (refresh_action != null) {
             if (is_refreshing)
-                refresh_action.setActionView(R.layout.actionbar_indeterminate_progress);
+                refresh_action.setActionView(layout.actionbar_indeterminate_progress);
             else
                 refresh_action.setActionView(null);
         }

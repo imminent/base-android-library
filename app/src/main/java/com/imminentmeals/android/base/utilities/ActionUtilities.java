@@ -35,7 +35,7 @@ public final class ActionUtilities {
     */
    public static void generateActionsWithSyncStatus(MenuInflater inflater, Menu actions, int resource) {
        inflater.inflate(_BASE_ACTIONS, actions);
-       actions.findItem(id.menu_refresh).setVisible(true);
+       actions.findItem(id.action_refresh).setVisible(true);
        if (resource > 0) inflater.inflate(resource, actions);
    }
 

@@ -44,7 +44,7 @@ public class HomeActivity extends Activity implements Syncable {
     @Override
     public boolean onOptionsItemSelected(MenuItem action) {
         final int action_id = action.getItemId();
-        if (action_id == id.menu_help) {
+        if (action_id == id.action_help) {
             HelpUtilities.showAbout(this);
             return true;
         }

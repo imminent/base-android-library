@@ -9,6 +9,6 @@
      accountPreferences: a PreferenceScreen heirarchy with a list of PreferenceScreens for managing the authenticator -->
 <account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
                        android:accountType="fake:com.google"
-                       android:icon="@drawable/ic_launcher"
-                       android:smallIcon="@drawable/ic_launcher"
+                       android:icon="@drawable/icon_launcher"
+                       android:smallIcon="@drawable/icon_launcher"
                        android:label="@string/title_app" />

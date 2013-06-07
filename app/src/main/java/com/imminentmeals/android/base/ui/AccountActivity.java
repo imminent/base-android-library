@@ -189,7 +189,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
 
         @Override
         public boolean onOptionsItemSelected(MenuItem action) {
-            if (action.getItemId() == id.menu_add_account) {
+            if (action.getItemId() == id.action_add_account) {
                 // Tracks the add account event
                 EasyTracker.getTracker().sendTiming(CATEGORY_UX, _timer.elapsed(TimeUnit.MILLISECONDS),
                                                     ACTION_BUTTON_PRESS, "add_account");
