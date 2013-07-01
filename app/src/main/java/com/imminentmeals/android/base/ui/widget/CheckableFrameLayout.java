@@ -1,37 +1,21 @@
-/*******************************************************************************
- * Copyright 2013 Chris Banes.
- *           2013 Dandre Allison
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
 package com.imminentmeals.android.base.ui.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Checkable;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * <p>An extension of {@link LinearLayout} that manages a {@link Checkable} state based off of a
- * child view that implements {@link Checkable}.
+ * <p>An extension of {@link android.widget.LinearLayout} that manages a {@link android.widget.Checkable} state based off of a
+ * child view that implements {@link android.widget.Checkable}.
  * @author Chris Banes
  * @author Dandre Allison
  */
-public class CheckableLinearLayout extends LinearLayout implements Checkable {
+public class CheckableFrameLayout extends FrameLayout implements Checkable {
 
     /**
      * <p>Interface definition for a callback to be invoked when the checked state is changed.</p>
@@ -51,7 +35,7 @@ public class CheckableLinearLayout extends LinearLayout implements Checkable {
      * @param context The context in which to create the CheckableLinearLayout
      * @param attrs The set of attributes
      */
-    public CheckableLinearLayout(@Nonnull Context context, @Nullable AttributeSet attrs) {
+    public CheckableFrameLayout(@Nonnull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -79,7 +63,7 @@ public class CheckableLinearLayout extends LinearLayout implements Checkable {
         setChecked(!_checked);
     }
 
-/* LinearLayout Callbacks */
+/* FrameLayout Callbacks */
     @Override
     public int[] onCreateDrawableState(int extra_space) {
         // Changes the background drawable state to reflect a change in checked state

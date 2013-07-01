@@ -25,7 +25,6 @@ import android.widget.TextView;
 
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.Lists;
 import com.imminentmeals.android.base.R.id;
 import com.imminentmeals.android.base.R.layout;
 import com.imminentmeals.android.base.R.menu;
@@ -147,7 +146,6 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
      * selected, the {@linkplain AuthProgressFragment authentication progress fragment} is displayed.</p>
      */
     public static class ChooseAccountFragment extends ListFragment {
-        @Inject /* package */Lazy<Account> test_account;
         @Inject /* package */Lazy<AccountUtilities> account_utilities;
 
         /** Constructor */
@@ -306,9 +304,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
             // account lists, so it is simpler to forget the previous list each time
             final AccountManager account_manager = AccountManager.get(getActivity());
             final Account[] accounts = account_manager.getAccountsByType(account_utilities.get().accountType());
-            _account_list_adapter = new AccountListAdapter(getActivity(), test_account.get() == null
-                    ? Arrays.asList(accounts)
-                    : Lists.asList(test_account.get(), accounts));
+            _account_list_adapter = new AccountListAdapter(getActivity(), Arrays.asList(accounts));
             setListAdapter(_account_list_adapter);
         }
 
