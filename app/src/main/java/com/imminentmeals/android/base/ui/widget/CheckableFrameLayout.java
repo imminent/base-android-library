@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * <p>An extension of {@link android.widget.LinearLayout} that manages a {@link android.widget.Checkable} state based off of a
+ * <p>An extension of {@link android.widget.FrameLayout} that manages a {@link android.widget.Checkable} state based off of a
  * child view that implements {@link android.widget.Checkable}.
  * @author Chris Banes
  * @author Dandre Allison
