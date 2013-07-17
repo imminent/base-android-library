@@ -38,5 +38,7 @@ public abstract class SqliteMigration {
     protected static final String IS_NON_NULL_INTEGER_AND = IS_NON_NULL_INTEGER + ", ";
     protected static final String IS_TEXT_AND = IS_TEXT + ", ";
     protected static final String IS_NON_NULL_TEXT_AND = IS_NON_NULL_TEXT + ", ";
+    protected static final String IS_DEFERRABLE = " DEFERRABLE INITIALLY DEFERRED";
+    protected static final String IS_DEFERRABLE_AND = IS_DEFERRABLE + ", ";
     private static final String _REPLACE_ON_CONFLICT = "UNIQUE (%s) ON CONFLICT REPLACE";
 }

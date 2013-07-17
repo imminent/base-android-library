@@ -14,6 +14,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.google.common.collect.Maps.newHashMap;
+
 
 /**
  * <p>Base database entry builder</p>
@@ -28,13 +33,14 @@ public abstract class ValuesBuilder {
     protected ValuesBuilder(Context context, Uri contentUri) {
         _content = context.getContentResolver();
         _content_uri = contentUri;
+        _query_parameters = newHashMap();
     }
 
     /**
      * <p>Insert a record with the set values.</p>
      */
     public Uri insert() {
-        return _content.insert(_content_uri, _values);
+        return _content.insert(uriWithAppendedQueryParameters(), _values);
     }
 
     /**
@@ -44,7 +50,7 @@ public abstract class ValuesBuilder {
      */
     public Uri insert(boolean notify_change) {
 
-        Uri uri = _content_uri.buildUpon()
+        Uri uri = uriWithAppendedQueryParameters().buildUpon()
                 .appendQueryParameter(
                         BaseContentProvider.PARAM_SHOULD_NOTIFY,
                         Boolean.toString(notify_change)).build();
@@ -57,7 +63,7 @@ public abstract class ValuesBuilder {
      * @param query the given query
      */
     public int update(QueryBuilder query) {
-        return _content.update(_content_uri, _values, query.toString(), query.argumentsAsArray());
+        return _content.update(uriWithAppendedQueryParameters(), _values, query.toString(), query.argumentsAsArray());
     }
 
     /**
@@ -68,7 +74,7 @@ public abstract class ValuesBuilder {
      */
     public int update(QueryBuilder query, boolean notify_change) {
 
-        final Uri uri = _content_uri.buildUpon()
+        final Uri uri = uriWithAppendedQueryParameters().buildUpon()
                 .appendQueryParameter(
                         BaseContentProvider.PARAM_SHOULD_NOTIFY,
                         Boolean.toString(notify_change)).build();
@@ -81,7 +87,8 @@ public abstract class ValuesBuilder {
      * @param id the given id
      */
     public int update(long id) {
-        return _content.update(_content_uri.buildUpon().appendPath(Long.toString(id)).build(), _values, null, null);
+        return _content.update(uriWithAppendedQueryParameters().buildUpon().appendPath(Long.toString(id)).build(),
+                _values, null, null);
     }
 
     /**
@@ -91,7 +98,7 @@ public abstract class ValuesBuilder {
      *                      when content is modified
      */
     public int update(long id, boolean notify_change) {
-        final Uri uri = _content_uri.buildUpon()
+        final Uri uri = uriWithAppendedQueryParameters().buildUpon()
                 .appendPath(String.valueOf(id))
                 .appendQueryParameter(
                         BaseContentProvider.PARAM_SHOULD_NOTIFY,
@@ -115,7 +122,7 @@ public abstract class ValuesBuilder {
      */
     public ContentProviderOperation.Builder toInsertOperationBuilder() {
         return ContentProviderOperation
-                .newInsert(_content_uri)
+                .newInsert(uriWithAppendedQueryParameters())
                 .withValues(_values);
     }
 
@@ -127,7 +134,7 @@ public abstract class ValuesBuilder {
      */
     public ContentProviderOperation.Builder toUpdateOperationBuilder() {
         return ContentProviderOperation
-                .newUpdate(_content_uri)
+                .newUpdate(uriWithAppendedQueryParameters())
                 .withValues(_values);
     }
 
@@ -139,7 +146,7 @@ public abstract class ValuesBuilder {
      */
     public ContentProviderOperation.Builder toDeleteOperationBuilder() {
         return ContentProviderOperation
-                .newDelete(_content_uri)
+                .newDelete(uriWithAppendedQueryParameters())
                 .withValues(_values);
     }
 
@@ -151,11 +158,27 @@ public abstract class ValuesBuilder {
      */
     public ContentProviderOperation.Builder toAssertQueryOperationBuilder() {
         return ContentProviderOperation
-                .newAssertQuery(_content_uri)
+                .newAssertQuery(uriWithAppendedQueryParameters())
                 .withValues(_values);
+    }
+
+    public void appendQueryParamenter(String key, String value) {
+        _query_parameters.put(key, value);
+    }
+
+    private Uri uriWithAppendedQueryParameters() {
+        Uri uri = _content_uri;
+        if (_query_parameters.isEmpty())
+            return uri;
+        else
+            for (Map.Entry<String, String> parameter : _query_parameters.entrySet())
+                uri = uri.buildUpon().appendQueryParameter(parameter.getKey(), parameter.getValue()).build();
+        _query_parameters.clear();
+        return uri;
     }
 
     protected ContentValues _values = new ContentValues();
     private Uri _content_uri;
     private ContentResolver _content;
+    private HashMap<String, String> _query_parameters;
 }

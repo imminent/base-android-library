@@ -1222,7 +1222,7 @@ public class QueryBuilder {
     }
 
     /**
-     * Updates content at the given {@link android.net.Uri URI} with the given values.
+     * Deletes content at the given {@link android.net.Uri URI}.
      * @param uri the given URI
      * @param should_notify indicates when the {@link android.content.ContentProvider} should notify observers when content is
      *                      modified
