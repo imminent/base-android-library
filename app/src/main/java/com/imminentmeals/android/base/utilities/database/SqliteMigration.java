@@ -22,7 +22,15 @@ public abstract class SqliteMigration {
     public abstract void up(SQLiteDatabase database);
 
     protected String replaceOnConflictKeys(String... keys) {
-        return String.format(Locale.US, _REPLACE_ON_CONFLICT, join(",", keys));
+        return uniqueKeyClause(_REPLACE_ON_CONFLICT, keys);
+    }
+
+    protected String skipOnConflictKeys(String... keys) {
+        return uniqueKeyClause(_SKIP_ON_CONFLICT, keys);
+    }
+
+    private String uniqueKeyClause(String format, String... keys) {
+        return String.format(Locale.US, format, join(",", keys));
     }
 
     protected static final String CREATE_TABLE = "CREATE TABLE ";
@@ -41,4 +49,5 @@ public abstract class SqliteMigration {
     protected static final String IS_DEFERRABLE = " DEFERRABLE INITIALLY DEFERRED";
     protected static final String IS_DEFERRABLE_AND = IS_DEFERRABLE + ", ";
     private static final String _REPLACE_ON_CONFLICT = "UNIQUE (%s) ON CONFLICT REPLACE";
+    private static final String _SKIP_ON_CONFLICT = "UNIQUE (%s) ON CONFLICT IGNORE";
 }
