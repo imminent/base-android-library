@@ -11,10 +11,10 @@ package com.imminentmeals.android.base.utilities.database;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.v4.content.CursorLoader;
 
 import com.google.common.io.Closeables;
 import com.imminentmeals.android.base.data.DataModule;
@@ -861,26 +861,26 @@ public class QueryBuilder {
     }
 
     /**
-     * <p>Constructs a {@link android.support.v4.content.CursorLoader} that retrieves the {@link android.database.Cursor} to the matches of the query.</p>
+     * <p>Constructs a {@link android.content.CursorLoader} that retrieves the {@link android.database.Cursor} to the matches of the query.</p>
      * @param context the context in which to create the loader
      * @param uri the URI over which to query
      * @param projection the vector space on which to project the result
      * @param sort_order the order to apply to the result space
-     * @return a {@link android.support.v4.content.CursorLoader} to load the {@link android.database.Cursor}
+     * @return a {@link android.content.CursorLoader} to load the {@link android.database.Cursor}
      */
     public CursorLoader createLoader(Context context, Uri uri, String[] projection, String sort_order) {
         return new CursorLoader(context.getApplicationContext(), uri, projection, toString(), argumentsAsArray(), sort_order);
     }
 
     /**
-     * <p>Constructs a {@link android.support.v4.content.CursorLoader} that retrieves the {@link android.database.Cursor} to the matches of the query.</p>
+     * <p>Constructs a {@link android.content.CursorLoader} that retrieves the {@link android.database.Cursor} to the matches of the query.</p>
      * @param context the context in which to create the loader
      * @param uri the URI over which to query
      * @param projection the vector space on which to project the result
      * @param sort_order the order to apply to the result space
      * @param should_notify indicates when the {@link android.content.ContentProvider} should notify observers when content is
      *                      modified
-     * @return a {@link android.support.v4.content.CursorLoader} to load the {@link android.database.Cursor}
+     * @return a {@link android.content.CursorLoader} to load the {@link android.database.Cursor}
      */
     public CursorLoader createLoader(Context context, Uri uri, String[] projection,
                                      @Nullable String sort_order, boolean should_notify) {
@@ -890,24 +890,24 @@ public class QueryBuilder {
     }
 
     /**
-     * <p>Constructs a {@link android.support.v4.content.CursorLoader} that retrieves the {@link android.database.Cursor} to the matches of the query.</p>
+     * <p>Constructs a {@link android.content.CursorLoader} that retrieves the {@link android.database.Cursor} to the matches of the query.</p>
      * @param context the context in which to create the loader
      * @param uri the URI over which to query
      * @param projection the vector space on which to project the result
-     * @return a {@link android.support.v4.content.CursorLoader} to load the {@link android.database.Cursor}
+     * @return a {@link android.content.CursorLoader} to load the {@link android.database.Cursor}
      */
     public CursorLoader createLoader(Context context, Uri uri, String[] projection) {
         return createLoader(context, uri, projection, null);
     }
 
     /**
-     * <p>Constructs a {@link android.support.v4.content.CursorLoader} that retrieves the {@link android.database.Cursor} to the matches of the query.</p>
+     * <p>Constructs a {@link android.content.CursorLoader} that retrieves the {@link android.database.Cursor} to the matches of the query.</p>
      * @param context the context in which to create the loader
      * @param uri the URI over which to query
      * @param projection the vector space on which to project the result
      * @param should_notify indicates when the {@link android.content.ContentProvider} should notify observers when content is
      *                      modified
-     * @return a {@link android.support.v4.content.CursorLoader} to load the {@link android.database.Cursor}
+     * @return a {@link android.content.CursorLoader} to load the {@link android.database.Cursor}
      */
     public CursorLoader createLoader(Context context, Uri uri, String[] projection,
                                      boolean should_notify) {
