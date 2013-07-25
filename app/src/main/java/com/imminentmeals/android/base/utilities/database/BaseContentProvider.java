@@ -12,6 +12,8 @@ import android.content.ContentProvider;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.PatternMatcher;
 
 import java.util.List;
 
@@ -27,6 +29,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public abstract class BaseContentProvider extends ContentProvider {
     /** Parameter indicating that the {@link android.content.ContentProvider} should notify observers that the content has been updated */
     public static final String PARAM_SHOULD_NOTIFY = "com.keepandshare.android.param.CalendarContentProvider.SHOULD_NOTIFY";
+    public static final String METHOD_BEGIN_TRANSACTION = "beginTransaction";
+    public static final String METHOD_END_TRANSACTION = "endTransaction";
+
 
     @Override
     public boolean onCreate() {
@@ -46,6 +51,15 @@ public abstract class BaseContentProvider extends ContentProvider {
 
     @CheckForNull public <T extends ActiveRecord> Iterable<T> queryRecords(Uri uri, QueryBuilder query,
                                                                            @Nullable String sort_order) {
+        return null;
+    }
+
+    @Override
+    public Bundle call(String method, String argument, Bundle extras) {
+        if (_BEGIN_TRANSACTION.match(method))
+            _database_helper.getWritableDatabase().beginTransaction();
+        else if (_END_TRANSACTION.match(method))
+            _database_helper.getWritableDatabase().endTransaction();
         return null;
     }
 
@@ -86,4 +100,6 @@ public abstract class BaseContentProvider extends ContentProvider {
     }
 
     private BaseSqliteOpenHelper _database_helper;
+    private static final PatternMatcher _BEGIN_TRANSACTION = new PatternMatcher(METHOD_BEGIN_TRANSACTION, PatternMatcher.PATTERN_LITERAL);
+    private static final PatternMatcher _END_TRANSACTION = new PatternMatcher(METHOD_END_TRANSACTION, PatternMatcher.PATTERN_LITERAL);
 }

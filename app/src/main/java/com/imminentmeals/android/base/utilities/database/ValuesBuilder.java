@@ -28,19 +28,24 @@ public abstract class ValuesBuilder {
     /**
      * Constructs a {@link com.imminentmeals.android.base.utilities.database.ValuesBuilder} for the given {@link android.net.Uri content URI}.
      * @param context the context from which to retrieve the {@link android.content.ContentResolver}
-     * @param contentUri The content URI on which the builder operates
+     * @param content_uri The content URI on which the builder operates
      */
-    protected ValuesBuilder(Context context, Uri contentUri) {
+    protected ValuesBuilder(Context context, Uri content_uri) {
         _content = context.getContentResolver();
-        _content_uri = contentUri;
+        _content_uri = content_uri;
         _query_parameters = newHashMap();
+        _values = new ContentValues();
     }
 
     /**
      * <p>Insert a record with the set values.</p>
      */
     public Uri insert() {
-        return _content.insert(uriWithAppendedQueryParameters(), _values);
+        try {
+            return _content.insert(uriWithAppendedQueryParameters(), _values);
+        } finally {
+            _values.clear();
+        }
     }
 
     /**
@@ -49,13 +54,9 @@ public abstract class ValuesBuilder {
      *                      when content is modified
      */
     public Uri insert(boolean notify_change) {
+        appendQueryParamenter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(notify_change));
 
-        Uri uri = uriWithAppendedQueryParameters().buildUpon()
-                .appendQueryParameter(
-                        BaseContentProvider.PARAM_SHOULD_NOTIFY,
-                        Boolean.toString(notify_change)).build();
-
-        return _content.insert(uri, _values);
+        return insert();
     }
 
     /**
@@ -63,7 +64,11 @@ public abstract class ValuesBuilder {
      * @param query the given query
      */
     public int update(QueryBuilder query) {
-        return _content.update(uriWithAppendedQueryParameters(), _values, query.toString(), query.argumentsAsArray());
+        try {
+            return _content.update(uriWithAppendedQueryParameters(), _values, query.toString(), query.argumentsAsArray());
+        } finally {
+            _values.clear();
+        }
     }
 
     /**
@@ -73,13 +78,9 @@ public abstract class ValuesBuilder {
      *                      when content is modified
      */
     public int update(QueryBuilder query, boolean notify_change) {
+        appendQueryParamenter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(notify_change));
 
-        final Uri uri = uriWithAppendedQueryParameters().buildUpon()
-                .appendQueryParameter(
-                        BaseContentProvider.PARAM_SHOULD_NOTIFY,
-                        Boolean.toString(notify_change)).build();
-
-        return _content.update(uri, _values, query.toString(), query.argumentsAsArray());
+        return update(query);
     }
 
     /**
@@ -87,8 +88,12 @@ public abstract class ValuesBuilder {
      * @param id the given id
      */
     public int update(long id) {
-        return _content.update(uriWithAppendedQueryParameters().buildUpon().appendPath(Long.toString(id)).build(),
-                _values, null, null);
+        try {
+            return _content.update(uriWithAppendedQueryParameters().buildUpon().appendPath(Long.toString(id)).build(),
+                    _values, null, null);
+        } finally {
+            _values.clear();
+        }
     }
 
     /**
@@ -98,13 +103,9 @@ public abstract class ValuesBuilder {
      *                      when content is modified
      */
     public int update(long id, boolean notify_change) {
-        final Uri uri = uriWithAppendedQueryParameters().buildUpon()
-                .appendPath(String.valueOf(id))
-                .appendQueryParameter(
-                        BaseContentProvider.PARAM_SHOULD_NOTIFY,
-                        Boolean.toString(notify_change)).build();
+        appendQueryParamenter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(notify_change));
 
-        return _content.update(uri, _values, null, null);
+        return update(id);
     }
 
     /**
@@ -114,6 +115,16 @@ public abstract class ValuesBuilder {
         return _values;
     }
 
+    public ValuesBuilder beginTransaction() {
+        _content.call(_content_uri, BaseContentProvider.METHOD_BEGIN_TRANSACTION, null, null);
+        return this;
+    }
+
+    public ValuesBuilder endTransaction() {
+        _content.call(_content_uri, BaseContentProvider.METHOD_END_TRANSACTION, null, null);
+        return this;
+    }
+
     /**
      * <p>Takes the values in this builder and creates a new
      * {@link android.content.ContentProviderOperation} as an insert operation.</p>
@@ -121,9 +132,13 @@ public abstract class ValuesBuilder {
      * @see android.content.ContentProviderOperation#newInsert(android.net.Uri)
      */
     public ContentProviderOperation.Builder toInsertOperationBuilder() {
-        return ContentProviderOperation
-                .newInsert(uriWithAppendedQueryParameters())
-                .withValues(_values);
+        try {
+            return ContentProviderOperation
+                    .newInsert(uriWithAppendedQueryParameters())
+                    .withValues(_values);
+        } finally {
+            _values.clear();
+        }
     }
 
     /**
@@ -133,9 +148,13 @@ public abstract class ValuesBuilder {
      * @see android.content.ContentProviderOperation#newUpdate(android.net.Uri)
      */
     public ContentProviderOperation.Builder toUpdateOperationBuilder() {
-        return ContentProviderOperation
-                .newUpdate(uriWithAppendedQueryParameters())
-                .withValues(_values);
+        try {
+            return ContentProviderOperation
+                    .newUpdate(uriWithAppendedQueryParameters())
+                    .withValues(_values);
+        } finally {
+            _values.clear();
+        }
     }
 
     /**
@@ -145,9 +164,13 @@ public abstract class ValuesBuilder {
      * @see android.content.ContentProviderOperation#newDelete(android.net.Uri)
      */
     public ContentProviderOperation.Builder toDeleteOperationBuilder() {
-        return ContentProviderOperation
-                .newDelete(uriWithAppendedQueryParameters())
-                .withValues(_values);
+        try {
+            return ContentProviderOperation
+                    .newDelete(uriWithAppendedQueryParameters())
+                    .withValues(_values);
+        } finally {
+            _values.clear();
+        }
     }
 
     /**
@@ -157,9 +180,13 @@ public abstract class ValuesBuilder {
      * @see android.content.ContentProviderOperation#newAssertQuery(android.net.Uri)
      */
     public ContentProviderOperation.Builder toAssertQueryOperationBuilder() {
-        return ContentProviderOperation
-                .newAssertQuery(uriWithAppendedQueryParameters())
-                .withValues(_values);
+        try {
+            return ContentProviderOperation
+                    .newAssertQuery(uriWithAppendedQueryParameters())
+                    .withValues(_values);
+        } finally {
+            _values.clear();
+        }
     }
 
     public void appendQueryParamenter(String key, String value) {
@@ -177,7 +204,7 @@ public abstract class ValuesBuilder {
         return uri;
     }
 
-    protected ContentValues _values = new ContentValues();
+    protected final ContentValues _values;
     private Uri _content_uri;
     private ContentResolver _content;
     private HashMap<String, String> _query_parameters;
