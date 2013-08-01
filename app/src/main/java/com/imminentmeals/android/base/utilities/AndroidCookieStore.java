@@ -19,7 +19,10 @@ import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGE;
 
 /**
  * A simple {@linkplain CookieStore cookie jar} that only cares to store the {@link #_COOKIE_AUTH_TOKEN}.
- * It persists the cookie through app launches and maintains it securely.
+ * It persists the cookie through app launches and maintains it securely. Designed to allow null {@link URI}
+ * in {@link #add(java.net.URI, java.net.HttpCookie)} to trigger one-time-use cookie setting, that restores
+ * to the previous value after use. Utilized to support a connected account while also allowing other accounts
+ * to make sync requests.
  * @author Dandré Allison
  */
 @Singleton
@@ -40,16 +43,17 @@ public class AndroidCookieStore implements CookieStore {
 
 /* Cookie Store */
     @Override
-    public void add(URI _, HttpCookie cookie) {
+    public void add(URI null_check, HttpCookie cookie) {
         // Stores the cookie in shared preferences
         if (_auth_token_pattern.match(cookie.getName())) {
             final SharedPreferences.Editor editor = _settings.edit();
+            if (null_check == null)
+                _previous_auth_token = _settings.getString(_COOKIE_AUTH_TOKEN, null);
             try {
-                editor.putString(KEY_AUTH_TOKEN, _crypto.encrypt(cookie.getValue()));
+                editor.putString(KEY_AUTH_TOKEN, _crypto.encrypt(cookie.getValue())).apply();
             } catch (Exception error) {
                 AUTOTAGLOGE(error.getCause());
             }
-            editor.apply();
         }
     }
 
@@ -67,6 +71,17 @@ public class AndroidCookieStore implements CookieStore {
                 final HttpCookie cookie = new HttpCookie(_COOKIE_AUTH_TOKEN, _crypto.decipher(auth_token));
                 cookie.setPath("/");
                 cookie.setVersion(0);
+
+                // Reset to previous auth token if set
+                if (_previous_auth_token != null) {
+                    final SharedPreferences.Editor editor = _settings.edit();
+                    try {
+                        editor.putString(KEY_AUTH_TOKEN, _previous_auth_token).apply();
+                    } catch (Exception error) {
+                        AUTOTAGLOGE(error.getCause());
+                    }
+                    _previous_auth_token = null;
+                }
                 return newArrayList(cookie);
             } catch (Exception error) {
                 AUTOTAGLOGE(error.getCause());
@@ -92,6 +107,7 @@ public class AndroidCookieStore implements CookieStore {
         return remove(null,null);
     }
 
+    private String _previous_auth_token;
     private final String _COOKIE_AUTH_TOKEN;
     private final PatternMatcher _auth_token_pattern;
     private final SharedPreferences _settings;
