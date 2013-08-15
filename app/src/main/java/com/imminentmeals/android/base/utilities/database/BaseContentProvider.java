@@ -28,7 +28,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public abstract class BaseContentProvider extends ContentProvider {
     /** Parameter indicating that the {@link android.content.ContentProvider} should notify observers that the content has been updated */
-    public static final String PARAM_SHOULD_NOTIFY = "com.keepandshare.android.param.CalendarContentProvider.SHOULD_NOTIFY";
+    public static final String PARAM_SHOULD_NOTIFY = "com.imminentmeals.android.base.param.BaseContentProvider.SHOULD_NOTIFY";
+    public static final String PARAM_SHOULD_NOTIFY_SYNC_ADAPTER = "com.imminentmeals.android.base.param.BaseContentProvider.SHOULD_NOTIFY_SYN_ADAPTER";
     public static final String METHOD_BEGIN_TRANSACTION = "beginTransaction";
     public static final String METHOD_END_TRANSACTION = "endTransaction";
 
@@ -75,11 +76,13 @@ public abstract class BaseContentProvider extends ContentProvider {
      */
     protected void tryNotifyChange(Uri uri) {
         final String uri_requests_notification = uri.getQueryParameter(PARAM_SHOULD_NOTIFY);
-
+        final String uri_requests_sync_adapter_notification = uri.getQueryParameter(PARAM_SHOULD_NOTIFY_SYNC_ADAPTER);
         final boolean should_notify = uri_requests_notification == null || Boolean.valueOf(uri_requests_notification);
+        final boolean sync_to_network = uri_requests_sync_adapter_notification != null
+                && Boolean.valueOf(uri_requests_sync_adapter_notification);
 
         if (should_notify)
-            getContext().getContentResolver().notifyChange(uri, null);
+            getContext().getContentResolver().notifyChange(uri, null, sync_to_network);
     }
 
     /**

@@ -85,7 +85,7 @@ public abstract class ActiveRecord {
         if(_id > 0)
             builder.update(_id, notify_change);
         else
-            _id = ContentUris.parseId(builder.insert(notify_change));
+            _id = ContentUris.parseId(builder.insert(notify_change, false));
 
         makeDirty(false);
 

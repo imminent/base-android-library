@@ -52,9 +52,11 @@ public abstract class ValuesBuilder {
      * <p>Inserts a record with the set values.</p>
      * @param notify_change indicates when the {@link android.content.ContentProvider} should notify observers
      *                      when content is modified
+     * @param from_sync_adapter indicates when the insert is called from the sync adapter
      */
-    public Uri insert(boolean notify_change) {
+    public Uri insert(boolean notify_change, boolean from_sync_adapter) {
         appendQueryParamenter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(notify_change));
+        appendQueryParamenter(BaseContentProvider.PARAM_SHOULD_NOTIFY_SYNC_ADAPTER, Boolean.toString(!from_sync_adapter));
 
         return insert();
     }
@@ -76,9 +78,11 @@ public abstract class ValuesBuilder {
      * @param query the given query
      * @param notify_change indicates when the {@link android.content.ContentProvider} should notify observers
      *                      when content is modified
+     * @param from_sync_adapter indicates when the insert is called from the sync adapter
      */
-    public int update(QueryBuilder query, boolean notify_change) {
+    public int update(QueryBuilder query, boolean notify_change, boolean from_sync_adapter) {
         appendQueryParamenter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(notify_change));
+        appendQueryParamenter(BaseContentProvider.PARAM_SHOULD_NOTIFY_SYNC_ADAPTER, Boolean.toString(!from_sync_adapter));
 
         return update(query);
     }

@@ -71,8 +71,6 @@ public class BaseAndroidLibraryApplication extends Application implements Object
 /* Lifecycle */
     @Override
     public void onCreate() {
-        if (BuildConfig.DEBUG)
-            StrictMode.enableDefaults();
         super.onCreate();
 
         // Creates the dependency injection object graph
