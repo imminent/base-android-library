@@ -3,6 +3,7 @@ package com.imminentmeals.android.base.utilities;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.Service;
+import android.content.Context;
 
 import javax.annotation.Nonnull;
 
@@ -41,6 +42,15 @@ public final class ObjectGraph {
             throw new IllegalStateException("Attempting to get Activity before it has been attached to "
                     + fragment.getClass().getName());
         ((ObjectGraphApplication) activity.getApplication()).inject(fragment);
+    }
+
+    /**
+     * <p>Injects the dependencies for the given {@link Object} from the given {@link Context}.</p>
+     * @param context The given context
+     * @param object The given object
+     */
+    public static void inject(@Nonnull Context context, @Nonnull Object object) {
+        ((ObjectGraphApplication) context.getApplicationContext()).inject(object);
     }
 
     /**
