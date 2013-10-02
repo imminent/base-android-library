@@ -1,15 +1,15 @@
 package com.imminentmeals.android.base.utilities;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static org.fest.assertions.api.Assertions.assertThat;
-
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 /**
  * <p>Test suite for the {@link StringUtilities#joinAnd(String, String, Collection)}.</p>
@@ -25,13 +25,14 @@ public class StringUtilitiesJoinAndTest {
 
     @Parameters
     public static Collection<Object[]> data() {
+        final String alice = "Alice";
         return Arrays.asList(new Object[][]{
-                { newArrayList("Alice"), "Alice" },
-                { newArrayList("Alice", "Charlie"),  "Alice and Charlie" },
+                { newArrayList(alice), alice },
+                { newArrayList(alice, "Charlie"),  "Alice and Charlie" },
                 { newArrayList(), "" },
                 { null, "" },
-                { newArrayList("Alice", "Charlie", "John"), "Alice, Charlie and John" },
-                { newArrayList("Alice", null, "John"), "Alice and John" }
+                { newArrayList(alice, "Charlie", "John"), "Alice, Charlie and John" },
+                { newArrayList(alice, null, "John"), "Alice and John" }
         });
     }
 

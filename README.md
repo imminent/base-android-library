@@ -6,6 +6,8 @@ Core code to be reused in other Android apps. [at GitHub](https://github.com/imm
 
 ## Building
 
+./gradlew
+
 The build requires [Maven](http://maven.apache.org/download.html)
 v3.0.3+ and the [Android SDK](http://developer.android.com/sdk/index.html)
 to be installed in your development environment. In addition you'll need to set
@@ -22,7 +24,6 @@ After satisfying those requirements, the build is pretty simple:
 
 Uses many great open-source libraries from the Android dev community:
 
-* [ActionBarSherlock](https://github.com/JakeWharton/ActionBarSherlock) for back-ported ActionBar,
   [Butterknife](https://github.com/JakeWharton/Butterknife) for View injections and
   [NineOldAndroids](https://github.com/JakeWharton/NineOldAndroids) for the
   back-ported Animation API

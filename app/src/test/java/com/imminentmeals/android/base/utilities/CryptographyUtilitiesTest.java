@@ -1,23 +1,25 @@
 package com.imminentmeals.android.base.utilities;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
-
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
+
+
 /**
  * <p>Test suite for {@link CryptographyUtilities}.</p>
  * @author Dandre Allison
  */
 @RunWith(Parameterized.class)
+
 public class CryptographyUtilitiesTest {
 
     public CryptographyUtilitiesTest(String input) {
@@ -41,7 +43,7 @@ public class CryptographyUtilitiesTest {
         try {
             _crypto = new CryptographyUtilities(CryptographyUtilities.generateKey());
         } catch (NoSuchAlgorithmException error) {
-            throw new RuntimeException(error);
+            throw new IllegalArgumentException(error);
         }
     }
 
