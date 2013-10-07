@@ -5,7 +5,7 @@
 
     <groupId>com.imminentmeals.android</groupId>
     <artifactId>base-android-library-parent</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Base Android Library Parent</name>    
 
