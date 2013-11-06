@@ -16,7 +16,7 @@
     ]]></string>
     <string name="button_ok">OK</string>
     <string name="title_accounts_list">Select a Google account</string>
-    <string name="empty_accounts">No Google accounts are available. Add one to continue.</string>
+    <string name="button_add_when_empty_accounts">Add an account</string>
     <string name="no_connection_cant_login">Can\'t connect to account. Check your network connection.</string>
     <string name="taking_a_while">Sorry, this is taking a while&#8230;</string>
     <string name="retry">retry</string>

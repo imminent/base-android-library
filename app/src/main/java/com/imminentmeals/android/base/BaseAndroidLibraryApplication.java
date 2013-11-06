@@ -159,7 +159,7 @@ public class BaseAndroidLibraryApplication extends Application implements Object
                     SyncService.class
     		},
     		library = true,
-            complete = false
+        complete = false
     )
     /* package */static class BaseAndroidLibraryModule {
 
