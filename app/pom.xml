@@ -105,11 +105,11 @@
             <type>jar</type>
         </dependency>
         <!-- Butterknife: View injection -->
-        <!--<dependency>
+        <dependency>
 		    <groupId>com.jakewharton</groupId>
 		    <artifactId>butterknife</artifactId>
 		    <version>${butterknife.version}</version>
-		</dependency>-->
+		</dependency>
 		<!-- FindBugs: Static analysis tool annotations -->
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
