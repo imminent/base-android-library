@@ -22,9 +22,14 @@ local.properties
 # Eclipse project files
 .classpath
 .project
+.settings/
 
 # tmp
 .DS_Store
 tmp
 *~
 *.bak
+
+# Gradle
+.gradle/
+build/

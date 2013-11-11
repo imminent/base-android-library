@@ -20,9 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.common.base.Stopwatch;
 import com.imminentmeals.android.base.R.id;
@@ -31,16 +31,13 @@ import com.imminentmeals.android.base.R.menu;
 import com.imminentmeals.android.base.R.string;
 import com.imminentmeals.android.base.utilities.AccountUtilities;
 import com.imminentmeals.android.base.utilities.ObjectGraph;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
-
 import dagger.Lazy;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import javax.inject.Inject;
 
 import static com.imminentmeals.android.base.utilities.AnalyticsUtilities.ACTION_BUTTON_PRESS;
 import static com.imminentmeals.android.base.utilities.AnalyticsUtilities.CATEGORY_UX;
@@ -175,8 +172,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
         public void onResume() {
             super.onResume();
             reloadAccountList();
-            _timer = new Stopwatch();
-            _timer.start();
+            _timer = Stopwatch.createStarted();
         }
 
         @Override
@@ -184,6 +180,13 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
             inflater.inflate(menu.add_account, actions);
             super.onCreateOptionsMenu(actions, inflater);
         }
+
+      @Override
+      public void onPrepareOptionsMenu(Menu actions) {
+        super.onPrepareOptionsMenu(actions);
+        // Hides action bar action if empty, will display inline instead
+        actions.findItem(id.action_add_account).setVisible(!_show_inline);
+      }
 
         @Override
         public boolean onOptionsItemSelected(MenuItem action) {
@@ -204,6 +207,12 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
             // Sets the description above the list of accounts, notice that it is parsed from HTML
             final TextView description = (TextView) root_view.findViewById(id.choose_account_intro);
             description.setText(Html.fromHtml(getString(string.description_choose_account)));
+            // Sets add account button action
+            final Button add_account = (Button) root_view.findViewById(android.R.id.empty);
+            add_account.setOnClickListener(new View.OnClickListener() {
+
+              public void onClick(View _) { account_utilities.get().startAddAccountActivity(ChooseAccountFragment.this); }
+            });
             return root_view;
         }
 
@@ -306,12 +315,16 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
             final Account[] accounts = account_manager.getAccountsByType(account_utilities.get().accountType());
             _account_list_adapter = new AccountListAdapter(getActivity(), Arrays.asList(accounts));
             setListAdapter(_account_list_adapter);
+            _show_inline = accounts.length == 0;
+            getActivity().invalidateOptionsMenu();
         }
 
         /** The {@link android.widget.ListAdapter}*/
         private AccountListAdapter _account_list_adapter;
         /** A stopwatch to measure elapsed time */
         private Stopwatch _timer;
+        /** Indicates whether to show the add account action inline or in the action bar */
+        private boolean _show_inline = true;
     }
 
     /**
@@ -332,8 +345,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
         @Override
         public void onResume() {
             super.onResume();
-            _timer = new Stopwatch();
-            _timer.start();
+            _timer = Stopwatch.createStarted();
         }
 
         @Override

@@ -159,7 +159,7 @@ public class BaseAndroidLibraryApplication extends Application implements Object
                     SyncService.class
     		},
     		library = true,
-            complete = false
+        complete = false
     )
     /* package */static class BaseAndroidLibraryModule {
 
@@ -259,7 +259,7 @@ public class BaseAndroidLibraryApplication extends Application implements Object
     }
 
     /** Application's object graph for handling dependency injection */
-    private ObjectGraph _object_graph;
+    protected ObjectGraph _object_graph;
     /** One Mebibyte, is 2^20 = 1024 * 1024 = 1,048,576 bytes (MiB) */
     private static final long _MEBIBYTE = 1024 * 1024;
     /** Sets cache size to 10 MiB */

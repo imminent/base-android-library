@@ -42,12 +42,9 @@
               android:cacheColorHint="@android:color/white"
               android:layout_weight="1" />
 
-    <TextView android:id="@android:id/empty"
-              android:layout_width="match_parent"
-              android:layout_height="0dp"
-              android:layout_weight="1"
-              android:textAppearance="?android:textAppearanceSmall"
-              android:gravity="center"
-              android:text="@string/empty_accounts" />
+    <Button android:id="@android:id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_add_when_empty_accounts" />
 
 </LinearLayout>
