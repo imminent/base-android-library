@@ -1,0 +1,116 @@
+buildscript {
+  repositories {
+    mavenCentral()
+    // WORKAROUND: required for gradle-android-test-plugin 0.9.1-SNAPSHOT
+    maven {
+      url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:0.6.+'
+    classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.1-SNAPSHOT'
+  }
+}
+
+apply plugin: 'android-library'
+apply plugin: 'android-test'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
+apply plugin: 'checkstyle'
+apply plugin: 'maven'
+
+dependencies {
+  def daggerVersion = "1.1.0"
+  compile "com.squareup.dagger:dagger-compiler:$daggerVersion"
+  compile "com.squareup.dagger:dagger:$daggerVersion"
+  compile fileTree(dir: 'libs', include: '*.jar')
+  compile 'com.google.guava:guava:15.+'
+  compile 'com.jakewharton:butterknife:3.+'
+  compile 'com.google.code.findbugs:annotations:2.+'
+  compile('de.keyboardsurfer.android.widget:crouton:1.+') {
+    exclude module: 'support-v4'
+    compile 'com.android.support:support-v4:18.+'
+  }
+  compile 'com.google.android.gms:play-services:3.2.65'
+  compile 'com.squareup:otto:1.3.4'
+
+  testCompile 'junit:junit:4.10'
+  testCompile 'org.robolectric:robolectric:2.3-SNAPSHOT'
+  testCompile 'com.squareup:fest-android:1.0.+'
+}
+
+android {
+  compileSdkVersion 19
+  buildToolsVersion "19.0.0"
+
+  defaultConfig {
+    minSdkVersion 14
+    targetSdkVersion 19
+  }
+
+  release {
+    runProguard true
+    proguardFile file("$project.projectDir/config/proguard/proguard.cfg")
+  }
+}
+
+// Sets up Sonar plugin
+//sonarRunner {
+//    sonarProperties {
+//        property "sonar.sourceEncoding", "UTF-8"
+//        property "sonar.host.url", "http://localhost:9000"
+//        property "sonar.jdbc.url", "jdbc:postgresql://localhost/sonar"
+//        property "sonar.jdbc.driverClassName", "org.postgresql.Driver"
+//        property "sonar.jdbc.username", "sonar"
+//        property "sonar.jdbc.password", "sonar"
+//    }
+//}
+
+// Sets up find bugs plugin
+findbugs {
+  includeFilter = file("$project.projectDir/config/findbugs/includeFilter.xml")
+  excludeFilter = file("$project.projectDir/config/findbugs/excludeFilter.xml")
+}
+
+tasks.withType(FindBugs) {
+  reports {
+    xml.enabled = false
+    html.enabled = true
+  }
+}
+
+// Sets up pmd plugin
+pmd {
+  ruleSetFiles = files("$project.projectDir/config/pmd/ruleset.xml")
+}
+
+// Wrapper task that sets up gradlew script (use ./gradlew in place of gradle command)
+task wrapper(type: Wrapper) {
+  gradleVersion = '1.8'
+}
+
+// Maven library publishing
+uploadArchives {
+  repositories {
+    mavenLocal() 
+  }
+}
+
+task androidJavadocs(type: Javadoc) {
+  source = android.sourceSets.main.allJava
+}
+
+task androidJavadocsJar(type: Jar) {
+  classifier = 'javadoc'
+  from androidJavadocs.destinationDir
+}
+
+task androidSourcesJar(type: Jar) {
+  classifier = 'sources'
+  from android.sourceSets.main.allSource
+}
+
+artifacts {
+  archives androidSourcesJar
+  archives androidJavadocsJar
+}
