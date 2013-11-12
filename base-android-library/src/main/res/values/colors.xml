@@ -1,0 +1,87 @@
+<!--
+  ~ Copyright 2012 GeeWhizLabs
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<resources>
+    <color name="kas_yellow">#f9ae09</color>
+    <color name="kas_blue">#3281b8</color>
+    <color name="error_red">#f2241b</color>
+    <color name="transparent_black">#80171717</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="bright_white">#efefef</color>
+    <color name="dark_white">#808a8a8a</color>
+    <color name="gray">#8a8a8a</color>
+    <color name="light_gray">#b6b6b6</color>
+    <color name="body_text_1">#ff000000</color>
+    <color name="body_text_2">#99000000</color>
+    <color name="overlain_text">#808a8a8a</color>
+
+    <!-- Event text colors -->
+    <array name="event_colors">
+        <item>#8f6327</item>
+        <item>#e033d2</item>
+        <item>#ff3300</item>
+        <item>#339900</item>
+        <item>#0072bc</item>
+        <item>#92278f</item>
+        <item>#000000</item>
+        <item>#2b3e42</item>
+        <item>#0000ff</item>
+        <item>#3366ff</item>
+        <!-- Premium Colors -->
+        <item>#ffcc00</item>
+        <item>#000000</item>
+        <item>#000000</item>
+        <item>#000000</item>
+        <item>#0000ff</item>
+    </array>
+
+    <!-- Event color mapping -->
+    <integer name="tan">0</integer>
+    <integer name="magenta">1</integer>
+    <integer name="red">2</integer>
+    <integer name="green">3</integer>
+    <integer name="dark_blue">4</integer>
+    <integer name="purple">5</integer>
+    <integer name="black">6</integer>
+    <integer name="indigo">7</integer>
+    <integer name="bright_blue">8</integer>
+    <integer name="blue">9</integer>
+    <integer name="premium_yellow">10</integer>
+    <integer name="premium_black0">11</integer>
+    <integer name="premium_black1">12</integer>
+    <integer name="premium_black2">13</integer>
+    <integer name="premium_bright_blue">14</integer>
+
+    <!-- Event highlight colors -->
+    <array name="event_highlight_colors">
+        <item>#ffff00</item>
+        <item>#ccff99</item>
+        <item>#fbce8d</item>
+        <item>#d3f7f7</item>
+        <item>#ffccff</item>
+        <item>#99ccff</item>
+        <item>#ffff66</item>
+        <item>#99cc00</item>
+        <item>#ffff88</item>
+        <item>#7effff</item>
+        <!-- Premium Colors -->
+        <item>#666666</item>
+        <item>#cc9933</item>
+        <item>#fb4e4b</item>
+        <item>#c0c1c0</item>
+        <item>#cc88cc</item>
+    </array>
+</resources>

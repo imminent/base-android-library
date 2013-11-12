@@ -1,0 +1,7 @@
+<resources>
+    <integer name="create_account_pane_column_count">1</integer>
+    <integer name="card_flip_time_full">300</integer>
+    <integer name="card_flip_time_half">150</integer>
+    <integer name="account_name_max_length">25</integer>
+    <integer name="password_max_length">16</integer>
+</resources>

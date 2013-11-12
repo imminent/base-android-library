@@ -1,0 +1,126 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- No parent idiom -->
+    <style name="NoParent"/>
+
+    <!-- Custom View Styling -->
+
+    <!-- Holo theme customization -->
+    <style name="Theme.Holo.Light.DarkActionBar.Custom" parent="android:Theme.Holo.Light.DarkActionBar">
+    </style>
+
+    <style name="Theme.ImminentMeals.Base" parent="Theme.Holo.Light.DarkActionBar.Custom">
+        <item name="android:actionBarStyle">@style/ActionBar</item>
+        <item name="android:actionBarTabStyle">@style/ActionBar.TabView</item>
+        <item name="android:actionBarTabBarStyle">@style/ActionBar.TabBar</item>
+        <item name="android:actionBarTabTextStyle">@style/ActionBar.TabText</item>
+        <item name="android:popupMenuStyle">@style/ActionBar.PopupMenu</item>
+        <item name="android:dropDownListViewStyle">@style/ActionBar.DropDownListView</item>
+        <item name="android:actionDropDownStyle">@style/ActionBar.DropDownNav</item>
+        <item name="android:spinnerDropDownItemStyle">@style/ActionBar.DropDownItem</item>
+        <item name="android:spinnerItemStyle">@style/ActionBar.SpinnerItem</item>
+
+        <!-- This allows Dark theme in Action overflow for Light.DarkActionBar -->
+        <item name="android:actionBarWidgetTheme">@style/ActionBar.Widget</item>
+    </style>
+
+    <!-- Account chooser -->
+    <style name="Theme.ImminentMeals.Base.Accounts">
+        <item name="android:actionBarStyle">@style/ActionBar.Accounts</item>
+    </style>
+    <style name="ActionBar.Accounts">
+        <item name="android:displayOptions">showHome|useLogo</item>
+    </style>
+    
+    <!-- Home Screen -->
+    <style name="Theme.ImminentMeals.Base.Home">
+        <item name="android:actionBarStyle">@style/ActionBar.Home</item>
+    </style>
+    <style name="ActionBar.Home">
+        <item name="android:displayOptions">showHome|useLogo|showTitle</item>
+    </style>
+
+    <!-- Root Action Bar styling -->
+    <!-- Note the use of inverse, since the Action Bar is a dark color, while the rest of the theme is light -->
+    <!-- Default Action Bar theme -->
+    <style name="ActionBar" parent="android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:displayOptions">showHome|homeAsUp</item>
+
+        <!-- Customizes the Action Bar background to use a slashed background instead of the default solid color -->
+        <item name="android:background">@drawable/black_slashed_background</item>
+    </style>
+
+    <style name="ActionBar.TabBar" parent="android:style/Widget.Holo.Light.ActionBar.TabBar.Inverse">
+    </style>
+
+    <style name="ActionBar.TabText" parent="android:style/Widget.Holo.Light.ActionBar.TabText.Inverse">
+    </style>
+
+    <style name="ActionBar.TabView" parent="android:style/Widget.Holo.Light.ActionBar.TabView.Inverse">
+    </style>
+
+    <!-- Note the use of dark theme ListPopupWindow because of the dark Action Bar -->
+    <style name="ActionBar.PopupMenu" parent="android:Widget.Holo.ListPopupWindow">
+    </style>
+
+    <!-- Note the use of dark theme DropDownListView because of the dark Action Bar -->
+    <style name="ActionBar.DropDownListView" parent="android:style/Widget.Holo.ListView.DropDown">
+    </style>
+
+    <!-- Note the use of dark theme Spinner.DropDown.ActionBar because of the dark Action Bar -->
+    <style name="ActionBar.DropDownNav" parent="android:style/Widget.Holo.DropDownItem.Spinner">
+    </style>
+
+    <!-- Note the use of dark theme ProgressBar.Horizontal because of the dark Action Bar -->
+    <style name="ActionBar.ProgressBar" parent="android:style/Widget.Holo.ProgressBar.Horizontal">
+    </style>
+
+    <style name="ActionBar.DropDownItem" parent="android:style/Widget.Holo.Light.DropDownItem.Spinner">
+    </style>
+
+    <style name="ActionBar.SpinnerItem" parent="android:style/Widget.Holo.TextView.SpinnerItem">
+    </style>
+
+    <!-- Note that the widget uses dark theme (not Theme.Sherlock.Light), this is because of the dark Action Bar -->
+    <style name="ActionBar.Widget" parent="android:Theme.Holo">
+        <item name="android:popupMenuStyle">@style/ActionBar.PopupMenu</item>
+        <item name="android:dropDownListViewStyle">@style/ActionBar.DropDownListView</item>
+    </style>
+
+    <!-- List views and list items -->
+    <style name="ListItemContainerBase">
+        <item name="android:minHeight">?android:listPreferredItemHeight</item>
+    </style>
+
+    <!-- SimpleListItems are items whose containers provides the appropriate padding, and usually the container and
+         content are a single view. -->
+    <style name="SimpleListItem" parent="ListItemContainerBase">
+        <item name="android:paddingLeft">?android:listPreferredItemPaddingLeft</item>
+        <item name="android:paddingRight">?android:listPreferredItemPaddingRight</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <style name="SimpleListItemSmall" parent="SimpleListItem">
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <!-- List item text -->
+    <style name="ListItemTitle">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textColor">@color/body_text_1</item>
+    </style>
+
+    <style name="ListItemSubtitle">
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/body_text_2</item>
+    </style>
+    
+    <!-- Quick Return Bar -->
+    <style name="QuickReturnItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/quick_return_bar_height</item>
+        <item name="android:background">@android:color/black</item>
+        <item name="android:gravity">center</item>
+    </style>
+</resources>

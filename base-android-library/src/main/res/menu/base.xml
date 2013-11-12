@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_refresh"
+          android:icon="@drawable/icon_action_refresh"
+          android:title="@string/description_refresh"
+          android:visible="false"
+          android:orderInCategory="4"
+          android:showAsAction="ifRoom" />
+
+    <group
+        android:menuCategory="secondary"
+        android:orderInCategory="100">
+        <item android:id="@+id/action_logout"
+              android:title="@string/description_logout"
+              android:showAsAction="never" />
+
+        <item android:id="@+id/action_settings"
+              android:title="@string/description_settings"
+              android:showAsAction="never" />
+
+        <item android:id="@+id/action_help"
+              android:title="@string/description_help"
+              android:showAsAction="never" />
+    </group>
+</menu>

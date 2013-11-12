@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- The attributes in this XML file provide configuration information for the SyncAdapter.
+     contentAuthority: names the ContentProvider for the Sync Adapter to communicate with, since this Sync Adapter
+                       is to sync ImminentMeals content it should be the value of
+                       ImminentMealsContract.CONTENT_AUTHORITY (XML doesn't have direct access to Java unfortunately)
+     accountType: names the account type that the Sync Adapter will sync content for, since ImminentMeals is
+                  bootstrapping from Google accounts, it should be the value of GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE
+     supportsUploading: true declares the Sync Adapter to allow syncs to define themselves to only be device-to-cloud,
+                        by using ContentResolver.notifyChange(android.net.Uri, android.database.ContentObserver, boolean).
+                        This is false in this case to mean every sync will attempt to maintain 2-way consistency of
+                        the states held by the client and the cloud (all communication with the cloud is a
+                        REpresentational State Transfer)
+     userVisible: true tells the Android framework to show the Sync Adapter to the user in the Sync Settings screen,
+                  which allows them to control aspects of the Sync Adapter.
+     allowParallelSyncs: true tells the Sync Manager that the Sync Adapter can satisfy multiple sync requests
+                         simultaneously. This is false, to simply implementation considerations.
+     isAlwaysSyncable: true tells the Sync Manager to make an account syncable as soon as it has been added, which will
+                       be equivalent to setting
+                       ContentResolver.setIsSyncable(android.accounts.Account, String authority, int syncable) (needs
+                       confirmation). -->
+<sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
+              android:contentAuthority="com.imminentmeals.android.base"
+              android:accountType="com.google"
+              android:supportsUploading="false"
+              android:userVisible="true"
+              android:allowParallelSyncs="false"
+              android:isAlwaysSyncable="true" />
