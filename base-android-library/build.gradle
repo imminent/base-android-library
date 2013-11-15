@@ -17,7 +17,6 @@ apply plugin: 'android-test'
 apply plugin: 'findbugs'
 apply plugin: 'pmd'
 apply plugin: 'checkstyle'
-apply plugin: 'maven'
 
 dependencies {
   def daggerVersion = "1.1.0"
