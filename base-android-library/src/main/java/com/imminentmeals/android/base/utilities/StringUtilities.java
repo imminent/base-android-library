@@ -104,6 +104,7 @@ public final class StringUtilities {
      * @param <T> The type of objects in the collection
      * @return The string of the objects joined by the delimiters
      */
+    @SafeVarargs
     @Nonnull public static <T> String joinAnd(final String delimiter, final String last_delimiter,
                                               @Nullable final T... objects) {
         return joinAnd(delimiter, last_delimiter, objects == null? null : Arrays.asList(objects));
@@ -142,6 +143,7 @@ public final class StringUtilities {
      * @param <T> The type of objects in the collection
      * @return The string of the objects joined by the delimiters
      */
+    @SafeVarargs
     @Nonnull public static <T> String join(final String delimiter, @Nullable final T... objects) {
         return join(delimiter, objects == null? null : Arrays.asList(objects));
     }

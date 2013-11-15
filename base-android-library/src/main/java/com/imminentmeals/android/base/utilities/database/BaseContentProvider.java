@@ -12,8 +12,6 @@ import android.content.ContentProvider;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.PatternMatcher;
 
 import java.util.List;
 
@@ -30,8 +28,6 @@ public abstract class BaseContentProvider extends ContentProvider {
     /** Parameter indicating that the {@link android.content.ContentProvider} should notify observers that the content has been updated */
     public static final String PARAM_SHOULD_NOTIFY = "com.imminentmeals.android.base.param.BaseContentProvider.SHOULD_NOTIFY";
     public static final String PARAM_SHOULD_NOTIFY_SYNC_ADAPTER = "com.imminentmeals.android.base.param.BaseContentProvider.SHOULD_NOTIFY_SYN_ADAPTER";
-    public static final String METHOD_BEGIN_TRANSACTION = "beginTransaction";
-    public static final String METHOD_END_TRANSACTION = "endTransaction";
 
 
     @Override
@@ -45,22 +41,15 @@ public abstract class BaseContentProvider extends ContentProvider {
         return _database_helper;
     }
 
+    @SuppressWarnings("UnusedParameters")
     @CheckForNull public <T extends ActiveRecord> List<T> selectRecords(Uri uri, QueryBuilder query,
                                                                         @Nullable String sort_order) {
         return null;
     }
 
+    @SuppressWarnings("UnusedParameters")
     @CheckForNull public <T extends ActiveRecord> Iterable<T> queryRecords(Uri uri, QueryBuilder query,
                                                                            @Nullable String sort_order) {
-        return null;
-    }
-
-    @Override
-    public Bundle call(String method, String argument, Bundle extras) {
-        if (_BEGIN_TRANSACTION.match(method))
-            _database_helper.getWritableDatabase().beginTransaction();
-        else if (_END_TRANSACTION.match(method))
-            _database_helper.getWritableDatabase().endTransaction();
         return null;
     }
 
@@ -81,7 +70,7 @@ public abstract class BaseContentProvider extends ContentProvider {
         final boolean sync_to_network = uri_requests_sync_adapter_notification != null
                 && Boolean.valueOf(uri_requests_sync_adapter_notification);
 
-        if (should_notify)
+        if (should_notify && getContext() != null)
             getContext().getContentResolver().notifyChange(uri, null, sync_to_network);
     }
 
@@ -98,11 +87,9 @@ public abstract class BaseContentProvider extends ContentProvider {
         final String uri_requests_notification = uri.getQueryParameter(PARAM_SHOULD_NOTIFY);
         final boolean should_notify = uri_requests_notification == null || Boolean.valueOf(uri_requests_notification);
 
-        if (should_notify)
+        if (should_notify && getContext() != null)
             cursor.setNotificationUri(getContext().getContentResolver(), uri);
     }
 
     private BaseSqliteOpenHelper _database_helper;
-    private static final PatternMatcher _BEGIN_TRANSACTION = new PatternMatcher(METHOD_BEGIN_TRANSACTION, PatternMatcher.PATTERN_LITERAL);
-    private static final PatternMatcher _END_TRANSACTION = new PatternMatcher(METHOD_END_TRANSACTION, PatternMatcher.PATTERN_LITERAL);
 }

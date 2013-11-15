@@ -17,12 +17,19 @@ import android.net.Uri;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import nf.fr.eraasoft.pool.ObjectPool;
+import nf.fr.eraasoft.pool.PoolException;
+
 import static com.google.common.collect.Maps.newHashMap;
 
 
 /**
  * <p>Base database entry builder</p>
  */
+@ParametersAreNonnullByDefault
 public abstract class ValuesBuilder {
 
     /**
@@ -35,6 +42,21 @@ public abstract class ValuesBuilder {
         _content_uri = content_uri;
         _query_parameters = newHashMap();
         _values = new ContentValues();
+        _content_value_pool = null;
+    }
+
+    /**
+     * Constructs a {@link com.imminentmeals.android.base.utilities.database.ValuesBuilder} for the given {@link android.net.Uri content URI}.
+     * @param context the context from which to retrieve the {@link android.content.ContentResolver}
+     * @param content_uri The content URI on which the builder operates
+     * @param content_value_pool The pool from which to retrieve ContentValue objects
+     */
+    protected ValuesBuilder(Context context, Uri content_uri, ObjectPool<ContentValues> content_value_pool) {
+        _content = context.getContentResolver();
+        _content_uri = content_uri;
+        _query_parameters = newHashMap();
+        _values = null;
+        _content_value_pool = content_value_pool;
     }
 
     /**
@@ -44,7 +66,7 @@ public abstract class ValuesBuilder {
         try {
             return _content.insert(uriWithAppendedQueryParameters(), _values);
         } finally {
-            _values.clear();
+            cleanUp();
         }
     }
 
@@ -55,8 +77,8 @@ public abstract class ValuesBuilder {
      * @param from_sync_adapter indicates when the insert is called from the sync adapter
      */
     public Uri insert(boolean notify_change, boolean from_sync_adapter) {
-        appendQueryParamenter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(notify_change));
-        appendQueryParamenter(BaseContentProvider.PARAM_SHOULD_NOTIFY_SYNC_ADAPTER, Boolean.toString(!from_sync_adapter));
+        appendQueryParameter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(notify_change));
+        appendQueryParameter(BaseContentProvider.PARAM_SHOULD_NOTIFY_SYNC_ADAPTER, Boolean.toString(!from_sync_adapter));
 
         return insert();
     }
@@ -69,7 +91,7 @@ public abstract class ValuesBuilder {
         try {
             return _content.update(uriWithAppendedQueryParameters(), _values, query.toString(), query.argumentsAsArray());
         } finally {
-            _values.clear();
+            cleanUp();
         }
     }
 
@@ -81,8 +103,8 @@ public abstract class ValuesBuilder {
      * @param from_sync_adapter indicates when the insert is called from the sync adapter
      */
     public int update(QueryBuilder query, boolean notify_change, boolean from_sync_adapter) {
-        appendQueryParamenter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(notify_change));
-        appendQueryParamenter(BaseContentProvider.PARAM_SHOULD_NOTIFY_SYNC_ADAPTER, Boolean.toString(!from_sync_adapter));
+        appendQueryParameter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(notify_change));
+        appendQueryParameter(BaseContentProvider.PARAM_SHOULD_NOTIFY_SYNC_ADAPTER, Boolean.toString(!from_sync_adapter));
 
         return update(query);
     }
@@ -91,12 +113,13 @@ public abstract class ValuesBuilder {
      * <p>Updates with the given id</p>
      * @param id the given id
      */
+    @SuppressWarnings("ConstantConditions")
     public int update(long id) {
         try {
-            return _content.update(uriWithAppendedQueryParameters().buildUpon().appendPath(Long.toString(id)).build(),
-                    _values, null, null);
+            return _content.update(uriWithAppendedQueryParameters().buildUpon().appendPath(Long.toString(id)).build()
+                    , _values, null, null);
         } finally {
-            _values.clear();
+            cleanUp();
         }
     }
 
@@ -107,26 +130,91 @@ public abstract class ValuesBuilder {
      *                      when content is modified
      */
     public int update(long id, boolean notify_change) {
-        appendQueryParamenter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(notify_change));
+        appendQueryParameter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(notify_change));
 
         return update(id);
     }
 
     /**
-     * <p>Gets the underlying ContentValues built so far by this builder.</p>
+     * <p>Insert a record with the set values.</p>
+     * @param uri Uri over which to insert
      */
-    public ContentValues getValues() {
-        return _values;
+    public Uri insert(Uri uri) {
+        try {
+            return _content.insert(uriWithAppendedQueryParameters(uri), _values);
+        } finally {
+            cleanUp();
+        }
     }
 
-    public ValuesBuilder beginTransaction() {
-        _content.call(_content_uri, BaseContentProvider.METHOD_BEGIN_TRANSACTION, null, null);
-        return this;
+    /**
+     * <p>Inserts a record with the set values.</p>
+     * @param uri Uri over which to insert
+     * @param notify_change indicates when the {@link android.content.ContentProvider} should notify observers
+     *                      when content is modified
+     * @param from_sync_adapter indicates when the insert is called from the sync adapter
+     */
+    public Uri insert(Uri uri, boolean notify_change, boolean from_sync_adapter) {
+        appendQueryParameter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(notify_change));
+        appendQueryParameter(BaseContentProvider.PARAM_SHOULD_NOTIFY_SYNC_ADAPTER, Boolean.toString(!from_sync_adapter));
+
+        return insert(uri);
     }
 
-    public ValuesBuilder endTransaction() {
-        _content.call(_content_uri, BaseContentProvider.METHOD_END_TRANSACTION, null, null);
-        return this;
+    /**
+     * <p>Updates a record with the given query</p>
+     * @param uri Uri over which to update
+     * @param query the given query
+     */
+    public int update(Uri uri, QueryBuilder query) {
+        try {
+            return _content.update(uriWithAppendedQueryParameters(uri), _values, query.toString(), query.argumentsAsArray());
+        } finally {
+            cleanUp();
+        }
+    }
+
+    /**
+     * <p>Updates with the given query</p>
+     * @param uri Uri over which to update
+     * @param query the given query
+     * @param notify_change indicates when the {@link android.content.ContentProvider} should notify observers
+     *                      when content is modified
+     * @param from_sync_adapter indicates when the insert is called from the sync adapter
+     */
+    public int update(Uri uri, QueryBuilder query, boolean notify_change, boolean from_sync_adapter) {
+        appendQueryParameter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(notify_change));
+        appendQueryParameter(BaseContentProvider.PARAM_SHOULD_NOTIFY_SYNC_ADAPTER, Boolean.toString(!from_sync_adapter));
+
+        return update(uri, query);
+    }
+
+    /**
+     * <p>Updates with the given id</p>
+     * @param uri Uri over which to update
+     * @param id the given id
+     */
+    @SuppressWarnings("ConstantConditions")
+    public int update(Uri uri, long id) {
+        try {
+            return _content.update(uriWithAppendedQueryParameters(uri).buildUpon().appendPath(Long.toString(id)).build()
+                    , _values, null, null);
+        } finally {
+            cleanUp();
+        }
+    }
+
+    /**
+     * <p>Updates with the given id</p>
+     * @param uri Uri over which to update
+     * @param id the given id
+     * @param notify_change indicates when the {@link android.content.ContentProvider} should notify observers
+     *                      when content is modified
+     */
+    public int update(Uri uri, long id, boolean notify_change) {
+        appendQueryParameter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(notify_change));
+
+        return update(uri, id);
     }
 
     /**
@@ -141,7 +229,7 @@ public abstract class ValuesBuilder {
                     .newInsert(uriWithAppendedQueryParameters())
                     .withValues(_values);
         } finally {
-            _values.clear();
+            cleanUp();
         }
     }
 
@@ -157,7 +245,7 @@ public abstract class ValuesBuilder {
                     .newUpdate(uriWithAppendedQueryParameters())
                     .withValues(_values);
         } finally {
-            _values.clear();
+            cleanUp();
         }
     }
 
@@ -173,7 +261,7 @@ public abstract class ValuesBuilder {
                     .newDelete(uriWithAppendedQueryParameters())
                     .withValues(_values);
         } finally {
-            _values.clear();
+            cleanUp();
         }
     }
 
@@ -189,16 +277,90 @@ public abstract class ValuesBuilder {
                     .newAssertQuery(uriWithAppendedQueryParameters())
                     .withValues(_values);
         } finally {
-            _values.clear();
+            cleanUp();
         }
     }
 
-    public void appendQueryParamenter(String key, String value) {
+    /**
+     * <p>Takes the values in this builder and creates a new
+     * {@link android.content.ContentProviderOperation} as an insert operation.</p>
+     * @param uri Uri over which to insert
+     *
+     * @see android.content.ContentProviderOperation#newInsert(android.net.Uri)
+     */
+    public ContentProviderOperation.Builder toInsertOperationBuilder(Uri uri) {
+        try {
+            return ContentProviderOperation
+                    .newInsert(uriWithAppendedQueryParameters(uri))
+                    .withValues(_values);
+        } finally {
+            cleanUp();
+        }
+    }
+
+    /**
+     * <p>Takes the values in this builder and creates a new
+     * {@link android.content.ContentProviderOperation} as an update operation.</p>
+     * @param uri Uri over which to update
+     *
+     * @see android.content.ContentProviderOperation#newUpdate(android.net.Uri)
+     */
+    public ContentProviderOperation.Builder toUpdateOperationBuilder(Uri uri) {
+        try {
+            return ContentProviderOperation
+                    .newUpdate(uriWithAppendedQueryParameters(uri))
+                    .withValues(_values);
+        } finally {
+            cleanUp();
+        }
+    }
+
+    /**
+     * <p>Takes the values in this builder and creates a new
+     * {@link android.content.ContentProviderOperation} as an delete operation.</p>
+     * @param uri Uri over which to delete
+     *
+     * @see android.content.ContentProviderOperation#newDelete(android.net.Uri)
+     */
+    public ContentProviderOperation.Builder toDeleteOperationBuilder(Uri uri) {
+        try {
+            return ContentProviderOperation
+                    .newDelete(uriWithAppendedQueryParameters(uri))
+                    .withValues(_values);
+        } finally {
+            cleanUp();
+        }
+    }
+
+    /**
+     * <p>Takes the values in this builder and creates a new
+     * {@link android.content.ContentProviderOperation} as an assert query operation.</p>
+     * @param uri Uri over which to assert query
+     *
+     * @see android.content.ContentProviderOperation#newAssertQuery(android.net.Uri)
+     */
+    public ContentProviderOperation.Builder toAssertQueryOperationBuilder(Uri uri) {
+        try {
+            return ContentProviderOperation
+                    .newAssertQuery(uriWithAppendedQueryParameters(uri))
+                    .withValues(_values);
+        } finally {
+            cleanUp();
+        }
+    }
+
+    public void appendQueryParameter(String key, String value) {
         _query_parameters.put(key, value);
     }
 
-    private Uri uriWithAppendedQueryParameters() {
-        Uri uri = _content_uri;
+    @SuppressWarnings("ConstantConditions")
+    @Nonnull private Uri uriWithAppendedQueryParameters() {
+        if (_content_uri == null) throw new IllegalStateException("calendar with null content URI.");
+        return uriWithAppendedQueryParameters(_content_uri);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Nonnull private Uri uriWithAppendedQueryParameters(Uri uri) {
         if (_query_parameters.isEmpty())
             return uri;
         else
@@ -208,7 +370,22 @@ public abstract class ValuesBuilder {
         return uri;
     }
 
-    protected final ContentValues _values;
+    @Nonnull protected ContentValues contentValues() {
+        try {
+            if (_values == null) _values = _content_value_pool.getObj();
+            return _values;
+        } catch (PoolException _) {
+            return new ContentValues();
+        }
+    }
+
+    private void cleanUp() {
+        _values.clear();
+        if (_content_value_pool != null) _content_value_pool.returnObj(_values);
+    }
+
+    private ContentValues _values;
+    private final ObjectPool<ContentValues> _content_value_pool;
     private Uri _content_uri;
     private ContentResolver _content;
     private HashMap<String, String> _query_parameters;
