@@ -13,7 +13,7 @@ import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGW;
       library = true
     , complete = false
 )
-/* package */class ActivityModule {
+public class ActivityModule {
 
     public ActivityModule(Activity activity) {
         _activity = activity;
