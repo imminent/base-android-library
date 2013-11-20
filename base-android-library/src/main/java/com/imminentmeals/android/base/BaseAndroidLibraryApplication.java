@@ -73,9 +73,7 @@ public class BaseAndroidLibraryApplication extends Application implements Object
     public void onCreate() {
         super.onCreate();
 
-        // Creates the dependency injection object graph
-        _object_graph = ObjectGraph.create(modules().toArray());
-        _object_graph.inject(this);
+        if (_object_graph == null) prepareObjectGraph();
 
         // TODO: setDefaultPreferences here
 
@@ -131,6 +129,14 @@ public class BaseAndroidLibraryApplication extends Application implements Object
     @Override
     public void inject(@Nonnull Object dependent) {
         _object_graph.inject(dependent);
+    }
+
+/* Protected helper methods */
+    @OverridingMethodsMustInvokeSuper
+    protected void prepareObjectGraph() {
+        // Creates the dependency injection object graph
+        _object_graph = ObjectGraph.create(modules().toArray());
+        _object_graph.inject(this);
     }
 
 /* Dependency Injection Module */

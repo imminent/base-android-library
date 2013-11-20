@@ -26,6 +26,9 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import nf.fr.eraasoft.pool.ObjectPool;
+import nf.fr.eraasoft.pool.PoolException;
+
 import static com.google.common.collect.Lists.newArrayList;
 import static com.imminentmeals.android.base.utilities.database.QueryBuilder.Op;
 
@@ -38,7 +41,7 @@ import static com.imminentmeals.android.base.utilities.database.QueryBuilder.Op;
  *
  * @see ContentProviderActions
  */
-@ParametersAreNonnullByDefault
+@SuppressWarnings("UnusedDeclaration") @ParametersAreNonnullByDefault
 public class DefaultContentProviderActions extends ContentProviderActions {
 
     /**
@@ -47,11 +50,13 @@ public class DefaultContentProviderActions extends ContentProviderActions {
      * @param should_expect_appended_id indicates URI's are expected to have appended ID's
      * @param active_record_factory the factory that produces the {@link ActiveRecord}s
      */
-    public <T extends ActiveRecord> DefaultContentProviderActions(String table, boolean should_expect_appended_id,
-                                               @Nullable ActiveRecordFactory<T> active_record_factory) {
+    public <T extends ActiveRecord> DefaultContentProviderActions(String table, boolean should_expect_appended_id
+            , @Nullable ActiveRecordFactory<T> active_record_factory
+            , ObjectPool<QueryBuilder> query) {
         _table = table;
         _should_expect_appended_id = should_expect_appended_id;
         _active_record_factory = active_record_factory;
+        _query = query;
     }
 
     /**
@@ -59,8 +64,9 @@ public class DefaultContentProviderActions extends ContentProviderActions {
      * @param table the source table
      * @param should_expect_appended_id indicates URI's are expected to have appended ID's
      */
-    public DefaultContentProviderActions(String table, boolean should_expect_appended_id) {
-        this(table, should_expect_appended_id, null);
+    public DefaultContentProviderActions(String table, boolean should_expect_appended_id
+            , ObjectPool<QueryBuilder> query) {
+        this(table, should_expect_appended_id, null, query);
     }
 
     /**
@@ -75,13 +81,22 @@ public class DefaultContentProviderActions extends ContentProviderActions {
     public int delete(BaseContentProvider content, Uri uri, @Nullable String selection,
                       @Nullable String[] selection_arguments) {
         final SQLiteDatabase database = content.getOpenHelper().getWritableDatabase();
+        if (database == null) return -1;
 
-        return _should_expect_appended_id
-                ? QueryBuilder.newQuery()
-                    .expression(BaseColumns._ID, Op.IS_EQUAL_TO, ContentUris.parseId(uri))
-                    .append(selection, selection_arguments)
-                    .delete(database, _table)
-                : database.delete(_table, selection, selection_arguments);
+        QueryBuilder query = null;
+        try {
+           query = _query.getObj();
+            return _should_expect_appended_id
+                    ? query
+                        .expression(BaseColumns._ID, Op.IS_EQUAL_TO, ContentUris.parseId(uri))
+                        .append(selection, selection_arguments)
+                        .delete(database, _table)
+                    : database.delete(_table, selection, selection_arguments);
+        } catch (PoolException exception) {
+            return -1;
+        } finally {
+            _query.returnObj(query);
+        }
     }
 
     /**
@@ -94,11 +109,10 @@ public class DefaultContentProviderActions extends ContentProviderActions {
     @Override
     @CheckForNull public Uri insert(BaseContentProvider content, Uri uri, ContentValues values) {
         // Insertion with a specified ID has an unspecified behavior
-        if (_should_expect_appended_id)
-            return null;
+        if (_should_expect_appended_id) return null;
 
         final SQLiteDatabase database = content.getOpenHelper().getWritableDatabase();
-        final long id = database.insertOrThrow(_table, null, values);
+        final long id = database != null? database.insertOrThrow(_table, null, values) : -1;
 
         return id > -1? ContentUris.withAppendedId(uri, id) : null;
     }
@@ -115,15 +129,24 @@ public class DefaultContentProviderActions extends ContentProviderActions {
      */
     @Override
     public int update(BaseContentProvider content, Uri uri, @Nullable ContentValues values,
-                      @Nullable String selection, @Nullable String[] selection_arguments){
+                      @Nullable String selection, @Nullable String[] selection_arguments) {
         final SQLiteDatabase database = content.getOpenHelper().getWritableDatabase();
+        if (database == null) return -1;
 
-        return _should_expect_appended_id
-                ? QueryBuilder.newQuery()
-                    .expression(BaseColumns._ID, Op.IS_EQUAL_TO, ContentUris.parseId(uri))
-                    .append(selection, selection_arguments)
-                    .update(database, _table, values)
-                : database.update(_table, values, selection, selection_arguments);
+        QueryBuilder query = null;
+        try {
+            query = _query.getObj();
+            return _should_expect_appended_id
+                    ? query
+                        .expression(BaseColumns._ID, Op.IS_EQUAL_TO, ContentUris.parseId(uri))
+                        .append(selection, selection_arguments)
+                        .update(database, _table, values)
+                    : database.update(_table, values, selection, selection_arguments);
+        } catch (PoolException exception) {
+            return -1;
+        } finally {
+            _query.returnObj(query);
+        }
     }
 
     /**
@@ -137,17 +160,26 @@ public class DefaultContentProviderActions extends ContentProviderActions {
      * @return a {@link android.database.Cursor} to the result
      */
     @Override
-    public Cursor query(BaseContentProvider content, Uri uri,
+    @CheckForNull public Cursor query(BaseContentProvider content, Uri uri,
                                  @Nullable String[] projection, @Nullable String selection,
                                  @Nullable String[] selection_arguments, @Nullable String sort_order){
         final SQLiteDatabase database = content.getOpenHelper().getReadableDatabase();
+        if (database == null) return null;
 
-        return _should_expect_appended_id
-                ? QueryBuilder.newQuery()
-                    .expression(BaseColumns._ID, QueryBuilder.Op.IS_EQUAL_TO, ContentUris.parseId(uri))
-                    .append(selection, selection_arguments)
-                    .query(database, _table, projection, sort_order)
-                : database.query(_table, projection, selection, selection_arguments, null, null, sort_order);
+        QueryBuilder query = null;
+        try {
+            query = _query.getObj();
+            return _should_expect_appended_id
+                    ? query
+                        .expression(BaseColumns._ID, QueryBuilder.Op.IS_EQUAL_TO, ContentUris.parseId(uri))
+                        .append(selection, selection_arguments)
+                        .query(database, _table, projection, sort_order)
+                    : database.query(_table, projection, selection, selection_arguments, null, null, sort_order);
+        } catch (PoolException exception) {
+            return null;
+        } finally {
+            _query.returnObj(query);
+        }
     }
 
     /**
@@ -159,6 +191,7 @@ public class DefaultContentProviderActions extends ContentProviderActions {
     @Override
     public int bulkInsert(BaseContentProvider content, ContentValues[] values) {
         final SQLiteDatabase database = content.getOpenHelper().getWritableDatabase();
+        if (database == null) return -1;
 
         try {
             database.beginTransaction();
@@ -181,8 +214,8 @@ public class DefaultContentProviderActions extends ContentProviderActions {
                                                           Uri uri, QueryBuilder query,
                                                           @Nullable String sort_order) {
         assert _active_record_factory != null;
-
         final SQLiteDatabase database = content.getOpenHelper().getReadableDatabase();
+        if (database == null) return new ArrayList<>();
         Cursor cursor = null;
         final ArrayList<T> items = newArrayList();
 
@@ -194,7 +227,7 @@ public class DefaultContentProviderActions extends ContentProviderActions {
         } finally {
             try {
                 Closeables.close(cursor, true);
-            } catch (IOException _) { }
+            } catch (IOException ignored) { }
         }
 
         return items;
@@ -207,12 +240,18 @@ public class DefaultContentProviderActions extends ContentProviderActions {
         assert _active_record_factory != null;
 
         final SQLiteDatabase database = content.getOpenHelper().getReadableDatabase();
+        if (database == null) return new Iterable<T>() {
+
+            @Override public Iterator<T> iterator() {
+                return new ArrayList<T>().iterator();
+            }
+        };
         final Cursor cursor = database.query(_table, _active_record_factory.projection(), query.toString(), query.argumentsAsArray(), null, null, sort_order);
         return new Iterable<T>() {
             @SuppressWarnings("unchecked")
             @Override
             public Iterator<T> iterator() {
-                return new CursorActiveRecordIterator<T>(cursor, (ActiveRecordFactory<T>) _active_record_factory);
+                return new CursorActiveRecordIterator<>(cursor, (ActiveRecordFactory<T>) _active_record_factory);
             }
         };
     }
@@ -223,4 +262,5 @@ public class DefaultContentProviderActions extends ContentProviderActions {
     private ActiveRecordFactory<?> _active_record_factory;
     /** Indicates when the {@link android.content.ContentProvider} should expect an ID in the request URIs */
     private boolean _should_expect_appended_id;
+    private final ObjectPool<QueryBuilder> _query;
 }

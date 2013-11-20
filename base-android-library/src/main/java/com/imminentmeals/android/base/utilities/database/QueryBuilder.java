@@ -17,16 +17,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 import com.google.common.io.Closeables;
-import com.imminentmeals.android.base.data.DataModule;
 import com.imminentmeals.android.base.utilities.StringUtilities;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.inject.Inject;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -49,6 +50,8 @@ import static com.google.common.collect.Lists.newArrayList;
  * <p>If a query ends with either {@link #or()} or {@link #and()} they will not be included when executing the query
  * since it is an error to end a query without the right operand of an expression.</p>
  */
+// TODO: Cursor from queries can be null, update annotations
+@SuppressWarnings("UnusedDeclaration")
 @ParametersAreNonnullByDefault
 public class QueryBuilder {
 
@@ -125,17 +128,15 @@ public class QueryBuilder {
         String MATCHES_EXPRESSION = " REGEXP ";
     }
 
-    public QueryBuilder() {
+    @Inject
+    public QueryBuilder(Context context) {
         _query_string = new StringBuilder();
+        _context = context;
     }
 
     @Override
     public String toString() {
         return _query_string.toString();
-    }
-
-    public static QueryBuilder newQuery() {
-        return new QueryBuilder();
     }
 
     /**
@@ -353,7 +354,7 @@ public class QueryBuilder {
      */
     public QueryBuilder optional(String column, String operator, boolean argument) {
         if (!argument) return this;
-        return expression(column, operator, argument);
+        return expression(column, operator, true);
     }
 
     /**
@@ -774,13 +775,16 @@ public class QueryBuilder {
 
     /**
      * <p>Retrieves list of {@link ActiveRecord}s that match query.</p>
+     *
      * @param uri the URI over which to query
      * @param sort_order the order to apply to the result space
      * @return the result
      */
     public <T extends ActiveRecord> List<T> select(Uri uri, @Nullable String sort_order) {
-        final ContentProviderClient client = DataModule.getContentResolver().acquireContentProviderClient(uri);
-        return ((BaseContentProvider) client.getLocalContentProvider()).selectRecords(uri, this, sort_order);
+        final BaseContentProvider provider = contentProvider(uri);
+        return (provider != null
+                        ? provider.<T>selectRecords(uri, this, sort_order)
+                        : new ArrayList<T>());
     }
 
     /**
@@ -799,8 +803,7 @@ public class QueryBuilder {
      * @return The result
      */
     @CheckForNull public <T extends ActiveRecord> T selectFirst(Uri uri, @Nullable String sort_order) {
-        final ContentProviderClient client = DataModule.getContentResolver().acquireContentProviderClient(uri);
-        final List<T> records = ((BaseContentProvider) client.getLocalContentProvider()).selectRecords(uri, this, sort_order);
+        final List<T> records = select(uri, sort_order);
         return records.isEmpty()? null : records.get(0);
     }
 
@@ -821,7 +824,7 @@ public class QueryBuilder {
      * @return a {@link android.database.Cursor} to the result
      */
     public Cursor select(Uri uri, String[] projection, @Nullable String sort_order) {
-        return DataModule.getContentResolver().query(uri, projection, toString(), argumentsAsArray(), sort_order);
+        return _context.getContentResolver().query(uri, projection, toString(), argumentsAsArray(), sort_order);
     }
 
     /**
@@ -835,7 +838,8 @@ public class QueryBuilder {
      */
     public Cursor select(Uri uri, String[] projection, @Nullable String sort_order, boolean should_notify) {
         uri = uri.buildUpon().appendQueryParameter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(should_notify)).build();
-        return DataModule.getContentResolver().query(uri, projection, toString(), argumentsAsArray(), sort_order);
+        assert uri != null;
+        return _context.getContentResolver().query(uri, projection, toString(), argumentsAsArray(), sort_order);
     }
 
     /**
@@ -1196,7 +1200,7 @@ public class QueryBuilder {
      * @return the number of rows affected
      */
     public int update(Uri uri, @Nullable ContentValues values) {
-        return DataModule.getContentResolver().update(uri, values, toString(), argumentsAsArray());
+        return _context.getContentResolver().update(uri, values, toString(), argumentsAsArray());
     }
 
     /**
@@ -1209,7 +1213,8 @@ public class QueryBuilder {
      */
     public int update(Uri uri, @Nullable ContentValues values, boolean should_notify) {
         uri = uri.buildUpon().appendQueryParameter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(should_notify)).build();
-        return DataModule.getContentResolver().update(uri, values, toString(), argumentsAsArray());
+        assert uri != null;
+        return _context.getContentResolver().update(uri, values, toString(), argumentsAsArray());
     }
 
     /**
@@ -1218,7 +1223,7 @@ public class QueryBuilder {
      * @return the number of rows affected
      */
     public int delete(Uri uri) {
-        return DataModule.getContentResolver().delete(uri, toString(), argumentsAsArray());
+        return _context.getContentResolver().delete(uri, toString(), argumentsAsArray());
     }
 
     /**
@@ -1230,7 +1235,8 @@ public class QueryBuilder {
      */
     public int delete(Uri uri, boolean should_notify) {
         uri = uri.buildUpon().appendQueryParameter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(should_notify)).build();
-        return DataModule.getContentResolver().delete(uri, toString(), argumentsAsArray());
+        assert uri != null;
+        return _context.getContentResolver().delete(uri, toString(), argumentsAsArray());
     }
 
     /**
@@ -1243,13 +1249,10 @@ public class QueryBuilder {
         uri = uri.buildUpon().appendQueryParameter(BaseContentProvider.PARAM_SHOULD_NOTIFY, Boolean.toString(false)).build();
 
         try {
-            cursor = DataModule.getContentResolver().query(uri, new String[] { "count(*)" }, toString(), argumentsAsArray(), null);
+            assert uri != null;
+            cursor = _context.getContentResolver().query(uri, new String[] { "count(*)" }, toString(), argumentsAsArray(), null);
 
-            int count = 0;
-
-            if (cursor.moveToFirst())
-                count = cursor.getInt(0);
-            return count;
+            return cursor != null && cursor.moveToFirst()? cursor.getInt(0) : 0;
         } finally {
             //noinspection EmptyCatchBlock
             try {
@@ -1268,6 +1271,15 @@ public class QueryBuilder {
     }
 
     /**
+     * Resets the state of the {@link QueryBuilder} so that it can be reused.
+     */
+    public void reset() {
+        _query_string.setLength(0);
+        _arguments.clear();
+        _next_operator = null;
+    }
+
+    /**
      * Appends the next operator onto the query.
      */
     private void ensureOp() {
@@ -1281,6 +1293,11 @@ public class QueryBuilder {
         }
     }
 
+    @CheckForNull private BaseContentProvider contentProvider(Uri uri) {
+        final ContentProviderClient client = _context.getContentResolver().acquireContentProviderClient(uri);
+        return client != null? (BaseContentProvider) client.getLocalContentProvider() : null;
+    }
+
     /** The AND operator */
     private static final String AND = " AND ";
     /** The OR operator */
@@ -1288,4 +1305,5 @@ public class QueryBuilder {
     private StringBuilder _query_string;
     private List<String> _arguments = newArrayList();
     private String _next_operator = null;
+    private final Context _context;
 }

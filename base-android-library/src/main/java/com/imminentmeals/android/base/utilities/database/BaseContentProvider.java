@@ -23,6 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * <p>Base {@link android.content.ContentProvider} implementation.</p>
  */
+@SuppressWarnings("UnusedDeclaration")
 @ParametersAreNonnullByDefault
 public abstract class BaseContentProvider extends ContentProvider {
     /** Parameter indicating that the {@link android.content.ContentProvider} should notify observers that the content has been updated */
