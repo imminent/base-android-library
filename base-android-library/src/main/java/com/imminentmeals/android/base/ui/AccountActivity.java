@@ -65,8 +65,15 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
         setContentView(layout.activity_account);
 
         // Gets the continuation intent from the calling intent
-        if (getIntent().hasExtra(EXTRA_FINISH_INTENT))
+        if (getIntent().hasExtra(EXTRA_FINISH_INTENT)) {
             _continuation_intent = getIntent().getParcelableExtra(EXTRA_FINISH_INTENT);
+            if (_continuation_intent != null) {
+                _continuation_intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                _continuation_intent.setAction(Intent.ACTION_MAIN);
+                _continuation_intent.addFlags(
+                    Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            }
+        }
 
         AUTOTAGLOGV("Started connect account activity with continuation " + _continuation_intent);
 
@@ -116,15 +123,8 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
      */
     @Override
     public void onAuthTokenAvailable(String auth_token) {
-        // TODO: confirm that sync-adapter isAlwaysSyncable covers this already
         // Launches the continuation Activity, when one was given
-        if (_continuation_intent != null) {
-            _continuation_intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            _continuation_intent.setAction(Intent.ACTION_MAIN);
-            _continuation_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(_continuation_intent);
-        }
+        if (_continuation_intent != null) startActivity(_continuation_intent);
 
         // Finishes the AccountActivity (and the authentication flow)
         finish();
@@ -194,7 +194,9 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
                 // Tracks the add account event
                 EasyTracker.getTracker().sendTiming(CATEGORY_UX, _timer.elapsed(TimeUnit.MILLISECONDS),
                                                     ACTION_BUTTON_PRESS, "add_account");
-                account_utilities.get().startAddAccountActivity(this);
+              assert getActivity() != null;
+              account_utilities.get().startAddAccountActivity(this
+                    , ((AccountActivity) getActivity())._continuation_intent);
                 return true;
             }
             return super.onOptionsItemSelected(action);
@@ -211,7 +213,11 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
             final Button add_account = (Button) root_view.findViewById(android.R.id.empty);
             add_account.setOnClickListener(new View.OnClickListener() {
 
-              public void onClick(View _) { account_utilities.get().startAddAccountActivity(ChooseAccountFragment.this); }
+              public void onClick(View _) {
+                assert getActivity() != null;
+                account_utilities.get().startAddAccountActivity(ChooseAccountFragment.this
+                      , ((AccountActivity) getActivity())._continuation_intent);
+              }
             });
             return root_view;
         }
@@ -220,6 +226,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
         public void onListItemClick(ListView _, View __, int position, long ___) {
             // Confirms that the device is connected to an Internet network, and indicates when it isn't
             final AccountActivity activity = (AccountActivity) getActivity();
+            assert activity != null;
             final NetworkInfo active_network = ((ConnectivityManager) activity
                     .getSystemService(CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
             if (active_network == null || !active_network.isConnected()) {
@@ -401,7 +408,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
     private Account _chosen_account;
     /** The {@link Intent} to launch when the authentication finishes. This will come from the
      * {@linkplain #getIntent()} in the {@linkplain #EXTRA_FINISH_INTENT finish intent extra} */
-    private Intent _continuation_intent;
+    /* package */Intent _continuation_intent;
     /** Indicates that the authentication process has been cancelled */
     private boolean _authentication_was_cancelled = false;
     /** The {@link Handler} that performs the actions on the main thread */

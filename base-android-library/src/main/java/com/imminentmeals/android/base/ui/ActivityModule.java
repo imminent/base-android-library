@@ -13,9 +13,9 @@ import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGW;
       library = true
     , complete = false
 )
-/* package */class ActivityModule<T extends Activity> {
+/* package */class ActivityModule {
 
-    public ActivityModule(T activity) {
+    public ActivityModule(Activity activity) {
         _activity = activity;
     }
 
@@ -34,5 +34,5 @@ import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGW;
         return action_bar;
     }
 
-    protected final T _activity;
+    protected final Activity _activity;
 }
