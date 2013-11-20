@@ -131,7 +131,12 @@ public class BaseAndroidLibraryApplication extends Application implements Object
         _object_graph.inject(dependent);
     }
 
-/* Protected helper methods */
+    @Override
+    @Nonnull public ObjectGraph plus(Object... module) {
+        return _object_graph.plus(module);
+    }
+
+  /* Protected helper methods */
     @OverridingMethodsMustInvokeSuper
     protected void prepareObjectGraph() {
         // Creates the dependency injection object graph

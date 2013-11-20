@@ -7,6 +7,8 @@ import android.content.Context;
 
 import javax.annotation.Nonnull;
 
+import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGD;
+
 /**
  * <p>Retrieves the {@link dagger.ObjectGraph} and injects dependencies.</p>
  * @author Dandré Allison
@@ -15,13 +17,22 @@ public final class ObjectGraph {
 
     /**
      * <p>An {@link android.app.Application} that wants to inject dependencies from an
-     * {@link dagger.ObjectGraph object graph} must implement {@link ObjectGraphApplication}.</p>
+     * {@linkplain dagger.ObjectGraph object graph} must implement {@link ObjectGraphApplication}.</p>
      */
     public interface ObjectGraphApplication {
         /**
          * <p>Injects dependencies into the given Object.</p>
          */
         void inject(@Nonnull Object dependent);
+
+       /**
+        * <p>Pluses the given module onto to {@link ObjectGraphApplication}'s
+        * {@linkplain dagger.ObjectGraph object graph}.</p>
+        * @param module The given module to plus onto the object graph Application's object graph
+        * @return The resulting object graph (note, this doesn't modify the object graph
+        *         Application's object graph
+        */
+        @Nonnull dagger.ObjectGraph plus(Object... module);
     }
 
     /**
@@ -50,7 +61,9 @@ public final class ObjectGraph {
      * @param object The given object
      */
     public static void inject(@Nonnull Context context, @Nonnull Object object) {
-        ((ObjectGraphApplication) context.getApplicationContext()).inject(object);
+        if (context.getApplicationContext() != null)
+            ((ObjectGraphApplication) context.getApplicationContext()).inject(object);
+        else AUTOTAGLOGD("Application context was null in %s, unable to inject %s", object, context);
     }
 
     /**
@@ -58,7 +71,9 @@ public final class ObjectGraph {
      * @param service The given service
      */
     public static void inject(@Nonnull Service service) {
-        ((ObjectGraphApplication) service.getApplication()).inject(service);
+        if (service.getApplication() != null)
+            ((ObjectGraphApplication) service.getApplication()).inject(service);
+        else AUTOTAGLOGD("Application context was null, unable to inject %s", service);
     }
 
 /* Private Constructor */
