@@ -56,14 +56,15 @@ import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGE;
  */
 public class BaseAndroidLibraryApplication extends Application implements ObjectGraphApplication {
     @Inject /* package */SharedPreferences settings;
-    @Inject /* package */AccountFlowCallbacks account_flow_callbacks;
-    @Inject /* package */GoogleAnalyticsCallbacks google_analytics_callbacks;
-    @Inject /* package */InjectionCallbacks injection_callbacks;
-    @Inject /* package */SyncCallbacks sync_callbacks;
-    @Inject /* package */DoneDiscardCallbacks done_discard_callbacks;
     @Inject /* package */Lazy<CookieStore> cookie_jar;
+    @Inject protected AccountFlowCallbacks account_flow_callbacks;
+    @Inject protected GoogleAnalyticsCallbacks google_analytics_callbacks;
+    @Inject protected InjectionCallbacks injection_callbacks;
+    @Inject protected SyncCallbacks sync_callbacks;
+    @Inject protected DoneDiscardCallbacks done_discard_callbacks;
+
     /** Name to associate with the account {@link android.app.Activity} */
-    public static final String ACCOUNT_ACTIVITY = "account";
+    @SuppressWarnings("UnusedDeclaration") public static final String ACCOUNT_ACTIVITY = "account";
     /** Name to associate with the name of the auth token stored in a cookie */
     public static final String COOKIE_AUTH_TOKEN = "cookie auth token";
     @Inject @Named(COOKIE_AUTH_TOKEN)/* package */String cookie_auth_token;
@@ -231,7 +232,7 @@ public class BaseAndroidLibraryApplication extends Application implements Object
 
     /**
      * <p>Callback to include an extra Module in the {@link ObjectGraph}.</p>
-     * @return
+     * @return The full set of modules the create the core Object Graph
      */
     @OverridingMethodsMustInvokeSuper
     @Nonnull protected List<Object> modules() {
