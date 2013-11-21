@@ -19,32 +19,18 @@ import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGW;
 @ParametersAreNonnullByDefault
 public class ActivityModule {
 
-    public ActivityModule(Activity activity) {
-        _activity = activity;
-    }
-
-    /**
-     * Allow the activity context to be injected but require that it be annotated with
-     * {@link ForActivity @ForActivity} to explicitly differentiate it from application context.
-     */
-    @Provides @Singleton @ForActivity Context provideActivityContext() {
-        return _activity;
-    }
-
-    @Provides @Singleton ActionBar providesActionBar() {
-        final ActionBar action_bar = _activity.getActionBar();
+    @Provides @Singleton ActionBar providesActionBar(@ForActivity Context activity) {
+        final ActionBar action_bar = ((Activity) activity).getActionBar();
         if (action_bar == null) AUTOTAGLOGW("Expected an Action Bar for %s, but it was null",
-            _activity);
+            activity);
         return action_bar;
     }
 
-    @Provides @Singleton Resources providesResources() {
-        return _activity.getResources();
+    @Provides @Singleton Resources providesResources(@ForActivity Context activity) {
+        return activity.getResources();
     }
 
-    @Provides @Singleton LayoutInflater providesInflater() {
-        return _activity.getLayoutInflater();
+    @Provides @Singleton LayoutInflater providesInflater(@ForActivity Context activity) {
+        return ((Activity) activity).getLayoutInflater();
     }
-
-    protected final Activity _activity;
 }
