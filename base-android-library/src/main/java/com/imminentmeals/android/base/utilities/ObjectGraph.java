@@ -102,7 +102,7 @@ public final class ObjectGraph {
                 activity_object_graph != null
                     ? activity_object_graph
                     : ((ObjectGraphApplication) activity.getApplication())
-                        .plus(((ObjectGraphActivity) activity).modules());
+                        .plus(((ObjectGraphActivity) activity).modules().toArray());
             _activity_object_graphs.put(activity.getClass(), object_graph);
             object_graph.inject(target);
         } else ((ObjectGraphApplication) activity.getApplication()).inject(target);
