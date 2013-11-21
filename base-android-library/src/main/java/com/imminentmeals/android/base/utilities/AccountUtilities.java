@@ -21,14 +21,11 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Patterns;
-
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.imminentmeals.android.base.data.provider.BaseContract;
-
 import com.imminentmeals.android.base.ui.AccountActivity;
 import java.util.List;
 import java.util.regex.Matcher;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -348,15 +345,14 @@ public class AccountUtilities {
      * method, as it will be registered for this intent</p>
      * @param context The context from which to start the account connection activity
      */
-    public final void startAddAccountActivity(Activity context, Intent continuation) {
+    public final void startAddAccountActivity(Activity context) {
         // Starts the add account connection activity when the add account action is selected
         // Note: this is the activity in AccountAuthenticatorService addAccount method, as it gets registered
         //       for this intent
         AUTOTAGLOGV("Starting add account activity for authority: " + authority());
         final Intent add_account_intent = new Intent(Settings.ACTION_ADD_ACCOUNT);
         add_account_intent.putExtra(Settings.EXTRA_AUTHORITIES, new String[]{ authority() });
-      add_account_intent.putExtra(AccountActivity.EXTRA_FINISH_INTENT, continuation);
-        context.startActivity(add_account_intent);
+        context.startActivityForResult(add_account_intent, AccountActivity.REQUEST_ADD_ACCOUNT);
     }
 
     /**
@@ -365,17 +361,15 @@ public class AccountUtilities {
      * {@link android.accounts.AbstractAccountAuthenticator#addAccount(android.accounts.AccountAuthenticatorResponse, String, String, String[], Bundle)}
      * method, as it will be registered for this intent</p>
      * @param fragment The fragment from which to start the account connection activity
-     * @param continuation {@link Intent} to launch when the authentication finishes
      */
-    public final void startAddAccountActivity(Fragment fragment, Intent continuation) {
+    public final void startAddAccountActivity(Fragment fragment) {
         // Starts the add account connection activity when the add account action is selected
         // Note: this is the activity in AccountAuthenticatorService addAccount method, as it gets registered
         //       for this intent
         AUTOTAGLOGV("Starting add account activity for authority: " + authority());
         final Intent add_account_intent = new Intent(Settings.ACTION_ADD_ACCOUNT);
         add_account_intent.putExtra(Settings.EXTRA_AUTHORITIES, new String[]{ authority() });
-        add_account_intent.putExtra(AccountActivity.EXTRA_FINISH_INTENT, continuation);
-        fragment.startActivity(add_account_intent);
+        fragment.startActivityForResult(add_account_intent, AccountActivity.REQUEST_ADD_ACCOUNT);
     }
 
     /**

@@ -56,6 +56,8 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
     @Inject /* package */Lazy<AccountUtilities> account_utilities;
     /** Name for the {@link Intent} to launch when the authentication finishes stored in the calling {@link Intent} */
     public static final String EXTRA_FINISH_INTENT = "com.imminentmeals.android.base.ui.extra.FINISH_INTENT";
+    /** Request code indicating the result of the add account request */
+    public static final int REQUEST_ADD_ACCOUNT = 200;
 
 /* Lifecycle */
     @Override
@@ -89,19 +91,22 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
     protected void onActivityResult(int request_code, int result_code, Intent data) {
         // Receives the response from getting the chosen account, if getting the account was successful,
         // then tries to authenticate the account, otherwise it goes back to the previous step
-        if (request_code == _REQUEST_AUTHENTICATE) {
-            if (result_code == RESULT_OK)
-                tryAuthenticate();
-            else
-                // goes back to previous step
-                _handler.post(new Runnable() {
-                    @Override
-                    public void run() {
+        switch (request_code) {
+            case _REQUEST_AUTHENTICATE:
+                if (result_code == RESULT_OK) tryAuthenticate();
+                else
+                    // goes back to previous step
+                    _handler.post(new Runnable() {
+                      @Override public void run() {
                         getFragmentManager().popBackStack();
-                    }
-                });
-        } else
-            super.onActivityResult(request_code, result_code, data);
+                      }
+                  });
+                break;
+
+            case REQUEST_ADD_ACCOUNT:
+                if (result_code == RESULT_OK) finish();
+                break;
+        }
     }
 
 /* AccountUtils.AuthenticationCallbacks */
@@ -195,8 +200,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
                 EasyTracker.getTracker().sendTiming(CATEGORY_UX, _timer.elapsed(TimeUnit.MILLISECONDS),
                                                     ACTION_BUTTON_PRESS, "add_account");
               assert getActivity() != null;
-              account_utilities.get().startAddAccountActivity(this
-                    , ((AccountActivity) getActivity())._continuation_intent);
+              account_utilities.get().startAddAccountActivity(this);
                 return true;
             }
             return super.onOptionsItemSelected(action);
@@ -215,8 +219,7 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
 
               public void onClick(View _) {
                 assert getActivity() != null;
-                account_utilities.get().startAddAccountActivity(ChooseAccountFragment.this
-                      , ((AccountActivity) getActivity())._continuation_intent);
+                account_utilities.get().startAddAccountActivity(ChooseAccountFragment.this);
               }
             });
             return root_view;
