@@ -91,21 +91,14 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
     protected void onActivityResult(int request_code, int result_code, Intent data) {
         // Receives the response from getting the chosen account, if getting the account was successful,
         // then tries to authenticate the account, otherwise it goes back to the previous step
-        switch (request_code) {
-            case _REQUEST_AUTHENTICATE:
-                if (result_code == RESULT_OK) tryAuthenticate();
-                else
-                    // goes back to previous step
-                    _handler.post(new Runnable() {
-                      @Override public void run() {
-                        getFragmentManager().popBackStack();
-                      }
-                  });
-                break;
-
-            case REQUEST_ADD_ACCOUNT:
-                if (result_code == RESULT_OK) finish();
-                break;
+        if (request_code == _REQUEST_AUTHENTICATE) {
+            if (result_code == RESULT_OK) tryAuthenticate();
+            // goes back to previous step
+            else _handler.post(new Runnable() {
+              @Override public void run() {
+                getFragmentManager().popBackStack();
+              }
+            });
         }
     }
 
@@ -223,6 +216,11 @@ public class AccountActivity extends Activity implements AccountUtilities.Authen
               }
             });
             return root_view;
+        }
+
+        @Override public void onActivityResult(int request_code, int result_code, Intent _) {
+          if (request_code == REQUEST_ADD_ACCOUNT && result_code == RESULT_OK && getActivity() != null)
+              getActivity().finish();
         }
 
         @Override
