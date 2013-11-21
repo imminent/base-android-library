@@ -3,8 +3,10 @@ package com.imminentmeals.android.base.ui;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import dagger.Module;
 import dagger.Provides;
+import javax.annotation.ParametersAreNonnullByDefault;
 import javax.inject.Singleton;
 
 import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGW;
@@ -13,6 +15,7 @@ import static com.imminentmeals.android.base.utilities.LogUtilities.AUTOTAGLOGW;
       library = true
     , complete = false
 )
+@ParametersAreNonnullByDefault
 public class ActivityModule {
 
     public ActivityModule(Activity activity) {
@@ -32,6 +35,10 @@ public class ActivityModule {
         if (action_bar == null) AUTOTAGLOGW("Expected an Action Bar for %s, but it was null",
             _activity);
         return action_bar;
+    }
+
+    @Provides @Singleton Resources providesResources() {
+        return _activity.getResources();
     }
 
     protected final Activity _activity;
