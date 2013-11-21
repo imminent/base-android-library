@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.view.LayoutInflater;
 import dagger.Module;
 import dagger.Provides;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -39,6 +40,10 @@ public class ActivityModule {
 
     @Provides @Singleton Resources providesResources() {
         return _activity.getResources();
+    }
+
+    @Provides @Singleton LayoutInflater providesInflater() {
+        return _activity.getLayoutInflater();
     }
 
     protected final Activity _activity;
