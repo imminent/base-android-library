@@ -22,4 +22,9 @@ public class InjectionCallbacks extends SimpleActivityLifecycleCallbacks {
         ObjectGraph.inject(activity);
         Views.inject(activity);
     }
+
+    @Override
+    public void onActivityDestroyed(Activity activity) {
+        ObjectGraph.minus(activity);
+    }
 }

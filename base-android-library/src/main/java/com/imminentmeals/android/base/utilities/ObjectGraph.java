@@ -90,6 +90,15 @@ public final class ObjectGraph {
         else AUTOTAGLOGD("Application context was null, unable to inject %s", service);
     }
 
+    /**
+     * <p>Drops the reference to the {@link Activity}'s {@link dagger.ObjectGraph}.</p>
+     * @param activity The given activity
+     */
+    public static void minus(@Nonnull Activity activity) {
+        if (activity instanceof ObjectGraphActivity)
+            _activity_object_graphs.remove(activity.getClass());
+    }
+
    /**
     * <p>Injects the dependencies for the given {@link Object} from the given {@link Activity}.</p>
     * @param activity The given activity
