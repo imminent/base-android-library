@@ -7,7 +7,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.6.+'
+    classpath 'com.android.tools.build:gradle:0.7.+'
     classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.1-SNAPSHOT'
   }
 }
@@ -19,7 +19,7 @@ apply plugin: 'pmd'
 apply plugin: 'checkstyle'
 
 dependencies {
-  def daggerVersion = "1.1.0"
+  def daggerVersion = "1.2.0"
   compile "com.squareup.dagger:dagger-compiler:$daggerVersion"
   compile "com.squareup.dagger:dagger:$daggerVersion"
   compile 'com.google.android.analytics:analytics:3'
@@ -44,7 +44,7 @@ android {
   buildToolsVersion "19.0.0"
 
   defaultConfig {
-    minSdkVersion 14
+    minSdkVersion 15
     targetSdkVersion 19
   }
 

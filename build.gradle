@@ -36,5 +36,5 @@ allprojects {
 
 // Wrapper task that sets up gradlew script (use ./gradlew in place of gradle command)
 task wrapper(type: Wrapper) {
-  gradleVersion = '1.8'
+  gradleVersion = '1.9'
 }
