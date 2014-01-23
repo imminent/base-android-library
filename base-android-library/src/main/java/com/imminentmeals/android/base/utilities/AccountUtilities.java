@@ -258,7 +258,7 @@ public class AccountUtilities {
      * @param activity_request_code used to set the request code of a subsequently started {@link android.app.Activity}
      * @param account the account that is trying to authenticate
      */
-    public final void tryAuthenticate(Activity activity, AuthenticationCallbacks callback, int activity_request_code,
+    public void tryAuthenticate(Activity activity, AuthenticationCallbacks callback, int activity_request_code,
                                        Account account) {
         AccountManager.get(activity).getAuthToken(
                 account,
@@ -278,7 +278,7 @@ public class AccountUtilities {
      * @param callback the authentication callback
      * @param account the account that is trying to authenticate
      */
-    public final void tryAuthenticateWithErrorNotification(Context context, AuthenticationCallbacks callback,
+    public void tryAuthenticateWithErrorNotification(Context context, AuthenticationCallbacks callback,
                                                             Account account) {
         AccountManager.get(context).getAuthToken(
                 account,
