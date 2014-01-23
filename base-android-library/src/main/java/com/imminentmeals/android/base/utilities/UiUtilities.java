@@ -43,6 +43,8 @@ public final class UiUtilities {
             final ActivityInfo[] activity_info = package_manager.getPackageInfo(context.getPackageName(),
                     PackageManager.GET_ACTIVITIES | PackageManager.GET_META_DATA).activities;
             for (ActivityInfo info : activity_info) {
+                // Skips processing activity aliases, their target activities will be processed explicitly
+                if (info.targetActivity != null) continue;
                 String target_device = info.metaData.getString("target device");
                 if (target_device == null) break;
                 target_device = target_device.toLowerCase();
@@ -57,9 +59,7 @@ public final class UiUtilities {
                             : PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                         PackageManager.DONT_KILL_APP);
             }
-        } catch (PackageManager.NameNotFoundException error) {
-            LOGW(_TAG, error.getCause());
-        } catch (ClassNotFoundException error) {
+        } catch (PackageManager.NameNotFoundException | ClassNotFoundException error) {
             LOGW(_TAG, error.getCause());
         }
     }
